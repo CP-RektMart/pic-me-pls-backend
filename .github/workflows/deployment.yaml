@@ -20,13 +20,13 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/cp-rektmart/pic-me-pls-backend:latest
       - uses: deploys-app/deploys-action@v1
         with:
-          project: PROJECT_ID
-          location: LOCATION
-          name: DEPLOYMENT_NAME
-          image: ghcr.io/${{ github.repository }}@${{ steps.docker_build.outputs.digest }}
+          project: pic-me-pls
+          location: gke.cluster-rcf2
+          name: picmepls-backend
+          image: ghcr.io/cp-rektmart/pic-me-pls-backend@${{ steps.docker_build.outputs.digest }}
         env:
           DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
           DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
