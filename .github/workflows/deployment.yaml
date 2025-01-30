@@ -33,5 +33,5 @@ jobs:
           name: picmepls-backend
           image: ghcr.io/cp-rektmart/pic-me-pls-backend@${{ steps.docker_build.outputs.digest }}
         env:
-          DEPLOYS_AUTH_USER: ${{ vars.DEPLOYS_AUTH_USER }}
-          DEPLOYS_AUTH_PASS: ${{ vars.DEPLOYS_AUTH_PASS }}
+          DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
+          DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
