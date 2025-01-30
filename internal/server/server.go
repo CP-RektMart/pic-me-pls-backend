@@ -7,6 +7,7 @@ import (
 	"log/slog"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
 	"github.com/gofiber/fiber/v2"
@@ -63,6 +64,12 @@ func New(config Config, corsConfig CorsConfig, DB *database.Store) *Server {
 }
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
+	s.App.Get("/v1/", func(c *fiber.Ctx) error {
+		return c.JSON(dto.HttpResponse{
+			Result: "ok",
+		})
+	})
+
 	go func() {
 		if err := s.App.Listen(fmt.Sprintf(":%d", s.config.Port)); err != nil {
 			logger.PanicContext(ctx, "failed to start server", slog.Any("error", err))
