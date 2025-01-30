@@ -15,6 +15,17 @@ services:
     container_name: pic-me-pls-redis
     ports:
       - "6379:6379"
+  api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: pic-me-pls-api
+    env_file: .env.docker
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
 
 volumes:
   postgres_data:
