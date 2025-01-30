@@ -3,18 +3,18 @@ services:
     image: postgres:17-alpine3.21
     container_name: pic-me-pls-postgres
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - '5431:5432'
+      - "5431:5432"
   redis:
     image: redis:7-alpine
     container_name: pic-me-pls-redis
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
 volumes:
   postgres_data:

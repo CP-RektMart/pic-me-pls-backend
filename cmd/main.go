@@ -1,19 +1,30 @@
 package main
 
 import (
+	"context"
+	"log/slog"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/config"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 )
 
 func main() {
 	config := config.Load()
-	store := database.New(database.Config{
-		PostgresURL: config.PostgresURL,
-	})
-	server := server.New(server.Config{
-		ServerAddr: config.ServerAddr,
-	}, store)
 
-	server.Start()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	if err := logger.Init(config.Logger); err != nil {
+		logger.PanicContext(ctx, "failed to initialize logger", slog.Any("error", err))
+	}
+
+	store := database.New(ctx, config.Postgres, config.Redis)
+	server := server.New(config.Server, config.Cors, store)
+
+	server.Start(ctx, stop)
 }
