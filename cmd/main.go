@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+	// hello
 	config := config.Load()
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
