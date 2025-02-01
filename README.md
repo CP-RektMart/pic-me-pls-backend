@@ -7,6 +7,7 @@ backend repository for Pic-me-pls Project
 - Golang ver go1.23.5 or newer https://go.dev/doc/install
 - Docker https://docs.docker.com/desktop/setup/install/windows-install/
 - air https://github.com/air-verse/air
+- golangci-lint https://golangci-lint.run/welcome/install/
 
 ## Run local server
 
