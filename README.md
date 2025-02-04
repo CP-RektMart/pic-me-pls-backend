@@ -8,6 +8,7 @@ backend repository for Pic-me-pls Project
 - Docker https://docs.docker.com/desktop/setup/install/windows-install/
 - air https://github.com/air-verse/air
 - golangci-lint https://golangci-lint.run/welcome/install/
+- pre-commit https://pre-commit.com/
 
 ## Run local server
 
@@ -37,4 +38,9 @@ make start
 
 ```
 air
+```
+
+4. install pre commit
+```
+pre-commit install
 ```
