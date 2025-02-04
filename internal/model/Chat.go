@@ -1,10 +1,10 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+)
 
 type Chat struct {
-	ID        uint      `gorm:"primaryKey"`
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	Messages  []Message `gorm:"foreignKey:ChatID"`
+	gorm.Model
+	Messages []Message `gorm:"foreignKey:ChatID"`
 }

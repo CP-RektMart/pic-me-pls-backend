@@ -1,9 +1,10 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+)
 
 type Transaction struct {
-	ID        uint      `gorm:"primaryKey"`
-	Amount    float64   `gorm:"not null"`
-	Timestamp time.Time `gorm:"autoCreateTime"`
+	gorm.Model
+	Amount float64 `gorm:"not null"`
 }
