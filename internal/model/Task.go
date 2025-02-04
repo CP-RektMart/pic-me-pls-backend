@@ -1,10 +1,13 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Task struct {
-	ID          uint      `gorm:"primaryKey"`
-	QuotationID uint      `gorm:"not null"`
-	CreatedAt   time.Time `gorm:"autoCreateTime"`
+	gorm.Model
+	QuotationID uint `gorm:"not null"`
 	EndTime     time.Time
 }
