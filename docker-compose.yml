@@ -9,23 +9,39 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5431:5432"
+      - '5431:5432'
   redis:
     image: redis:7-alpine
     container_name: pic-me-pls-redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
   api:
     build:
       context: ./
       dockerfile: Dockerfile
     container_name: pic-me-pls-api
     env_file: .env.docker
+    restart: always
     depends_on:
       - postgres
       - redis
     ports:
-      - "8000:8000"
+      - '8000:8000'
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pic-me-pls-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5050:80'
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
 
 volumes:
   postgres_data:
+  pgadmin_data:
