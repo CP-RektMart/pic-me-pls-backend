@@ -1,9 +1,13 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Quotation struct {
-	ID            uint      `gorm:"primaryKey"`
+	gorm.Model
 	UserID        uint      `gorm:"not null"`
 	GalleryID     uint      `gorm:"not null"`
 	Price         float64   `gorm:"not null"`
