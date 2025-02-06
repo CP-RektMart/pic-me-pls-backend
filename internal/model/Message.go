@@ -1,12 +1,13 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+)
 
 type Message struct {
-	ID       uint      `gorm:"primaryKey"`
-	ChatID   uint      `gorm:"not null"`
-	SenderID uint      `gorm:"not null"`
-	Content  string    `gorm:"not null"`
-	SendTime time.Time `gorm:"autoCreateTime"`
-	Chat     Chat      `gorm:"foreignKey:ChatID"`
+	gorm.Model
+	ChatID   uint   `gorm:"not null"`
+	SenderID uint   `gorm:"not null"`
+	Content  string `gorm:"not null"`
+	Chat     Chat   `gorm:"foreignKey:ChatID"`
 }
