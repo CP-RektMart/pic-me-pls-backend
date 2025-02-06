@@ -2,8 +2,10 @@ package database
 
 import (
 	"context"
+	"log"
 	"log/slog"
 
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	pglib "github.com/CP-RektMart/pic-me-pls-backend/pkg/postgres"
 	rdlib "github.com/CP-RektMart/pic-me-pls-backend/pkg/redis"
@@ -33,8 +35,29 @@ func New(ctx context.Context, pgconfig pglib.Config, rdconfig rdlib.Config) *Sto
 		}
 	}()
 
-	return &Store{
+	store := &Store{
 		DB:    db,
 		Cache: redisConn,
 	}
+	store.migrate()
+	return store
+}
+
+func (s *Store) migrate() {
+	log.Println("Running migrations...")
+	if err := s.DB.AutoMigrate(
+		&model.User{},
+		&model.Chat{},
+		&model.Gallery{},
+		&model.Media{},
+		&model.Message{},
+		&model.Photographer{},
+		&model.Quotation{},
+		&model.Review{},
+		&model.Task{},
+		&model.Transaction{},
+	); err != nil {
+		logger.Panic("failed to migrate database", slog.Any("error", err))
+	}
+	log.Println("Migrations complete!")
 }
