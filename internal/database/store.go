@@ -47,15 +47,14 @@ func (s *Store) migrate() {
 	log.Println("Running migrations...")
 	if err := s.DB.AutoMigrate(
 		&model.User{},
-		&model.Chat{},
+		&model.Photographer{},
 		&model.Gallery{},
+		&model.Tag{},
+		&model.Category{},
 		&model.Media{},
 		&model.Message{},
-		&model.Photographer{},
 		&model.Quotation{},
 		&model.Review{},
-		&model.Task{},
-		&model.Transaction{},
 	); err != nil {
 		logger.Panic("failed to migrate database", slog.Any("error", err))
 	}
