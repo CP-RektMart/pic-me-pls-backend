@@ -1,15 +1,14 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 type Photographer struct {
 	gorm.Model
-	UserID        uint   `gorm:"uniqueIndex;not null"`
-	SSN           string `gorm:"unique;not null;size:13"`
-	IDCardPicture string `gorm:"size:255"`
-	IsVerified    bool   `gorm:"default:false"`
-	ActiveStatus  bool   `gorm:"default:true"`
-	User          User   `gorm:"foreignKey:UserID"`
+	ID               uint   `gorm:"primaryKey;unique"`
+	UserID           uint   `gorm:"not null;unique"`
+	User             User   `gorm:"foreignKey:UserID"`
+	SSN              string `gorm:"size:10;not null"`
+	IsVerified       bool   `gorm:"not null;default:false"`
+	ActiveStatus     bool   `gorm:"not null;default:false"`
+	IDCardPictureURL string
 }
