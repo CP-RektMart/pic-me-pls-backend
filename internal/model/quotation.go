@@ -8,12 +8,16 @@ import (
 
 type Quotation struct {
 	gorm.Model
-	UserID        uint      `gorm:"not null"`
-	GalleryID     uint      `gorm:"not null"`
-	Price         float64   `gorm:"not null"`
-	MeetingLoc    string    `gorm:"size:255"`
-	StartTime     time.Time `gorm:"not null"`
-	EndTime       time.Time `gorm:"not null"`
-	DueDate       time.Time `gorm:"not null"`
-	TransactionID uint      `gorm:"not null"`
+	ID             uint         `gorm:"primaryKey"`
+	GalleryID      uint         `gorm:"not null"`
+	Gallery        Gallery      `gorm:"foreignKey:GalleryID"`
+	CustomerID     uint         `gorm:"not null"`
+	Customer       User         `gorm:"foreignKey:CustomerID"`
+	PhotographerID uint         `gorm:"not null"`
+	Photographer   Photographer `gorm:"foreignKey:PhotographerID"`
+	CreatedAt      time.Time    `gorm:"not null"`
+	UpdatedAt      time.Time    `gorm:"not null"`
+	Status         string       `gorm:"not null"` // pending, confirm, cancelled, paid
+	Price          float64      `gorm:"not null"`
+	Description    string       `gorm:"not null"`
 }

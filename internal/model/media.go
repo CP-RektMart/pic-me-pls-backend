@@ -1,12 +1,11 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 type Media struct {
 	gorm.Model
-	GalleryID uint    `gorm:"not null"`
-	URL       string  `gorm:"size:255;not null"`
-	Gallery   Gallery `gorm:"foreignKey:GalleryID"`
+	ID         uint    `gorm:"primaryKey"`
+	GalleryID  uint    `gorm:"not null"`
+	Gallery    Gallery `gorm:"foreignKey:GalleryID"`
+	PictureURL string  `gorm:"not null"`
 }
