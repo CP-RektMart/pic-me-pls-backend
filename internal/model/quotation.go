@@ -6,7 +6,6 @@ import (
 
 type Quotation struct {
 	gorm.Model
-	ID             uint         `gorm:"primaryKey"`
 	GalleryID      uint         `gorm:"not null"`
 	Gallery        Gallery      `gorm:"foreignKey:GalleryID"`
 	CustomerID     uint         `gorm:"not null"`
