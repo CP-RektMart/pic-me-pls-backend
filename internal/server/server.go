@@ -10,15 +10,17 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
 
 type Config struct {
-	Name         string `env:"NAME"`
-	Port         int    `env:"PORT"`
-	MaxBodyLimit int    `env:"MAX_BODY_LIMIT"`
+	Name           string `env:"NAME"`
+	Port           int    `env:"PORT"`
+	MaxBodyLimit   int    `env:"MAX_BODY_LIMIT"`
+	GoogleClientID string `env:"GOOGLE_CLIENT_ID"`
 }
 
 type CorsConfig struct {
@@ -29,9 +31,10 @@ type CorsConfig struct {
 }
 
 type Server struct {
-	config Config
-	app    *fiber.App
-	db     *database.Store
+	config   Config
+	app      *fiber.App
+	db       *database.Store
+	validate *validator.Validate
 }
 
 func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
@@ -57,9 +60,10 @@ func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 		Use(requestlogger.New())
 
 	return &Server{
-		config: config,
-		app:    app,
-		db:     db,
+		config:   config,
+		app:      app,
+		db:       db,
+		validate: validator.New(),
 	}
 }
 
