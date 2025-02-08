@@ -12,6 +12,6 @@ type Gallery struct {
 	Tags           []Tag       `gorm:"foreignKey:GalleryID"`
 	Media          []Media     `gorm:"foreignKey:GalleryID"`
 	Reviews        []Review    `gorm:"foreignKey:GalleryID"`
-	Categories     []Category  `gorm:"many2many:Galleries_categories"`
+	Categories     []Category  `gorm:"many2many:Galleries_Categories"`
 	Quotations     []Quotation `gorm:"foreignKey:GalleryID"`
 }
