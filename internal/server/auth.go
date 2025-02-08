@@ -4,9 +4,12 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"fmt"
+	"time"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/utils/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/utils/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
@@ -163,22 +166,66 @@ func (s *Server) newTokenCacheKey(token string, ID uint) string {
 }
 =======
 func (s *Server) getOrCreateUser(user *model.User) (*model.User, error) {
-	// Check if user exists
-	// if user exists, return user
-	// if user does not exist, create user with name and email then return user
+	var existingUser model.User
+	err := s.db.DB.Where("email = ?", user.Email).First(&existingUser).Error
+	if err == nil {
+		return &existingUser, nil
+	}
 
-	// this is my mock user
-	return &model.User{
-		Model:             gorm.Model{ID: 123},
+	if err != gorm.ErrRecordNotFound {
+		return nil, errors.Wrap(err, "failed to get user")
+	}
+
+	newUser := model.User{
 		Name:              user.Name,
 		Email:             user.Email,
 		ProfilePictureURL: user.ProfilePictureURL,
-		PhoneNumber:       "0123456789",
 		Role:              user.Role,
+	}
+	if err := s.db.DB.Create(&newUser).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to create user")
+	}
+
+	return &newUser, nil
+}
+func (s *Server) generateJWTToken(c context.Context, ID uint, role string) (*dto.TokenResponse, error) {
+	type token struct {
+		secret   string
+		duration int
+		token    string
+	}
+
+	tokens := []token{
+		{secret: s.config.JwtAccessSecret, duration: s.config.JwtAccessDuration},
+		{secret: s.config.JWTRefreshSecret, duration: s.config.JwtRefreshDuration},
+	}
+
+	for i, token := range tokens {
+		tokenString, err := jwt.GenerateJWT(ID, role, token.secret, token.duration)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to generate jwt token")
+		}
+		if err := s.storeJWTToken(c, ID, tokenString, token.duration); err != nil {
+			return nil, errors.Wrap(err, "failed to store jwt token")
+		}
+		tokens[i].token = tokenString
+	}
+
+	return &dto.TokenResponse{
+		AcessToken:   tokens[0].token,
+		RefreshToken: tokens[1].token,
+		Exp:          s.config.JwtAccessDuration,
 	}, nil
 }
 
-func (s *Server) generateJWTToken() error {
+func (s *Server) storeJWTToken(c context.Context, ID uint, token string, duration int) error {
+	key := s.newTokenCacheKey(token, ID)
+	ttl := time.Second * time.Duration(duration)
+
+	if err := s.db.Cache.Set(c, key, 1, ttl).Err(); err != nil {
+		return errors.Wrap(err, "failed to store jwt token")
+	}
+
 	return nil
 }
 >>>>>>> d7bc73a (chore: set up)
