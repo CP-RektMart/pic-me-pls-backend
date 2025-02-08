@@ -15,7 +15,7 @@ func New() func(ctx *fiber.Ctx) error {
 		requestId := ctx.GetRespHeader("X-Request-Id")
 		err := ctx.Next()
 		if err != nil {
-			return handleError(ctx, err)
+			return handleError(ctx, err, requestId)
 		}
 
 		logger.InfoContext(ctx.UserContext(), "request received", slog.String("request_id", requestId), slog.String("method", ctx.Method()), slog.String("path", ctx.Path()), slog.Int("status", ctx.Response().StatusCode()))
@@ -23,7 +23,7 @@ func New() func(ctx *fiber.Ctx) error {
 	}
 }
 
-func handleError(c *fiber.Ctx, err error) error {
+func handleError(c *fiber.Ctx, err error, requestId string) error {
 	var fiberError *fiber.Error
 	if errors.As(err, &fiberError) {
 		c.Set(fiber.HeaderContentType, fiber.MIMETextPlainCharsetUTF8)
@@ -39,7 +39,7 @@ func handleError(c *fiber.Ctx, err error) error {
 		message = appError.Message
 	}
 
-	logger.ErrorContext(c.UserContext(), "Request Error", slog.Int("status", status), slog.Any("error", err))
+	logger.ErrorContext(c.UserContext(), "Request Error", slog.String("request_id", requestId), slog.String("method", c.Method()), slog.String("path", c.Path()), slog.Int("status", status), slog.Any("error", err))
 	return c.Status(status).JSON(dto.HttpResponse{
 		Error: message,
 	})
