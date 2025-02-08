@@ -68,13 +68,11 @@ func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 }
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
-	s.app.Get("/health", func(c *fiber.Ctx) error {
+	s.app.Get("/v1/", func(c *fiber.Ctx) error {
 		return c.JSON(dto.HttpResponse{
 			Result: "ok",
 		})
 	})
-
-	s.registerRoute()
 
 	go func() {
 		if err := s.app.Listen(fmt.Sprintf(":%d", s.config.Port)); err != nil {
@@ -92,9 +90,4 @@ func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 
 	<-ctx.Done()
 	logger.InfoContext(ctx, "Shutting down server")
-}
-
-func (s *Server) registerRoute() {
-	// api := s.app.Group("/api")
-	// v1 := api.Group("/v1")
 }
