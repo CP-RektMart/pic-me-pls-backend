@@ -9,4 +9,5 @@ type Gallery struct {
 	Name           string       `gorm:"not null"`
 	Description    string
 	Price          float64 `gorm:"not null"`
+	Tags           []Tag   `gorm:"foreignKey:GalleryID"`
 }
