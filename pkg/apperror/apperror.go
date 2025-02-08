@@ -5,8 +5,6 @@ import (
 	"net/http"
 )
 
-type ErrorType string
-
 type AppError struct {
 	Code    int
 	Message string
