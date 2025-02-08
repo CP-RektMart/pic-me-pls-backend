@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/awss3"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/postgres"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/redis"
@@ -17,6 +18,7 @@ type AppConfig struct {
 	Postgres postgres.Config   `envPrefix:"POSTGRES_"`
 	Redis    redis.Config      `envPrefix:"REDIS_"`
 	Cors     server.CorsConfig `envPrefix:"CORS_"`
+	S3       awss3.Config      `envPrefix:"S3_"`
 }
 
 func Load() *AppConfig {
