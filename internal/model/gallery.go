@@ -8,6 +8,10 @@ type Gallery struct {
 	Photographer   Photographer `gorm:"foreignKey:PhotographerID"`
 	Name           string       `gorm:"not null"`
 	Description    string
-	Price          float64 `gorm:"not null"`
-	Tags           []Tag   `gorm:"foreignKey:GalleryID"`
+	Price          float64     `gorm:"not null"`
+	Tags           []Tag       `gorm:"foreignKey:GalleryID"`
+	Media          []Media     `gorm:"foreignKey:GalleryID"`
+	Reviews        []Review    `gorm:"foreignKey:GalleryID"`
+	Categories     []Category  `gorm:"many2many:Galleries_categories"`
+	Quotations     []Quotation `gorm:"foreignKey:GalleryID"`
 }
