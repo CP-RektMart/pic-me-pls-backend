@@ -93,6 +93,7 @@ func (s *Server) validateIDToken(c context.Context, idToken string) (*model.User
 	}, nil
 }
 
+<<<<<<< HEAD
 func (s *Server) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, error) {
 	var existingUser model.User
 	err := tx.Where("email = ?", user.Email).First(&existingUser).Error
@@ -160,3 +161,24 @@ func (s *Server) storeJWTToken(c context.Context, ID uint, token string, duratio
 func (s *Server) newTokenCacheKey(token string, ID uint) string {
 	return fmt.Sprintf("%s:%d", token, ID)
 }
+=======
+func (s *Server) getOrCreateUser(user *model.User) (*model.User, error) {
+	// Check if user exists
+	// if user exists, return user
+	// if user does not exist, create user with name and email then return user
+
+	// this is my mock user
+	return &model.User{
+		Model:             gorm.Model{ID: 123},
+		Name:              user.Name,
+		Email:             user.Email,
+		ProfilePictureURL: user.ProfilePictureURL,
+		PhoneNumber:       "0123456789",
+		Role:              user.Role,
+	}, nil
+}
+
+func (s *Server) generateJWTToken() error {
+	return nil
+}
+>>>>>>> d7bc73a (chore: set up)
