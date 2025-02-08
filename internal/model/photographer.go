@@ -4,7 +4,6 @@ import "gorm.io/gorm"
 
 type Photographer struct {
 	gorm.Model
-	ID               uint   `gorm:"primaryKey;unique"`
 	UserID           uint   `gorm:"not null;unique"`
 	User             User   `gorm:"foreignKey:UserID"`
 	SSN              string `gorm:"size:10;not null"`
