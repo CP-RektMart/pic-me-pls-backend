@@ -17,10 +17,14 @@ import (
 )
 
 type Config struct {
-	Name           string `env:"NAME"`
-	Port           int    `env:"PORT"`
-	MaxBodyLimit   int    `env:"MAX_BODY_LIMIT"`
-	GoogleClientID string `env:"GOOGLE_CLIENT_ID"`
+	Name               string `env:"NAME"`
+	Port               int    `env:"PORT"`
+	MaxBodyLimit       int    `env:"MAX_BODY_LIMIT"`
+	GoogleClientID     string `env:"GOOGLE_CLIENT_ID"`
+	JwtAccessSecret    string `env:"JWT_ACCESS_SECRET"`
+	JWTRefreshSecret   string `env:"JWT_REFRESH_SECRET"`
+	JwtAccessDuration  int    `env:"JWT_ACCESS_DURATION"`
+	JwtRefreshDuration int    `env:"JWT_REFRESH_DURATION"`
 }
 
 type CorsConfig struct {
@@ -95,6 +99,9 @@ func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 }
 
 func (s *Server) registerRoute() {
-	// api := s.app.Group("/api")
-	// v1 := api.Group("/v1")
+	api := s.app.Group("/api")
+	v1 := api.Group("/v1")
+
+	auth := v1.Group("/auth")
+	auth.Post("/login", s.handleLogin)
 }

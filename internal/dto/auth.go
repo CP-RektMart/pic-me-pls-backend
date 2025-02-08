@@ -1,9 +1,5 @@
 package dto
 
-import (
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-)
-
 type LoginRequest struct {
 	Provider string `json:"provider" validate:"required,oneof GOOGLE FACEBOOK APPLE"`
 	Role     string `json:"role" validate:"required,oneof CUSTOMER PHOTOGRAPHER ADMIN"`
@@ -18,5 +14,5 @@ type TokenResponse struct {
 
 type LoginResponse struct {
 	TokenResponse
-	User model.User `json:"user"`
+	User BaseUserDTO `json:"user"`
 }

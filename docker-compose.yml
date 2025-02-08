@@ -3,9 +3,9 @@ services:
     image: postgres:17-alpine3.21
     container_name: pic-me-pls-postgres
     environment:
-      POSTGRES_USER: tee
+      POSTGRES_USER: pic-me-pls
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: teew
+      POSTGRES_DB: pic-me-pls
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
