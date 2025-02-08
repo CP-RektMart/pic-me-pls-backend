@@ -30,11 +30,11 @@ type CorsConfig struct {
 
 type Server struct {
 	config Config
-	App    *fiber.App
-	DB     *database.Store
+	app    *fiber.App
+	db     *database.Store
 }
 
-func New(config Config, corsConfig CorsConfig, DB *database.Store) *Server {
+func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 	app := fiber.New(fiber.Config{
 		AppName:       config.Name,
 		BodyLimit:     config.MaxBodyLimit * 1024 * 1024,
@@ -58,27 +58,27 @@ func New(config Config, corsConfig CorsConfig, DB *database.Store) *Server {
 
 	return &Server{
 		config: config,
-		App:    app,
-		DB:     DB,
+		app:    app,
+		db:     db,
 	}
 }
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
-	s.App.Get("/v1/", func(c *fiber.Ctx) error {
+	s.app.Get("/v1/", func(c *fiber.Ctx) error {
 		return c.JSON(dto.HttpResponse{
 			Result: "ok",
 		})
 	})
 
 	go func() {
-		if err := s.App.Listen(fmt.Sprintf(":%d", s.config.Port)); err != nil {
+		if err := s.app.Listen(fmt.Sprintf(":%d", s.config.Port)); err != nil {
 			logger.PanicContext(ctx, "failed to start server", slog.Any("error", err))
 			stop()
 		}
 	}()
 
 	defer func() {
-		if err := s.App.ShutdownWithContext(ctx); err != nil {
+		if err := s.app.ShutdownWithContext(ctx); err != nil {
 			logger.ErrorContext(ctx, "failed to shutdown server", slog.Any("error", err))
 		}
 		logger.InfoContext(ctx, "gracefully shutdown server")
