@@ -8,9 +8,10 @@ import (
 type UserRole string
 
 const (
-	UserRoleUnknown UserRole = ""
-	UserRoleAdmin   UserRole = "ADMIN"
-	UserRoleUser    UserRole = "USER"
+	UserRoleUnknown      UserRole = ""
+	UserRoleAdmin        UserRole = "ADMIN"
+	UserRolePhotographer UserRole = "PHOTOGRAPHER"
+	UserRoleCustomer     UserRole = "CUSTOMER"
 )
 
 func (r UserRole) String() string {
