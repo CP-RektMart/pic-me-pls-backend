@@ -5,6 +5,7 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/postgres"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/redis"
@@ -21,6 +22,7 @@ type AppConfig struct {
 	Cors     server.CorsConfig `envPrefix:"CORS_"`
 	JWT      jwt.Config        `envPrefix:"JWT_"`
 	Storage  storage.Config    `envPrefix:"STORAGE_"`
+	Auth     auth.Config       `envPrefix:""`
 }
 
 func Load() *AppConfig {

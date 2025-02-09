@@ -1,4 +1,4 @@
-package server
+package auth
 
 import (
 	"context"
@@ -26,17 +26,17 @@ import (
 // @response 400 {object} dto.HttpResponse "Bad Request"
 // @response 500 {object} dto.HttpResponse "Internal Server Error"
 // @Router /api/v1/auth/login [POST]
-func (s *Server) handleLogin(c *fiber.Ctx) error {
+func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	req := new(dto.LoginRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err := s.validate.Struct(req); err != nil {
+	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	OAuthUser, err := s.validateIDToken(c.Context(), req.IDToken)
+	OAuthUser, err := h.validateIDToken(c.Context(), req.IDToken)
 	if err != nil {
 		return errors.Wrap(err, "failed to validate id token")
 	}
@@ -45,20 +45,20 @@ func (s *Server) handleLogin(c *fiber.Ctx) error {
 	var user *model.User
 	var token *dto.TokenResponse
 
-	if err := s.db.DB.Transaction(func(tx *gorm.DB) error {
-		user, err = s.getOrCreateUser(tx, OAuthUser)
+	if err := h.db.DB.Transaction(func(tx *gorm.DB) error {
+		user, err = h.getOrCreateUser(tx, OAuthUser)
 		if err != nil {
 			return err
 		}
 
 		token, err = jwt.GenerateAndStoreTokenPair(
 			c.UserContext(),
-			s.db.Cache,
+			h.db.Cache,
 			*user,
-			s.JWTConfig.AccessTokenSecret,
-			s.JWTConfig.RefreshTokenSecret,
-			s.JWTConfig.AccessTokenExpire,
-			s.JWTConfig.RefreshTokenExpire,
+			h.JWTConfig.AccessTokenSecret,
+			h.JWTConfig.RefreshTokenSecret,
+			h.JWTConfig.AccessTokenExpire,
+			h.JWTConfig.RefreshTokenExpire,
 		)
 		if err != nil {
 			return err
@@ -85,8 +85,8 @@ func (s *Server) handleLogin(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{Result: result})
 }
 
-func (s *Server) validateIDToken(c context.Context, idToken string) (*model.User, error) {
-	payload, err := idtoken.Validate(c, idToken, s.config.GoogleClientID)
+func (h *Handler) validateIDToken(c context.Context, idToken string) (*model.User, error) {
+	payload, err := idtoken.Validate(c, idToken, h.config.GoogleClientID)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to validate id token")
 	}
@@ -113,7 +113,7 @@ func (s *Server) validateIDToken(c context.Context, idToken string) (*model.User
 	}, nil
 }
 
-func (s *Server) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, error) {
+func (h *Handler) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, error) {
 	var existingUser model.User
 	err := tx.Where("email = ?", user.Email).First(&existingUser).Error
 	if err == nil {
@@ -137,6 +137,6 @@ func (s *Server) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, er
 	return &newUser, nil
 }
 
-func (s *Server) Test(c *fiber.Ctx) error {
+func (h *Handler) Test(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{Result: "test"})
 }

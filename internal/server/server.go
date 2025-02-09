@@ -10,13 +10,9 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
-	custom_validator "github.com/CP-RektMart/pic-me-pls-backend/internal/validator"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
-	"github.com/cockroachdb/errors"
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -38,12 +34,8 @@ type CorsConfig struct {
 }
 
 type Server struct {
-	config     Config
-	JWTConfig  jwt.Config
-	app        *fiber.App
-	db         *database.Store
-	validate   *validator.Validate
-	middleware authentication.AuthMiddleware
+	config Config
+	app    *fiber.App
 }
 
 func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *database.Store) *Server {
@@ -70,12 +62,8 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	return &Server{
-		config:     config,
-		JWTConfig:  jwtConfig,
-		app:        app,
-		db:         db,
-		validate:   custom_validator.New(),
-		middleware: authentication.NewAuthMiddleware(&jwtConfig, db.Cache),
+		config: config,
+		app:    app,
 	}
 }
 
@@ -85,8 +73,6 @@ func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 			Result: "ok",
 		})
 	})
-
-	s.registerRoute()
 
 	go func() {
 		if err := s.app.Listen(fmt.Sprintf(":%d", s.config.Port)); err != nil {
@@ -104,37 +90,4 @@ func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 
 	<-ctx.Done()
 	logger.InfoContext(ctx, "Shutting down server")
-}
-
-func (s *Server) registerRoute() {
-	api := s.app.Group("/api")
-	v1 := api.Group("/v1")
-
-	auth := v1.Group("/auth")
-	auth.Post("/login", s.handleLogin)
-	// Example upload
-	v1.Post("/upload", func(c *fiber.Ctx) error {
-		ctx := c.UserContext()
-
-		file, err := c.FormFile("file")
-		if err != nil {
-			apperror.BadRequest("failed to get file", err)
-		}
-
-		contentType := file.Header.Get("Content-Type")
-
-		src, err := file.Open()
-		if err != nil {
-			return errors.Wrap(err, "failed to open file")
-		}
-		defer src.Close()
-
-		if err := s.db.Storage.UploadFile(ctx, file.Filename, contentType, src, true); err != nil {
-			return errors.Wrap(err, "failed to upload file")
-		}
-
-		return c.JSON(dto.HttpResponse{
-			Result: "ok",
-		})
-	})
 }
