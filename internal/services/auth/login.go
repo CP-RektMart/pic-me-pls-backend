@@ -52,7 +52,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 			return errors.Wrap(err, "failed to get or create user")
 		}
 
-		token, err = h.jwtService.GenerateTokenPair(ctx, user)
+		token, err = h.jwtService.GenerateAndStoreTokenPair(ctx, user)
 		if err != nil {
 			return errors.Wrap(err, "failed to generate token pair")
 		}

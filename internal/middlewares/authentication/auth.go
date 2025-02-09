@@ -9,8 +9,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
-
-	jwt_service "github.com/CP-RektMart/pic-me-pls-backend/internal/services/jwt"
 )
 
 var (
@@ -24,13 +22,11 @@ type AuthMiddleware interface {
 }
 
 type authMiddleware struct {
-	config     jwt.Config
-	jwtService *jwt_service.Service
+	jwtService *jwt.JWT
 }
 
-func NewAuthMiddleware(config jwt.Config, jwtService *jwt_service.Service) AuthMiddleware {
+func NewAuthMiddleware(jwtService *jwt.JWT) AuthMiddleware {
 	return &authMiddleware{
-		config:     config,
 		jwtService: jwtService,
 	}
 }
@@ -92,7 +88,7 @@ func (r *authMiddleware) AuthAdmin(ctx *fiber.Ctx) error {
 }
 
 func (r *authMiddleware) validateToken(ctx context.Context, bearerToken string) (jwt.JWTentity, error) {
-	parsedToken, err := jwt.ParseToken(bearerToken, r.config.AccessTokenSecret)
+	parsedToken, err := r.jwtService.ParseToken(bearerToken, false)
 	if err != nil {
 		return jwt.JWTentity{}, errors.Wrap(err, "failed to parse  token")
 	}
@@ -102,7 +98,7 @@ func (r *authMiddleware) validateToken(ctx context.Context, bearerToken string) 
 		return jwt.JWTentity{}, errors.Wrap(err, "failed to get cached token")
 	}
 
-	err = jwt.ValidateToken(*cachedToken, parsedToken, false)
+	err = r.jwtService.ValidateToken(*cachedToken, parsedToken, false)
 	if err != nil {
 		return jwt.JWTentity{}, errors.Wrap(err, "failed to validate token")
 	}

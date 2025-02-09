@@ -9,13 +9,13 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/config"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/gallery"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
@@ -49,10 +49,10 @@ func main() {
 	validate := validator.New()
 
 	// services
-	jwtService := jwt.NewService(config.JWT, store.Cache)
+	jwtService := jwt.New(config.JWT, store.Cache)
 
 	// middlewares
-	authMiddleware := authentication.NewAuthMiddleware(config.JWT, jwtService)
+	authMiddleware := authentication.NewAuthMiddleware(jwtService)
 
 	// handlers
 	exampleHandler := example.NewHandler(store)
