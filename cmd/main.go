@@ -24,7 +24,7 @@ func main() {
 		logger.PanicContext(ctx, "failed to initialize logger", slog.Any("error", err))
 	}
 
-	store := database.New(ctx, config.Postgres, config.Redis)
+	store := database.New(ctx, config.Postgres, config.Redis, config.Storage)
 	server := server.New(config.Server, config.Cors, store)
 
 	server.Start(ctx, stop)
