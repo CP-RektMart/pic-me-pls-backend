@@ -9,6 +9,8 @@ import (
 	_ "github.com/CP-RektMart/pic-me-pls-backend/doc"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	custom_validator "github.com/CP-RektMart/pic-me-pls-backend/internal/validator"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
@@ -24,14 +26,7 @@ type Config struct {
 	Port           int    `env:"PORT"`
 	MaxBodyLimit   int    `env:"MAX_BODY_LIMIT"`
 	GoogleClientID string `env:"GOOGLE_CLIENT_ID"`
-	JWT            JWTConfig
-}
-
-type JWTConfig struct {
-	AccessSecret    string `env:"ACCESS_SECRET"`
-	RefreshSecret   string `env:"REFRESH_SECRET"`
-	AccessDuration  int    `env:"ACCESS_DURATION"`
-	RefreshDuration int    `env:"REFRESH_DURATION"`
+	JWT            jwt.Config
 }
 
 type CorsConfig struct {
@@ -42,13 +37,14 @@ type CorsConfig struct {
 }
 
 type Server struct {
-	config   Config
-	app      *fiber.App
-	db       *database.Store
-	validate *validator.Validate
+	config     Config
+	app        *fiber.App
+	db         *database.Store
+	validate   *validator.Validate
+	middleware authentication.AuthMiddleware
 }
 
-func New(config Config, corsConfig CorsConfig, jwtConfig JWTConfig, db *database.Store) *Server {
+func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *database.Store) *Server {
 	app := fiber.New(fiber.Config{
 		AppName:       config.Name,
 		BodyLimit:     config.MaxBodyLimit * 1024 * 1024,
@@ -75,10 +71,11 @@ func New(config Config, corsConfig CorsConfig, jwtConfig JWTConfig, db *database
 	config.JWT = jwtConfig
 
 	return &Server{
-		config:   config,
-		app:      app,
-		db:       db,
-		validate: custom_validator.New(),
+		config:     config,
+		app:        app,
+		db:         db,
+		validate:   custom_validator.New(),
+		middleware: authentication.NewAuthMiddleware(&jwtConfig, db.Cache),
 	}
 }
 

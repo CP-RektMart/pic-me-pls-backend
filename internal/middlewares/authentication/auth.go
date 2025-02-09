@@ -2,12 +2,14 @@ package authentication
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/redis/go-redis/v9"
 )
 
 var (
@@ -22,40 +24,34 @@ type AuthMiddleware interface {
 
 type authMiddleware struct {
 	config *jwt.Config
+	cache  *redis.Client
 }
 
-func NewAuthMiddleware(config *jwt.Config) AuthMiddleware {
+func NewAuthMiddleware(config *jwt.Config, cache *redis.Client) AuthMiddleware {
 	return &authMiddleware{
 		config: config,
+		cache: cache,
 	}
 }
 
 func (r *authMiddleware) Auth(ctx *fiber.Ctx) error {
 	tokenByte := ctx.GetReqHeaders()["Authorization"]
 	if len(tokenByte) == 0 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
 	}
 
 	if len(tokenByte[0]) < 7 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
 	}
 
 	bearerToken := tokenByte[0][7:]
 	if len(bearerToken) == 0 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
 	}
 
 	claims, err := r.validateToken(ctx.UserContext(), bearerToken)
 	if err != nil {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
 	}
 
 	userContext := r.withUserID(ctx.UserContext(), claims.ID)
@@ -67,38 +63,28 @@ func (r *authMiddleware) Auth(ctx *fiber.Ctx) error {
 func (r *authMiddleware) AuthAdmin(ctx *fiber.Ctx) error {
 	tokenByte := ctx.GetReqHeaders()["Authorization"]
 	if len(tokenByte) == 0 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
 	}
 
 	if len(tokenByte[0]) < 7 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
 	}
 
 	bearerToken := tokenByte[0][7:]
 	if len(bearerToken) == 0 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
 	}
 
 	claims, err := r.validateToken(ctx.UserContext(), bearerToken)
 	if err != nil {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
 	}
 
 	userContext := r.withUserID(ctx.UserContext(), claims.ID)
 	ctx.SetUserContext(userContext)
 
 	if claims.Role != model.UserRoleAdmin {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.HttpResponse{
-			Result: "UNAUTHORIZED",
-		})
+		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not admin"))
 	}
 
 	return ctx.Next()
@@ -107,20 +93,17 @@ func (r *authMiddleware) AuthAdmin(ctx *fiber.Ctx) error {
 func (r *authMiddleware) validateToken(ctx context.Context, bearerToken string) (jwt.JWTentity, error) {
 	parsedToken, err := jwt.ParseToken(bearerToken, r.config.AccessTokenSecret)
 	if err != nil {
-		return jwt.JWTentity{}, errors.Wrap(err, "failed to parse refresh token")
+		return jwt.JWTentity{}, errors.Wrap(err, "failed to parse  token")
 	}
 
-	// TODO: Implement Get Token from Cache
-	// cachedToken, err := r.authRepo.GetUserAuthToken(ctx, parsedToken.ID)
-	// if err != nil {
-	// 	return jwt.JWTentity{}, errors.Wrap(err, "failed to get cached token")
-	// }
-	_ = ctx
-	cachedToken := model.CachedTokens{}
-
-	err = jwt.ValidateToken(cachedToken, parsedToken, false)
+	cachedToken, err := jwt.GetCachedTokens(ctx, r.cache, parsedToken.ID)
 	if err != nil {
-		return jwt.JWTentity{}, errors.Wrap(err, "failed to validate refresh token")
+		return jwt.JWTentity{}, errors.Wrap(err, "failed to get cached token")
+	}
+
+	err = jwt.ValidateToken(*cachedToken, parsedToken, false)
+	if err != nil {
+		return jwt.JWTentity{}, errors.Wrap(err, "failed to validate token")
 	}
 
 	return parsedToken, nil

@@ -127,17 +127,17 @@ func StoreCacheTokens(ctx context.Context, cache *redis.Client, tokens *model.Ca
 }
 
 func GetCachedTokens(ctx context.Context, cache *redis.Client, userID uint) (*model.CachedTokens, error) {
-	var cachedToken *model.CachedTokens
+	var cachedToken model.CachedTokens
 	val, err := cache.Get(ctx, NewTokenKey(userID)).Result()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get cached token")
 	}
 
-	if err := json.Unmarshal([]byte(val), cachedToken); err != nil {
+	if err := json.Unmarshal([]byte(val), &cachedToken); err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal cached token")
 	}
 
-	return cachedToken, nil
+	return &cachedToken, nil
 }
 
 func GenerateAndStoreTokenPair(
