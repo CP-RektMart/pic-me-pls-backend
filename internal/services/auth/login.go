@@ -49,12 +49,12 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		user, err = h.getOrCreateUser(tx, OAuthUser)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to get or create user")
 		}
 
 		token, err = h.jwtService.GenerateTokenPair(ctx, user)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to generate token pair")
 		}
 
 		return nil
