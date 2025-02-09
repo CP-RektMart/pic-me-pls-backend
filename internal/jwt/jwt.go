@@ -113,22 +113,22 @@ func ParseToken(tokenString string, secret string) (JWTentity, error) {
 	return *claims, nil
 }
 
-func NewTokenKey(userID uint) string {
+func newTokenKey(userID uint) string {
 	return fmt.Sprintf("auth:token:%d", userID)
 }
 
-func StoreCacheTokens(ctx context.Context, cache *redis.Client, tokens *model.CachedTokens, userID uint, ttl int) error {
+func storeCacheTokens(ctx context.Context, cache *redis.Client, tokens *model.CachedTokens, userID uint, ttl int) error {
 	tokensJSON, err := json.Marshal(tokens)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal tokens")
 	}
 
-	return cache.Set(ctx, NewTokenKey(userID), tokensJSON, time.Second*time.Duration(ttl)).Err()
+	return cache.Set(ctx, newTokenKey(userID), tokensJSON, time.Second*time.Duration(ttl)).Err()
 }
 
 func GetCachedTokens(ctx context.Context, cache *redis.Client, userID uint) (*model.CachedTokens, error) {
 	var cachedToken model.CachedTokens
-	val, err := cache.Get(ctx, NewTokenKey(userID)).Result()
+	val, err := cache.Get(ctx, newTokenKey(userID)).Result()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get cached token")
 	}
@@ -160,7 +160,7 @@ func GenerateAndStoreTokenPair(
 		return nil, errors.Wrap(err, "failed to generate token pair")
 	}
 
-	if err := StoreCacheTokens(
+	if err := storeCacheTokens(
 		ctx,
 		cache,
 		cachedToken,
@@ -178,5 +178,5 @@ func GenerateAndStoreTokenPair(
 }
 
 func RemoveToken(ctx context.Context, cache *redis.Client, userID uint) error {
-	return cache.Del(ctx, NewTokenKey(userID)).Err()
+	return cache.Del(ctx, newTokenKey(userID)).Err()
 }
