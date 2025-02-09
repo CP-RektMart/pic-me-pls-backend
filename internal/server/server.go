@@ -8,6 +8,7 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
+	custom_validator "github.com/CP-RektMart/pic-me-pls-backend/internal/validator"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
 	"github.com/go-playground/validator/v10"
@@ -17,14 +18,18 @@ import (
 )
 
 type Config struct {
-	Name               string `env:"NAME"`
-	Port               int    `env:"PORT"`
-	MaxBodyLimit       int    `env:"MAX_BODY_LIMIT"`
-	GoogleClientID     string `env:"GOOGLE_CLIENT_ID"`
-	JwtAccessSecret    string `env:"JWT_ACCESS_SECRET"`
-	JWTRefreshSecret   string `env:"JWT_REFRESH_SECRET"`
-	JwtAccessDuration  int    `env:"JWT_ACCESS_DURATION"`
-	JwtRefreshDuration int    `env:"JWT_REFRESH_DURATION"`
+	Name           string `env:"NAME"`
+	Port           int    `env:"PORT"`
+	MaxBodyLimit   int    `env:"MAX_BODY_LIMIT"`
+	GoogleClientID string `env:"GOOGLE_CLIENT_ID"`
+	JWT            JWTConfig
+}
+
+type JWTConfig struct {
+	AccessSecret    string `env:"ACCESS_SECRET"`
+	RefreshSecret   string `env:"REFRESH_SECRET"`
+	AccessDuration  int    `env:"ACCESS_DURATION"`
+	RefreshDuration int    `env:"REFRESH_DURATION"`
 }
 
 type CorsConfig struct {
@@ -41,7 +46,7 @@ type Server struct {
 	validate *validator.Validate
 }
 
-func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
+func New(config Config, corsConfig CorsConfig, jwtConfig JWTConfig, db *database.Store) *Server {
 	app := fiber.New(fiber.Config{
 		AppName:       config.Name,
 		BodyLimit:     config.MaxBodyLimit * 1024 * 1024,
@@ -63,11 +68,13 @@ func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 		Use(requestid.New()).
 		Use(requestlogger.New())
 
+	config.JWT = jwtConfig
+
 	return &Server{
 		config:   config,
 		app:      app,
 		db:       db,
-		validate: validator.New(),
+		validate: custom_validator.New(),
 	}
 }
 

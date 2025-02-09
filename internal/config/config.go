@@ -17,6 +17,7 @@ type AppConfig struct {
 	Postgres postgres.Config   `envPrefix:"POSTGRES_"`
 	Redis    redis.Config      `envPrefix:"REDIS_"`
 	Cors     server.CorsConfig `envPrefix:"CORS_"`
+	JWT      server.JWTConfig  `envPrefix:"JWT_"`
 }
 
 func Load() *AppConfig {

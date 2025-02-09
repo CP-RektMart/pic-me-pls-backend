@@ -25,7 +25,7 @@ func main() {
 	}
 
 	store := database.New(ctx, config.Postgres, config.Redis)
-	server := server.New(config.Server, config.Cors, store)
+	server := server.New(config.Server, config.Cors, config.JWT, store)
 
 	server.Start(ctx, stop)
 }

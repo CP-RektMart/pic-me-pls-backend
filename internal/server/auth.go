@@ -31,13 +31,21 @@ func (s *Server) handleLogin(c *fiber.Ctx) error {
 	}
 	OAuthUser.Role = req.Role
 
-	user, err := s.getOrCreateUser(OAuthUser)
-	if err != nil {
-		return err
-	}
+	var user *model.User
+	var token *dto.TokenResponse
 
-	token, err := s.generateJWTToken(c.UserContext(), user.ID, user.Role)
-	if err != nil {
+	if err := s.db.DB.Transaction(func(tx *gorm.DB) error {
+		user, err = s.getOrCreateUser(tx, OAuthUser)
+		if err != nil {
+			return err
+		}
+
+		token, err = s.generateJWTToken(c.UserContext(), user.ID, user.Role)
+		if err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
 		return err
 	}
 
@@ -85,9 +93,9 @@ func (s *Server) validateIDToken(c context.Context, idToken string) (*model.User
 	}, nil
 }
 
-func (s *Server) getOrCreateUser(user *model.User) (*model.User, error) {
+func (s *Server) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, error) {
 	var existingUser model.User
-	err := s.db.DB.Where("email = ?", user.Email).First(&existingUser).Error
+	err := tx.Where("email = ?", user.Email).First(&existingUser).Error
 	if err == nil {
 		return &existingUser, nil
 	}
@@ -102,7 +110,7 @@ func (s *Server) getOrCreateUser(user *model.User) (*model.User, error) {
 		ProfilePictureURL: user.ProfilePictureURL,
 		Role:              user.Role,
 	}
-	if err := s.db.DB.Create(&newUser).Error; err != nil {
+	if err := tx.Create(&newUser).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to create user")
 	}
 
@@ -116,8 +124,8 @@ func (s *Server) generateJWTToken(c context.Context, ID uint, role string) (*dto
 	}
 
 	tokens := []token{
-		{secret: s.config.JwtAccessSecret, duration: s.config.JwtAccessDuration},
-		{secret: s.config.JWTRefreshSecret, duration: s.config.JwtRefreshDuration},
+		{secret: s.config.JWT.AccessSecret, duration: s.config.JWT.AccessDuration},
+		{secret: s.config.JWT.RefreshSecret, duration: s.config.JWT.RefreshDuration},
 	}
 
 	for i, token := range tokens {
@@ -134,7 +142,7 @@ func (s *Server) generateJWTToken(c context.Context, ID uint, role string) (*dto
 	return &dto.TokenResponse{
 		AcessToken:   tokens[0].token,
 		RefreshToken: tokens[1].token,
-		Exp:          s.config.JwtAccessDuration,
+		Exp:          s.config.JWT.AccessDuration,
 	}, nil
 }
 
