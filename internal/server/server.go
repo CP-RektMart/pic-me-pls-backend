@@ -8,8 +8,10 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
+	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -42,8 +44,7 @@ func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 		JSONEncoder:   json.Marshal,
 		JSONDecoder:   json.Unmarshal,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			logger.ErrorContext(c.UserContext(), "unhandled error", slog.Any("error", err))
-			return c.SendStatus(fiber.StatusInternalServerError)
+			return apperror.Internal("internal server error", err)
 		},
 	})
 
@@ -93,6 +94,32 @@ func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 func (s *Server) registerRoute() {
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
+
+	// Example upload
+	v1.Post("/upload", func(c *fiber.Ctx) error {
+		ctx := c.UserContext()
+
+		file, err := c.FormFile("file")
+		if err != nil {
+			apperror.BadRequest("failed to get file", err)
+		}
+
+		contentType := file.Header.Get("Content-Type")
+
+		src, err := file.Open()
+		if err != nil {
+			return errors.Wrap(err, "failed to open file")
+		}
+		defer src.Close()
+
+		if err := s.db.Storage.UploadFile(ctx, file.Filename, contentType, src, true); err != nil {
+			return errors.Wrap(err, "failed to upload file")
+		}
+
+		return c.JSON(dto.HttpResponse{
+			Result: "ok",
+		})
+	})
 
 	v1.Get("/me", s.handleGetMe)
 }
