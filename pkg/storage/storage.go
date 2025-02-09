@@ -4,7 +4,6 @@ import (
 	"context"
 	"io"
 
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/cockroachdb/errors"
 	storage_go "github.com/supabase-community/storage-go"
 	"github.com/supabase-community/supabase-go"
@@ -34,18 +33,35 @@ func New(ctx context.Context, config Config) (*Client, error) {
 }
 
 func (c *Client) UploadFile(ctx context.Context, path string, contentType string, data io.Reader, overwrite bool) error {
-	response, err := c.Client.UploadFile(c.Bucket, path, data, storage_go.FileOptions{
+	if _, err := c.Client.UploadFile(c.Bucket, path, data, storage_go.FileOptions{
 		ContentType: &contentType,
 		Upsert:      &overwrite,
-	})
-	if err != nil {
-		logger.ErrorContext(ctx, "failed to upload file", err)
+	}); err != nil {
 		return errors.Wrap(err, "failed to upload file")
 	}
 
-	if response.Error != "" {
-		logger.ErrorContext(ctx, "failed to upload file", response.Error)
-		return errors.New(response.Error)
+	return nil
+}
+
+func (c *Client) MoveFile(ctx context.Context, source string, destination string) error {
+	if _, err := c.Client.MoveFile(c.Bucket, source, destination); err != nil {
+		return errors.Wrap(err, "failed to move file")
+	}
+
+	return nil
+}
+
+func (c *Client) DeleteFile(ctx context.Context, path string) error {
+	if err := c.DeleteFiles(ctx, []string{path}); err != nil {
+		return errors.Wrap(err, "failed to delete file")
+	}
+
+	return nil
+}
+
+func (c *Client) DeleteFiles(ctx context.Context, path []string) error {
+	if _, err := c.Client.RemoveFile(c.Bucket, path); err != nil {
+		return errors.Wrap(err, "failed to delete file")
 	}
 
 	return nil

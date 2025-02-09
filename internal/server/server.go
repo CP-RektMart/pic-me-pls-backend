@@ -66,12 +66,14 @@ func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 }
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
+	// Health check
 	s.app.Get("/v1/", func(c *fiber.Ctx) error {
 		return c.JSON(dto.HttpResponse{
 			Result: "ok",
 		})
 	})
 
+	// Example upload file
 	s.app.Post("/v1/upload", func(c *fiber.Ctx) error {
 		file, err := c.FormFile("file")
 		if err != nil {
