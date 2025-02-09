@@ -8,8 +8,10 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
+	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -65,6 +67,31 @@ func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 	s.app.Get("/v1/", func(c *fiber.Ctx) error {
+		return c.JSON(dto.HttpResponse{
+			Result: "ok",
+		})
+	})
+
+	s.app.Post("/v1/upload", func(c *fiber.Ctx) error {
+		file, err := c.FormFile("file")
+		if err != nil {
+			apperror.BadRequest("failed to get file", err)
+		}
+
+		contentType := file.Header.Get("Content-Type")
+
+		src, err := file.Open()
+		if err != nil {
+			return errors.Wrap(err, "failed to open file")
+		}
+		defer src.Close()
+
+		if err := s.db.Storage.UploadFile(ctx, file.Filename, contentType, src, true); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.HttpResponse{
+				Error: err.Error(),
+			})
+		}
+
 		return c.JSON(dto.HttpResponse{
 			Result: "ok",
 		})
