@@ -37,7 +37,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	OAuthUser, err := h.validateIDToken(c.Context(), req.IDToken)
+	OAuthUser, err := h.validateIDToken(ctx, req.IDToken)
 	if err != nil {
 		return errors.Wrap(err, "failed to validate id token")
 	}
