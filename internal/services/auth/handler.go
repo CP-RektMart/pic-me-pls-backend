@@ -6,22 +6,18 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type Config struct {
-	GoogleClientID string
-}
-
 type Handler struct {
-	config     Config
-	store      *database.Store
-	validate   *validator.Validate
-	jwtService *jwt.Service
+	store          *database.Store
+	validate       *validator.Validate
+	jwtService     *jwt.Service
+	googleClientID string
 }
 
-func NewHandler(config Config, store *database.Store, validate *validator.Validate, jwtService *jwt.Service) *Handler {
+func NewHandler(store *database.Store, validate *validator.Validate, jwtService *jwt.Service, googleClientID string) *Handler {
 	return &Handler{
-		config:     config,
-		store:      store,
-		validate:   validate,
-		jwtService: jwtService,
+		store:          store,
+		validate:       validate,
+		jwtService:     jwtService,
+		googleClientID: googleClientID,
 	}
 }

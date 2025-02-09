@@ -20,10 +20,9 @@ import (
 )
 
 type Config struct {
-	Name           string `env:"NAME"`
-	Port           int    `env:"PORT"`
-	MaxBodyLimit   int    `env:"MAX_BODY_LIMIT"`
-	GoogleClientID string `env:"GOOGLE_CLIENT_ID"`
+	Name         string `env:"NAME"`
+	Port         int    `env:"PORT"`
+	MaxBodyLimit int    `env:"MAX_BODY_LIMIT"`
 }
 
 type CorsConfig struct {
