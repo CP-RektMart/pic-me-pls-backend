@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	GoogleClientID string `env:"GOOGLE_CLIENT_ID"`
+	GoogleClientID string
 }
 
 type Handler struct {
