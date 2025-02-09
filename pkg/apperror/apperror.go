@@ -3,6 +3,8 @@ package apperror
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 )
 
 type AppError struct {
@@ -16,6 +18,7 @@ func (e *AppError) Error() string {
 }
 
 func New(code int, msg string, err error) *AppError {
+	logger.Error(msg, err)
 	return &AppError{
 		Code:    code,
 		Message: msg,
