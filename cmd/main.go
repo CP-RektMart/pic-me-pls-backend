@@ -9,6 +9,7 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/config"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 )
@@ -25,7 +26,8 @@ func main() {
 	}
 
 	store := database.New(ctx, config.Postgres, config.Redis, config.Storage)
-	server := server.New(config.Server, config.Cors, store)
+	authMiddleware := authentication.NewAuthMiddleware(&config.JWT)
+	server := server.New(config.Server, config.Cors, store, authMiddleware)
 
 	server.Start(ctx, stop)
 }
