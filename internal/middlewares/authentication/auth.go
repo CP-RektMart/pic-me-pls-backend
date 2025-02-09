@@ -9,7 +9,8 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/redis/go-redis/v9"
+
+	jwt_service "github.com/CP-RektMart/pic-me-pls-backend/internal/services/jwt"
 )
 
 var (
@@ -23,14 +24,14 @@ type AuthMiddleware interface {
 }
 
 type authMiddleware struct {
-	config *jwt.Config
-	cache  *redis.Client
+	config     jwt.Config
+	jwtService *jwt_service.Service
 }
 
-func NewAuthMiddleware(config *jwt.Config, cache *redis.Client) AuthMiddleware {
+func NewAuthMiddleware(config jwt.Config, jwtService *jwt_service.Service) AuthMiddleware {
 	return &authMiddleware{
-		config: config,
-		cache:  cache,
+		config:     config,
+		jwtService: jwtService,
 	}
 }
 
@@ -96,7 +97,7 @@ func (r *authMiddleware) validateToken(ctx context.Context, bearerToken string) 
 		return jwt.JWTentity{}, errors.Wrap(err, "failed to parse  token")
 	}
 
-	cachedToken, err := jwt.GetCachedTokens(ctx, r.cache, parsedToken.ID)
+	cachedToken, err := r.jwtService.GetCachedTokens(ctx, parsedToken.ID)
 	if err != nil {
 		return jwt.JWTentity{}, errors.Wrap(err, "failed to get cached token")
 	}

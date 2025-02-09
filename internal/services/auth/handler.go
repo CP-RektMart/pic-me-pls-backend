@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/jwt"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -11,17 +11,17 @@ type Config struct {
 }
 
 type Handler struct {
-	store        *database.Store
-	validate  *validator.Validate
-	JWTConfig jwt.Config
-	config    Config
+	config     Config
+	store      *database.Store
+	validate   *validator.Validate
+	jwtService *jwt.Service
 }
 
-func NewHandler(store *database.Store, validate *validator.Validate, jwtConfig jwt.Config, config Config) *Handler {
+func NewHandler(config Config, store *database.Store, validate *validator.Validate, jwtService *jwt.Service) *Handler {
 	return &Handler{
-		store:        store,
-		validate:  validate,
-		JWTConfig: jwtConfig,
-		config:    config,
+		config:     config,
+		store:      store,
+		validate:   validate,
+		jwtService: jwtService,
 	}
 }

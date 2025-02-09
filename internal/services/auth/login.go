@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
@@ -27,6 +26,8 @@ import (
 // @response 500 {object} dto.HttpResponse "Internal Server Error"
 // @Router /api/v1/auth/login [POST]
 func (h *Handler) HandleLogin(c *fiber.Ctx) error {
+	ctx := c.UserContext()
+
 	req := new(dto.LoginRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
@@ -51,15 +52,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 			return err
 		}
 
-		token, err = jwt.GenerateAndStoreTokenPair(
-			c.UserContext(),
-			h.store.Cache,
-			*user,
-			h.JWTConfig.AccessTokenSecret,
-			h.JWTConfig.RefreshTokenSecret,
-			h.JWTConfig.AccessTokenExpire,
-			h.JWTConfig.RefreshTokenExpire,
-		)
+		token, err = h.jwtService.GenerateTokenPair(ctx, user)
 		if err != nil {
 			return err
 		}
