@@ -11,10 +11,10 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
-	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/pkg/errors"
 )
 
 type Config struct {
@@ -93,6 +93,34 @@ func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 }
 
 func (s *Server) registerRoute() {
-	// api := s.app.Group("/api")
-	// v1 := api.Group("/v1")
+	api := s.app.Group("/api")
+	v1 := api.Group("/v1")
+
+	// Example upload
+	v1.Post("/upload", func(c *fiber.Ctx) error {
+		ctx := c.UserContext()
+
+		file, err := c.FormFile("file")
+		if err != nil {
+			apperror.BadRequest("failed to get file", err)
+		}
+
+		contentType := file.Header.Get("Content-Type")
+
+		src, err := file.Open()
+		if err != nil {
+			return errors.Wrap(err, "failed to open file")
+		}
+		defer src.Close()
+
+		if err := s.db.Storage.UploadFile(ctx, file.Filename, contentType, src, true); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.HttpResponse{
+				Error: err.Error(),
+			})
+		}
+
+		return c.JSON(dto.HttpResponse{
+			Result: "ok",
+		})
+	})
 }
