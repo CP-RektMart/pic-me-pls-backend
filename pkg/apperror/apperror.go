@@ -38,3 +38,7 @@ func NotFound(msg string, err error) *AppError {
 func UnAuthorized(msg string, err error) *AppError {
 	return New(http.StatusUnauthorized, msg, err)
 }
+
+func Forbidden(msg string, err error) *AppError {
+	return New(http.StatusForbidden, msg, err)
+}

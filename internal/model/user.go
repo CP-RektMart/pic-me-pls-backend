@@ -18,6 +18,13 @@ func (r UserRole) String() string {
 	return string(r)
 }
 
+func ValidateRole(role string) bool {
+	switch UserRole(role) {
+	case UserRoleAdmin, UserRolePhotographer, UserRoleCustomer:
+		return true
+	}
+	return false
+}
 type Provider string
 
 const (
@@ -27,6 +34,14 @@ const (
 
 func (p Provider) String() string {
 	return string(p)
+}
+
+func ValidateProvider(provider string) bool {
+	switch Provider(provider) {
+	case ProviderGoogle:
+		return true
+	}
+	return false
 }
 
 type Token struct {
@@ -43,6 +58,7 @@ type CachedTokens struct {
 type User struct {
 	gorm.Model
 	Name              string `gorm:"not null"`
+	Email             string `gorm:"not null;unique"`
 	PhoneNumber       string `gorm:"size:10"`
 	ProfilePictureURL string
 	Role              UserRole    `gorm:"not null"`
