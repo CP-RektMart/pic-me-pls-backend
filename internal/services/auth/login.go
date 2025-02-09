@@ -136,7 +136,3 @@ func (h *Handler) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, e
 
 	return &newUser, nil
 }
-
-func (h *Handler) Test(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{Result: "test"})
-}
