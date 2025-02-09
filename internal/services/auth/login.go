@@ -45,7 +45,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	var user *model.User
 	var token *dto.TokenResponse
 
-	if err := h.db.DB.Transaction(func(tx *gorm.DB) error {
+	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		user, err = h.getOrCreateUser(tx, OAuthUser)
 		if err != nil {
 			return err
@@ -53,7 +53,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 
 		token, err = jwt.GenerateAndStoreTokenPair(
 			c.UserContext(),
-			h.db.Cache,
+			h.store.Cache,
 			*user,
 			h.JWTConfig.AccessTokenSecret,
 			h.JWTConfig.RefreshTokenSecret,

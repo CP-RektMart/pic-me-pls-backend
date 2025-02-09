@@ -23,7 +23,7 @@ func (h *Handler) HandlerUploadExample(c *fiber.Ctx) error {
 	}
 	defer src.Close()
 
-	if err := h.db.Storage.UploadFile(ctx, file.Filename, contentType, src, true); err != nil {
+	if err := h.store.Storage.UploadFile(ctx, file.Filename, contentType, src, true); err != nil {
 		return errors.Wrap(err, "failed to upload file")
 	}
 

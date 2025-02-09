@@ -11,15 +11,15 @@ type Config struct {
 }
 
 type Handler struct {
-	db        *database.Store
+	store        *database.Store
 	validate  *validator.Validate
 	JWTConfig jwt.Config
 	config    Config
 }
 
-func NewHandler(db *database.Store, validate *validator.Validate, jwtConfig jwt.Config, config Config) *Handler {
+func NewHandler(store *database.Store, validate *validator.Validate, jwtConfig jwt.Config, config Config) *Handler {
 	return &Handler{
-		db:        db,
+		store:        store,
 		validate:  validate,
 		JWTConfig: jwtConfig,
 		config:    config,
