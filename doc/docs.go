@@ -22,6 +22,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
+                "description": "provider can be GOOGLE,  role can be CUSTOMER, PHOTOGRAPHER, ADMIN",
                 "consumes": [
                     "application/json"
                 ],
@@ -35,7 +36,7 @@ const docTemplate = `{
                 "operationId": "login",
                 "parameters": [
                     {
-                        "description": "Customer",
+                        "description": "login request",
                         "name": "LoginRequest",
                         "in": "body",
                         "required": true,
@@ -53,12 +54,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/dto.HttpResponse"
                         }
@@ -118,9 +113,11 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "provider": {
+                    "description": "GOOGLE",
                     "type": "string"
                 },
                 "role": {
+                    "description": "CUSTOMER, PHOTOGRAPHER, ADMIN",
                     "type": "string"
                 }
             }

@@ -25,8 +25,10 @@ definitions:
       idToken:
         type: string
       provider:
+        description: GOOGLE
         type: string
       role:
+        description: CUSTOMER, PHOTOGRAPHER, ADMIN
         type: string
     required:
     - idToken
@@ -54,9 +56,10 @@ paths:
     post:
       consumes:
       - application/json
+      description: provider can be GOOGLE,  role can be CUSTOMER, PHOTOGRAPHER, ADMIN
       operationId: login
       parameters:
-      - description: Customer
+      - description: login request
         in: body
         name: LoginRequest
         required: true
@@ -71,10 +74,6 @@ paths:
             $ref: '#/definitions/dto.LoginResponse'
         "400":
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "401":
-          description: Unauthorized
           schema:
             $ref: '#/definitions/dto.HttpResponse'
         "500":

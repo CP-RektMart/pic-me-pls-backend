@@ -1,14 +1,14 @@
 package validator
 
 import (
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/constant"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/go-playground/validator/v10"
 )
 
 func New() *validator.Validate {
 	validate := validator.New()
-	validate.RegisterValidation("role", validateString(constant.ValidateRole))
-	validate.RegisterValidation("provider", validateString(constant.ValidateAuthProvider))
+	validate.RegisterValidation("role", validateString(model.ValidateRole))
+	validate.RegisterValidation("provider", validateString(model.ValidateProvider))
 
 	return validate
 }
