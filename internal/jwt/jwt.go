@@ -176,3 +176,7 @@ func GenerateAndStoreTokenPair(
 		Exp:          exp,
 	}, nil
 }
+
+func RemoveToken(ctx context.Context, cache *redis.Client, userID uint) error {
+	return cache.Del(ctx, NewTokenKey(userID)).Err()
+}
