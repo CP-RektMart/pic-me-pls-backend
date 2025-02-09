@@ -1,12 +1,17 @@
 package jwt
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
 	"time"
 
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/cockroachdb/errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/redis/go-redis/v9"
 )
 
 type Config struct {
@@ -24,7 +29,19 @@ type JWTentity struct {
 	jwt.MapClaims
 }
 
-func CreateToken(userID uint, expire int64, secret string, role model.UserRole) (token string, uid uuid.UUID, exp int64, err error) {
+type JWT struct {
+	config Config
+	cache  *redis.Client
+}
+
+func New(config Config, cache *redis.Client) *JWT {
+	return &JWT{
+		config: config,
+		cache:  cache,
+	}
+}
+
+func (j *JWT) CreateToken(userID uint, expire int64, secret string, role model.UserRole) (token string, uid uuid.UUID, exp int64, err error) {
 	exp = time.Now().Add(time.Second * time.Duration(expire)).Unix()
 	uid = uuid.New()
 	claims := &JWTentity{
@@ -45,7 +62,7 @@ func CreateToken(userID uint, expire int64, secret string, role model.UserRole) 
 	return token, uid, exp, nil
 }
 
-func GenerateTokenPair(user model.User, accessTokenSecret, refreshTokenSecret string, accessTokenExpire, refreshTokenExpire int64) (
+func (j *JWT) GenerateTokenPair(user model.User) (
 	cahcedToken *model.CachedTokens,
 	accessToken string,
 	refreshToken string,
@@ -53,12 +70,22 @@ func GenerateTokenPair(user model.User, accessTokenSecret, refreshTokenSecret st
 	err error,
 ) {
 	var accessUID, refreshUID uuid.UUID
-	accessToken, accessUID, exp, err = CreateToken(user.ID, accessTokenExpire, accessTokenSecret, user.Role)
+	accessToken, accessUID, exp, err = j.CreateToken(
+		user.ID,
+		j.config.AccessTokenExpire,
+		j.config.AccessTokenSecret,
+		user.Role,
+	)
 	if err != nil {
 		return nil, "", "", 0, errors.Wrap(err, "can't create access token")
 	}
 
-	refreshToken, refreshUID, _, err = CreateToken(user.ID, refreshTokenExpire, refreshTokenSecret, user.Role)
+	refreshToken, refreshUID, _, err = j.CreateToken(
+		user.ID,
+		j.config.RefreshTokenExpire,
+		j.config.RefreshTokenSecret,
+		user.Role,
+	)
 	if err != nil {
 		return nil, "", "", 0, errors.Wrap(err, "can't create refresh token")
 	}
@@ -71,7 +98,7 @@ func GenerateTokenPair(user model.User, accessTokenSecret, refreshTokenSecret st
 	return cachedToken, accessToken, refreshToken, exp, nil
 }
 
-func ValidateToken(cachedToken model.CachedTokens, token JWTentity, isRefreshToken bool) error {
+func (j *JWT) ValidateToken(cachedToken model.CachedTokens, token JWTentity, isRefreshToken bool) error {
 	var tokenUID uuid.UUID
 	if isRefreshToken {
 		tokenUID = cachedToken.RefreshUID
@@ -86,7 +113,14 @@ func ValidateToken(cachedToken model.CachedTokens, token JWTentity, isRefreshTok
 	return nil
 }
 
-func ParseToken(tokenString string, secret string) (JWTentity, error) {
+func (j *JWT) ParseToken(tokenString string, isRefreshToken bool) (JWTentity, error) {
+	var secret string
+	if isRefreshToken {
+		secret = j.config.RefreshTokenSecret
+	} else {
+		secret = j.config.AccessTokenSecret
+	}
+
 	token, err := jwt.ParseWithClaims(tokenString, &JWTentity{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid token")
@@ -106,4 +140,67 @@ func ParseToken(tokenString string, secret string) (JWTentity, error) {
 	}
 
 	return *claims, nil
+}
+
+func (j *JWT) GenerateAndStoreTokenPair(ctx context.Context, user *model.User) (*dto.TokenResponse, error) {
+	cachedToken, accessToken, refreshToken, exp, err := j.GenerateTokenPair(*user)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to generate token pair")
+	}
+
+	if err := j.storeCacheTokens(
+		ctx,
+		cachedToken,
+		user.ID,
+		int(j.config.RefreshTokenExpire),
+	); err != nil {
+		return nil, errors.Wrap(err, "failed to store cache tokens")
+	}
+
+	return &dto.TokenResponse{
+		AcessToken:   accessToken,
+		RefreshToken: refreshToken,
+		Exp:          exp,
+	}, nil
+}
+
+func (j *JWT) GetCachedTokens(ctx context.Context, userID uint) (*model.CachedTokens, error) {
+	var cachedToken model.CachedTokens
+	val, err := j.cache.Get(ctx, j.newTokenKey(userID)).Result()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get cached token")
+	}
+
+	if err := json.Unmarshal([]byte(val), &cachedToken); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal cached token")
+	}
+
+	return &cachedToken, nil
+}
+
+func (j *JWT) RemoveToken(ctx context.Context, cache *redis.Client, userID uint) error {
+	return cache.Del(ctx, j.newTokenKey(userID)).Err()
+}
+
+func (j *JWT) newTokenKey(userID uint) string {
+	return fmt.Sprintf("auth:token:%d", userID)
+}
+
+func (j *JWT) storeCacheTokens(
+	ctx context.Context,
+	tokens *model.CachedTokens,
+	userID uint,
+	ttl int,
+) error {
+	tokensJSON, err := json.Marshal(tokens)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal tokens")
+	}
+
+	return j.cache.Set(
+		ctx,
+		j.newTokenKey(userID),
+		tokensJSON,
+		time.Second*time.Duration(ttl),
+	).Err()
 }
