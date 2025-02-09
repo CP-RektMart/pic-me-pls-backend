@@ -8,6 +8,7 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
@@ -31,12 +32,13 @@ type CorsConfig struct {
 }
 
 type Server struct {
-	config Config
-	app    *fiber.App
-	db     *database.Store
+	config         Config
+	app            *fiber.App
+	db             *database.Store
+	authMiddleware authentication.AuthMiddleware
 }
 
-func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
+func New(config Config, corsConfig CorsConfig, db *database.Store, authMiddleware authentication.AuthMiddleware) *Server {
 	app := fiber.New(fiber.Config{
 		AppName:       config.Name,
 		BodyLimit:     config.MaxBodyLimit * 1024 * 1024,
@@ -58,9 +60,10 @@ func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 		Use(requestlogger.New())
 
 	return &Server{
-		config: config,
-		app:    app,
-		db:     db,
+		config:         config,
+		app:            app,
+		db:             db,
+		authMiddleware: authMiddleware,
 	}
 }
 
