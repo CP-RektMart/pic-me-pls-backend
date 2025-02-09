@@ -91,6 +91,8 @@ func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 }
 
 func (s *Server) registerRoute() {
-	// api := s.app.Group("/api")
-	// v1 := api.Group("/v1")
+	api := s.app.Group("/api")
+	v1 := api.Group("/v1")
+
+	v1.Get("/me", s.handleGetMe)
 }
