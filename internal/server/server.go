@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	_ "github.com/CP-RektMart/pic-me-pls-backend/doc"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	custom_validator "github.com/CP-RektMart/pic-me-pls-backend/internal/validator"
@@ -15,6 +16,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/gofiber/swagger"
 )
 
 type Config struct {
@@ -67,6 +69,8 @@ func New(config Config, corsConfig CorsConfig, jwtConfig JWTConfig, db *database
 	})).
 		Use(requestid.New()).
 		Use(requestlogger.New())
+
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	config.JWT = jwtConfig
 

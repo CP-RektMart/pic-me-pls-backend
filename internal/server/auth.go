@@ -18,6 +18,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// handlerLogin godoc
+// @summary login with external service provider
+// @tags auth
+// @security Bearer
+// @id login
+// @accept json
+// @produce json
+// @param LoginRequest body dto.LoginRequest true "Customer"
+// @response 200 {object} dto.LoginResponse "OK"
+// @response 400 {object} dto.HttpResponse "Bad Request"
+// @response 500 {object} dto.HttpResponse "Internal Server Error"
+// @Router /api/v1/auth/login [POST]
 func (s *Server) handleLogin(c *fiber.Ctx) error {
 	req := new(dto.LoginRequest)
 	if err := c.BodyParser(req); err != nil {

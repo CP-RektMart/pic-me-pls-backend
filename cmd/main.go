@@ -13,6 +13,15 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 )
 
+// @title pic-me-pls API
+// @version 1.0
+// @description pic-me-pls API documentation
+
+// @schemes https http
+
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
 func main() {
 	// hello
 	config := config.Load()
