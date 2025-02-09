@@ -12,11 +12,11 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	custom_validator "github.com/CP-RektMart/pic-me-pls-backend/internal/validator"
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
-	"github.com/go-playground/validator/v10"
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -28,7 +28,6 @@ type Config struct {
 	Port           int    `env:"PORT"`
 	MaxBodyLimit   int    `env:"MAX_BODY_LIMIT"`
 	GoogleClientID string `env:"GOOGLE_CLIENT_ID"`
-	JWT            jwt.Config
 }
 
 type CorsConfig struct {
@@ -40,6 +39,7 @@ type CorsConfig struct {
 
 type Server struct {
 	config     Config
+	JWTConfig  jwt.Config
 	app        *fiber.App
 	db         *database.Store
 	validate   *validator.Validate
@@ -69,10 +69,9 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	config.JWT = jwtConfig
-
 	return &Server{
 		config:     config,
+		JWTConfig:  jwtConfig,
 		app:        app,
 		db:         db,
 		validate:   custom_validator.New(),

@@ -55,10 +55,10 @@ func (s *Server) handleLogin(c *fiber.Ctx) error {
 			c.UserContext(),
 			s.db.Cache,
 			*user,
-			s.config.JWT.AccessTokenSecret,
-			s.config.JWT.RefreshTokenSecret,
-			s.config.JWT.AccessTokenExpire,
-			s.config.JWT.RefreshTokenExpire,
+			s.JWTConfig.AccessTokenSecret,
+			s.JWTConfig.RefreshTokenSecret,
+			s.JWTConfig.AccessTokenExpire,
+			s.JWTConfig.RefreshTokenExpire,
 		)
 		if err != nil {
 			return err
