@@ -66,38 +66,13 @@ func New(config Config, corsConfig CorsConfig, db *database.Store) *Server {
 }
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
-	// Health check
-	s.app.Get("/v1/", func(c *fiber.Ctx) error {
+	s.app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(dto.HttpResponse{
 			Result: "ok",
 		})
 	})
 
-	// Example upload file
-	s.app.Post("/v1/upload", func(c *fiber.Ctx) error {
-		file, err := c.FormFile("file")
-		if err != nil {
-			apperror.BadRequest("failed to get file", err)
-		}
-
-		contentType := file.Header.Get("Content-Type")
-
-		src, err := file.Open()
-		if err != nil {
-			return errors.Wrap(err, "failed to open file")
-		}
-		defer src.Close()
-
-		if err := s.db.Storage.UploadFile(ctx, file.Filename, contentType, src, true); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(dto.HttpResponse{
-				Error: err.Error(),
-			})
-		}
-
-		return c.JSON(dto.HttpResponse{
-			Result: "ok",
-		})
-	})
+	s.registerRoute()
 
 	go func() {
 		if err := s.app.Listen(fmt.Sprintf(":%d", s.config.Port)); err != nil {
@@ -115,4 +90,9 @@ func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 
 	<-ctx.Done()
 	logger.InfoContext(ctx, "Shutting down server")
+}
+
+func (s *Server) registerRoute() {
+	// api := s.app.Group("/api")
+	// v1 := api.Group("/v1")
 }
