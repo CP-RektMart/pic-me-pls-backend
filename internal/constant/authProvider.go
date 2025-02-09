@@ -2,6 +2,18 @@ package constant
 
 type AuthProvider string
 
-const GoogleProvider AuthProvider = "GOOGLE"
-const FacebookProvider AuthProvider = "FACEBOOK"
-const AppleProvider AuthProvider = "APPLE"
+const GoogleProvider AuthProvider = "google"
+const FacebookProvider AuthProvider = "facebook"
+const AppleProvider AuthProvider = "apple"
+
+func (a AuthProvider) String() string {
+	return string(a)
+}
+
+func ValidateAuthProvider(provider string) bool {
+	switch AuthProvider(provider) {
+	case GoogleProvider, FacebookProvider, AppleProvider:
+		return true
+	}
+	return false
+}

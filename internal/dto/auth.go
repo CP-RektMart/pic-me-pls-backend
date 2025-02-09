@@ -1,8 +1,8 @@
 package dto
 
 type LoginRequest struct {
-	Provider string `json:"provider" validate:"required,oneof GOOGLE FACEBOOK APPLE"`
-	Role     string `json:"role" validate:"required,oneof CUSTOMER PHOTOGRAPHER ADMIN"`
+	Provider string `json:"provider" validate:"required,provider"`
+	Role     string `json:"role" validate:"required,role"`
 	IDToken  string `json:"idToken" validate:"required"`
 }
 
