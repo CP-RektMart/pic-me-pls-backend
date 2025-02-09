@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/postgres"
@@ -18,6 +19,7 @@ type AppConfig struct {
 	Postgres postgres.Config   `envPrefix:"POSTGRES_"`
 	Redis    redis.Config      `envPrefix:"REDIS_"`
 	Cors     server.CorsConfig `envPrefix:"CORS_"`
+	JWT      jwt.Config        `envPrefix:"JWT_"`
 	Storage  storage.Config    `envPrefix:"STORAGE_"`
 }
 
