@@ -20,6 +20,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/verifycard"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/validator"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 )
@@ -63,6 +64,7 @@ func main() {
 	reviewHandler := review.NewHandler(store, validate)
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
+	verifyCardHandler := verifycard.NewHandler(store, validate)
 
 	server.RegisterRoutes(
 		authMiddleware,
@@ -74,6 +76,7 @@ func main() {
 		reviewHandler,
 		categoryHandler,
 		messageHandler,
+		verifyCardHandler,
 	)
 
 	server.Start(ctx, stop)

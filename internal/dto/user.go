@@ -19,6 +19,5 @@ type UpdateUserRequest struct {
 }
 
 type UpdateUserResponse struct {
-	HttpResponse
 	BaseUserDTO
 }

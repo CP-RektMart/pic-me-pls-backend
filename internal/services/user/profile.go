@@ -12,7 +12,7 @@ import (
 func (h *Handler) HandlerUpdateProfile(c *fiber.Ctx) error {
 	// TODO: get payload from jwt (middleware) or something bababa -->
 	req := new(dto.UpdateUserRequest)
-	req.Email = "customer@example.com"
+	req.Email = "user1@example.com"
 	req.PhoneNumber = "0810824581"
 	req.ProfilePictureURL = "///"
 	req.Facebook = "testtest"
@@ -21,6 +21,8 @@ func (h *Handler) HandlerUpdateProfile(c *fiber.Ctx) error {
 	req.Bank = "kabnk"
 	req.AccountNo = "123123123123"
 	// -->
+
+	// TODO: Upload Image 
 
 	updatedUser, err := h.updateUserDB(h.store.DB, req)
 	if err != nil {
