@@ -85,6 +85,32 @@ paths:
       summary: login with external service provider
       tags:
       - auth
+  /api/v1/me:
+    get:
+      consumes:
+      - application/json
+      description: get user profile
+      operationId: get-me
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseUserDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      security:
+      - Bearer: []
+      summary: get user profile
+      tags:
+      - user
 schemes:
 - https
 - http
