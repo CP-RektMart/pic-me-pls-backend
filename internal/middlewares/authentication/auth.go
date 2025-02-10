@@ -19,6 +19,7 @@ type AuthMiddleware interface {
 	Auth(ctx *fiber.Ctx) error
 	AuthAdmin(ctx *fiber.Ctx) error
 	GetUserIDFromContext(ctx context.Context) (uint, error)
+	GetJWTEntityFromContext(ctx context.Context) (jwt.JWTentity, error)
 }
 
 type authMiddleware struct {
@@ -52,7 +53,7 @@ func (r *authMiddleware) Auth(ctx *fiber.Ctx) error {
 		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
 	}
 
-	userContext := r.withUserID(ctx.UserContext(), claims.ID)
+	userContext := r.withJWTEntity(ctx.UserContext(), claims)
 	ctx.SetUserContext(userContext)
 
 	return ctx.Next()
@@ -78,7 +79,7 @@ func (r *authMiddleware) AuthAdmin(ctx *fiber.Ctx) error {
 		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
 	}
 
-	userContext := r.withUserID(ctx.UserContext(), claims.ID)
+	userContext := r.withJWTEntity(ctx.UserContext(), claims)
 	ctx.SetUserContext(userContext)
 
 	if claims.Role != model.UserRoleAdmin {
@@ -108,18 +109,27 @@ func (r *authMiddleware) validateToken(ctx context.Context, bearerToken string) 
 
 }
 
-type userIDContext struct{}
+type jwtEntityContext struct{}
 
-func (r *authMiddleware) withUserID(ctx context.Context, userID uint) context.Context {
-	return context.WithValue(ctx, userIDContext{}, userID)
+func (r *authMiddleware) withJWTEntity(ctx context.Context, jwtEntity jwt.JWTentity) context.Context {
+	return context.WithValue(ctx, jwtEntityContext{}, jwtEntity)
+}
+
+func (r *authMiddleware) GetJWTEntityFromContext(ctx context.Context) (jwt.JWTentity, error) {
+	jwtEntity, ok := ctx.Value(jwtEntityContext{}).(jwt.JWTentity)
+
+	if !ok {
+		return jwt.JWTentity{}, errors.New("failed to get jwt entity from context")
+	}
+
+	return jwtEntity, nil
 }
 
 func (r *authMiddleware) GetUserIDFromContext(ctx context.Context) (uint, error) {
-	userID, ok := ctx.Value(userIDContext{}).(uint)
-
-	if !ok {
-		return 0, errors.New("failed to get user id from context")
+	jwtEntity, err := r.GetJWTEntityFromContext(ctx)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to get jwt entity from context")
 	}
 
-	return userID, nil
+	return jwtEntity.ID, nil
 }
