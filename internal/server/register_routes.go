@@ -33,4 +33,7 @@ func (s *Server) RegisterRoutes(
 	// auth
 	auth := v1.Group("/auth")
 	auth.Post("/login", authHandler.HandleLogin)
+
+	// user
+	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
 }
