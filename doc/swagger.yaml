@@ -89,26 +89,28 @@ paths:
     post:
       consumes:
       - application/json
-      description: Logs out the user by removing their token
+      description: Logs out the user by removing their authentication token.
       operationId: logout
+      tags:
+        - auth
+      security:
+        - Bearer: []
+      consumes:
+        - application/json
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
-          description: No Content
+          description: No Content - Successfully logged out.
         "401":
-          description: Unauthorized
+          description: Unauthorized - User is not authenticated.
           schema:
             $ref: '#/definitions/dto.HttpResponse'
         "500":
-          description: Internal Server Error
+          description: Internal Server Error - Token removal failed.
           schema:
             $ref: '#/definitions/dto.HttpResponse'
-      security:
-      - Bearer: []
-      summary: logout the user
-      tags:
-      - auth
+      
 schemes:
 - https
 - http

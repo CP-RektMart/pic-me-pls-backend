@@ -25,6 +25,7 @@ func ValidateRole(role string) bool {
 	}
 	return false
 }
+
 type Provider string
 
 const (
