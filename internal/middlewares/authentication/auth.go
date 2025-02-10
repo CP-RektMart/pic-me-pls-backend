@@ -34,6 +34,7 @@ func NewAuthMiddleware(jwtService *jwt.JWT) AuthMiddleware {
 
 func (r *authMiddleware) Auth(ctx *fiber.Ctx) error {
 	tokenByte := ctx.GetReqHeaders()["Authorization"]
+
 	if len(tokenByte) == 0 {
 		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
 	}
