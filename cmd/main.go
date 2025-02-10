@@ -57,14 +57,14 @@ func main() {
 
 	// handlers
 	exampleHandler := example.NewHandler(store)
-	authHandler := auth.NewHandler(store, validate, jwtService, config.GoogleClientID)
-	userHandler := user.NewHandler(store, validate)
+	authHandler := auth.NewHandler(store, validate, jwtService, authMiddleware, config.GoogleClientID)
+	userHandler := user.NewHandler(store, validate, authMiddleware)
 	photographerHandler := photographer.NewHandler(store, validate)
 	galleryHandler := gallery.NewHandler(store, validate)
 	reviewHandler := review.NewHandler(store, validate)
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
-	verifyCardHandler := verifycard.NewHandler(store, validate)
+	verifyCardHandler := verifycard.NewHandler(store, validate, authMiddleware)
 
 	server.RegisterRoutes(
 		authMiddleware,

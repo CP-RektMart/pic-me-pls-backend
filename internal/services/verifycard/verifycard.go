@@ -2,11 +2,12 @@ package verifycard
 
 import (
 	"fmt"
-	"time"
+	"strconv"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/gofiber/fiber/v2"
+	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
@@ -22,17 +23,29 @@ import (
 // @Failure 500 {object} dto.HttpResponse "Internal server error"
 // @Router /api/v1/auth/verify [post]
 func (h *Handler) HandlerVerifyCard(c *fiber.Ctx) error {
-	// TODO: get payload from jwt (middleware) or something -->
-	email := "user3@example.com"
+	if claims, _ := h.authMiddleware.GetJWTEntityFromContext(c.Context()); claims.Role != model.UserRolePhotographer {
+		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized: User should be photographer")
+	}
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.Context())
+	if err != nil {
+		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized: User ID not found")
+	}
+
 	req := new(dto.VerifyCardRequest)
-	req.Picture = "path_to_picture.jpg"
-	req.LaserID = "LASER123"
-	req.CitizenID = "1519999567819"
-	req.ExpireDate = time.Now()
 
-	// TODO: Upload Image
+	if err := c.BodyParser(req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Invalid request body: %v", err))
+	}
 
-	citizenCard, err := h.createCitizenCard(h.store.DB, req, email)
+	folder := strconv.FormatUint(uint64(userID), 10) + "/citizen_card/"
+	signedURL, err := h.UploadCardFile(folder, c)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("File upload failed: %v", err))
+	}
+
+	req.Picture = signedURL
+
+	citizenCard, err := h.createCitizenCard(h.store.DB, req, userID)
 	if err != nil {
 		return err
 	}
@@ -42,18 +55,33 @@ func (h *Handler) HandlerVerifyCard(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) createCitizenCard(db *gorm.DB, req *dto.VerifyCardRequest, email string) (*model.CitizenCard, error) {
-	var citizenCard model.CitizenCard
-
-	// Find the user by email
-	var user model.User
-	if err := db.First(&user, "email = ?", email).Error; err != nil {
-		return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error finding user by email: %v", err))
+func (h *Handler) UploadCardFile(folder string, c *fiber.Ctx) (string, error) {
+	file, err := c.FormFile("citizen_card")
+	if err != nil {
+		return "", fiber.NewError(fiber.StatusBadRequest, "failed to get file (citizen_card field is empty)")
 	}
+
+	contentType := file.Header.Get("Content-Type")
+
+	src, err := file.Open()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to open file")
+	}
+	defer src.Close()
+	var signedURL string
+	if signedURL, err = h.store.Storage.UploadFile(c.Context(), folder+file.Filename, contentType, src, true); err != nil {
+		return "", errors.Wrap(err, "failed to upload file")
+	}
+
+	return signedURL, nil
+}
+
+func (h *Handler) createCitizenCard(db *gorm.DB, req *dto.VerifyCardRequest, userID uint) (*model.CitizenCard, error) {
+	var citizenCard model.CitizenCard
 
 	// Find the photographer associated with the user
 	var photographer model.Photographer
-	if err := db.First(&photographer, "user_id = ?", user.ID).Error; err != nil {
+	if err := db.First(&photographer, "user_id = ?", userID).Error; err != nil {
 		return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Photographer not found for user: %v", err))
 	}
 

@@ -23,11 +23,12 @@ func (h *Handler) HandlerUploadExample(c *fiber.Ctx) error {
 	}
 	defer src.Close()
 
-	if err := h.store.Storage.UploadFile(ctx, file.Filename, contentType, src, true); err != nil {
+	signedURL, err := h.store.Storage.UploadFile(ctx, file.Filename, contentType, src, true)
+	if err != nil {
 		return errors.Wrap(err, "failed to upload file")
 	}
 
 	return c.JSON(dto.HttpResponse{
-		Result: "ok",
+		Result: signedURL,
 	})
 }

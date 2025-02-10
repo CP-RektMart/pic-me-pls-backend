@@ -2,7 +2,7 @@ package verifycard
 
 import (
 	"fmt"
-	"time"
+	"strconv"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -22,27 +22,49 @@ import (
 // @Failure 500 {object} dto.HttpResponse "Internal server error"
 // @Router /api/v1/auth/reverify [patch]
 func (h *Handler) HandlerReVerifyCard(c *fiber.Ctx) error {
-	// TODO: get payload from jwt (middleware) or something -->
-	email := "user3@example.com"
+	if claims, _ := h.authMiddleware.GetJWTEntityFromContext(c.Context()); claims.Role != model.UserRolePhotographer {
+		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized: User should be photographer")
+	}
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.Context())
+	if err != nil {
+		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized: User ID not found")
+	}
 	req := new(dto.VerifyCardRequest)
-	req.Picture = "path_to_picture2.jpg"
-	req.LaserID = "LASER123"
-	req.CitizenID = "2222999567819"
-	req.ExpireDate = time.Now()
 
-	// TODO: Upload Image
+	if err := c.BodyParser(req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Invalid request body: %v", err))
+	}
 
-	updatedUser, err := h.updateCitizenCard(h.store.DB, req, email)
+	folder := strconv.FormatUint(uint64(userID), 10) + "/citizen_card/"
+	signedURL, err := h.UploadCardFile(folder, c)
+	if err != nil {
+		// TODO: remove picture [Currently bug: failed to delete file: body must be object]
+		// if fileUploaded {
+		// 	h.store.Storage.DeleteFile(c.Context(), folder+signedURL)
+		// }
+		return fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("File upload failed: %v", err))
+	}
+
+	req.Picture = signedURL
+
+	updatedUser, _, err := h.updateCitizenCard(h.store.DB, req, userID)
 	if err != nil {
 		return err
 	}
 
+	// TODO: remove old picture [Currently bug: failed to delete file: body must be object]
+	// if oldPictureURL != "" && oldPictureURL != req.ProfilePictureURL {
+	// 	fileName := path.Base(oldPictureURL)
+	// 	err := h.store.Storage.DeleteFile(c.Context(), folder+fileName)
+	// 	fmt.Println(err)
+	// }
+
 	return c.JSON(dto.HttpResponse{
-		Result: updatedUser, 
+		Result: updatedUser,
 	})
 }
 
-func (h *Handler) updateCitizenCard(db *gorm.DB, req *dto.VerifyCardRequest, email string) (*model.CitizenCard, error) {
+func (h *Handler) updateCitizenCard(db *gorm.DB, req *dto.VerifyCardRequest, userID uint) (*model.CitizenCard, string, error) {
 	// Start a new transaction
 	tx := db.Begin()
 
@@ -53,32 +75,26 @@ func (h *Handler) updateCitizenCard(db *gorm.DB, req *dto.VerifyCardRequest, ema
 		}
 	}()
 
-	// Find the user by email within the transaction
-	var user model.User
-	if err := tx.First(&user, "email = ?", email).Error; err != nil {
-		tx.Rollback() // Rollback the transaction if the user is not found
-		return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error finding user by email: %v", err))
-	}
-
 	// Find the photographer associated with the user within the transaction
 	var photographer model.Photographer
-	if err := tx.First(&photographer, "user_id = ?", user.ID).Error; err != nil {
+	if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
 		tx.Rollback() // Rollback the transaction if the photographer is not found
-		return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Photographer not found for user: %v", err))
+		return nil, "", fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Photographer not found for user: %v", err))
 	}
-
+	var oldPictureURL string
 	// Find and delete the old CitizenCard within the transaction
 	if photographer.CitizenCardID != nil {
 		var oldCitizenCard model.CitizenCard
 
 		if err := tx.First(&oldCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
 			tx.Rollback() // Rollback the transaction if the old citizen card is not found
-			return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error finding old citizen card: %v", err))
+			return nil, "", fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error finding old citizen card: %v", err))
 		}
+		oldPictureURL = oldCitizenCard.Picture
 		// Delete the old CitizenCard within the transaction
 		if err := tx.Delete(&oldCitizenCard).Error; err != nil {
 			tx.Rollback() // Rollback the transaction if there's an error deleting the old citizen card
-			return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error deleting old citizen card: %v", err))
+			return nil, "", fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error deleting old citizen card: %v", err))
 		}
 	}
 
@@ -93,20 +109,20 @@ func (h *Handler) updateCitizenCard(db *gorm.DB, req *dto.VerifyCardRequest, ema
 	// Insert the new CitizenCard into the database within the transaction
 	if err := tx.Create(&newCitizenCard).Error; err != nil {
 		tx.Rollback() // Rollback the transaction if there's an error creating the new citizen card
-		return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error creating new citizen card: %v", err))
+		return nil, "", fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error creating new citizen card: %v", err))
 	}
 
 	// Update the photographer's CitizenCardID with the new CitizenCard ID within the transaction
 	photographer.CitizenCardID = &newCitizenCard.ID
 	if err := tx.Save(&photographer).Error; err != nil {
 		tx.Rollback() // Rollback the transaction if there's an error updating the photographer
-		return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error updating photographer with new citizen card: %v", err))
+		return nil, "", fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error updating photographer with new citizen card: %v", err))
 	}
 
 	// Commit the transaction after all operations succeed
 	if err := tx.Commit().Error; err != nil {
-		return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error committing transaction: %v", err))
+		return nil, "", fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error committing transaction: %v", err))
 	}
 
-	return &newCitizenCard, nil
+	return &newCitizenCard, oldPictureURL, nil
 }
