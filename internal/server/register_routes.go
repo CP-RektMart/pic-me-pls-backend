@@ -30,6 +30,10 @@ func (s *Server) RegisterRoutes(
 	example := v1.Group("/example")
 	example.Post("/upload", exampleHandler.HandlerUploadExample)
 
+	// profile
+	// TODO: v1.Post("/me", authMiddleware.Auth, userHandler.HandlerUpdateProfile) add Middleware
+	v1.Post("/me", userHandler.HandlerUpdateProfile)
+
 	// auth
 	auth := v1.Group("/auth")
 	auth.Post("/login", authHandler.HandleLogin)
