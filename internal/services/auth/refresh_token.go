@@ -55,7 +55,5 @@ func (h *Handler) HandleRefreshToken(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to generate token pair")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
-		Result: tokens,
-	})
+	return c.Status(fiber.StatusOK).JSON(tokens)
 }
