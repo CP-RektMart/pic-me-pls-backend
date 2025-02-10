@@ -68,6 +68,12 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 		Email:             user.Email,
 		ProfilePictureURL: user.ProfilePictureURL,
 		Role:              user.Role.String(),
+		PhoneNumber:       "",
+		Facebook:          "",
+		Instagram:         "",
+		AccountNo:         "",
+		Bank:              "",
+		BankBranch:        "",
 	}
 
 	result := dto.LoginResponse{

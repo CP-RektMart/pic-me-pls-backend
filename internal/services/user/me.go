@@ -1,9 +1,9 @@
 package user
 
 import (
-	"fmt"
 	"strconv"
 
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/pkg/errors"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -23,24 +23,24 @@ import (
 // @Failure 400 {object} dto.HttpResponse "Bad request, invalid input data"
 // @Failure 404 {object} dto.HttpResponse "User not found"
 // @Failure 500 {object} dto.HttpResponse "Internal server error"
-// @Router /api/v1/user/profile [post]
-func (h *Handler) HandlerUpdateProfile(c *fiber.Ctx) error {
-	userID, err := h.authMiddleware.GetUserIDFromContext(c.Context())
+// @Router /api/v1/user/profile [patch]
+func (h *Handler) HandleUpdateProfile(c *fiber.Ctx) error {
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized: User ID not found")
+		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "User ID not found"))
 	}
 
-	req := new(dto.UpdateUserRequest)
+	req := new(dto.BaseUserDTO)
 
 	if err := c.BodyParser(req); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Invalid request body: %v", err))
+		return apperror.BadRequest("invalid request body", err)
 	}
 
 	// Upload file (if present)
 	folder := strconv.FormatUint(uint64(userID), 10) + "/profile/"
-	signedURL, fileUploaded, err := h.UploadProfileFile(folder, c)
+	signedURL, fileUploaded, err := h.UploadProfileFile(c, folder)
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("File upload failed: %v", err))
+		return errors.Wrap(err, "File upload failed")
 	}
 
 	if fileUploaded {
@@ -51,18 +51,18 @@ func (h *Handler) HandlerUpdateProfile(c *fiber.Ctx) error {
 	if err != nil {
 		// TODO: remove picture [Currently bug: failed to delete file: body must be object]
 		// if fileUploaded {
-		// 	h.store.Storage.DeleteFile(c.Context(), folder+signedURL)
+		// 	h.store.Storage.DeleteFile(c.UserContext(), folder+signedURL)
 		// }
 		if err == gorm.ErrRecordNotFound {
-			return fiber.NewError(fiber.StatusNotFound, "User not found")
+			return apperror.BadRequest("User not found", err)
 		}
-		return fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error updating user profile: %v", err))
+		return errors.Wrap(err, "Error updating user profile")
 	}
 
 	// TODO: remove old picture [Currently bug: failed to delete file: body must be object]
 	// if oldPictureURL != "" && oldPictureURL != req.ProfilePictureURL {
 	// 	fileName := path.Base(oldPictureURL)
-	// 	err := h.store.Storage.DeleteFile(c.Context(), folder+fileName)
+	// 	err := h.store.Storage.DeleteFile(c.UserContext(), folder+fileName)
 	// 	fmt.Println(err)
 	// }
 
@@ -71,7 +71,7 @@ func (h *Handler) HandlerUpdateProfile(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) UploadProfileFile(folder string, c *fiber.Ctx) (string, bool, error) {
+func (h *Handler) UploadProfileFile(c *fiber.Ctx, folder string) (string, bool, error) {
 	file, err := c.FormFile("profile")
 	if err != nil {
 		return "", false, nil
@@ -85,18 +85,18 @@ func (h *Handler) UploadProfileFile(folder string, c *fiber.Ctx) (string, bool, 
 	}
 	defer src.Close()
 	var signedURL string
-	if signedURL, err = h.store.Storage.UploadFile(c.Context(), folder+file.Filename, contentType, src, true); err != nil {
+	if signedURL, err = h.store.Storage.UploadFile(c.UserContext(), folder+file.Filename, contentType, src, true); err != nil {
 		return "", false, errors.Wrap(err, "failed to upload file")
 	}
 
 	return signedURL, true, nil
 }
 
-func (h *Handler) updateUserDB(userID uint, req *dto.UpdateUserRequest) (*model.User, string, error) {
+func (h *Handler) updateUserDB(userID uint, req *dto.BaseUserDTO) (*model.User, string, error) {
 	var user model.User
 
 	if err := h.store.DB.First(&user, "id = ?", userID).Error; err != nil {
-		return nil, "", err
+		return nil, "", errors.Wrap(err, "User not found")
 	}
 
 	oldPictureURL := user.ProfilePictureURL
@@ -117,7 +117,7 @@ func (h *Handler) updateUserDB(userID uint, req *dto.UpdateUserRequest) (*model.
 	updateField(&user.BankBranch, req.BankBranch)
 
 	if err := h.store.DB.Save(&user).Error; err != nil {
-		return nil, "", err
+		return nil, "", errors.Wrap(err, "File to update user")
 	}
 
 	return &user, oldPictureURL, nil

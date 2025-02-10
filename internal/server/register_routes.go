@@ -10,7 +10,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/verifycard"
 )
 
 func (s *Server) RegisterRoutes(
@@ -23,7 +22,6 @@ func (s *Server) RegisterRoutes(
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
 	messageHandler *message.Handler,
-	verifyCardHandler *verifycard.Handler,
 ) {
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
@@ -38,10 +36,10 @@ func (s *Server) RegisterRoutes(
 	auth.Post("/refresh-token", authHandler.HandleRefreshToken)
 
 	// profile
-	v1.Post("/me", authMiddleware.Auth, userHandler.HandlerUpdateProfile)
+	v1.Patch("/me", authMiddleware.Auth, userHandler.HandleUpdateProfile)
 
 	// verify citizen card
 	photographer := v1.Group("/photographer")
-	photographer.Post("/verify", authMiddleware.Auth, verifyCardHandler.HandlerVerifyCard)
-	photographer.Patch("/reverify", authMiddleware.Auth, verifyCardHandler.HandlerReVerifyCard)
+	photographer.Post("/verify", authMiddleware.Auth, photographerHandler.HandleVerifyCard)
+	photographer.Patch("/reverify", authMiddleware.Auth, photographerHandler.HandleReVerifyCard)
 }
