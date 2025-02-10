@@ -2,7 +2,7 @@ package user
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +21,7 @@ func NewHandler(store *database.Store, validate *validator.Validate) *Handler {
 }
 
 func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
-	userDto, ok := c.Locals("user").(*model.UserDto)
+	userDto, ok := c.Locals("user").(*dto.BaseUserDTO)
 
 	if !ok {
 		return apperror.BadRequest("no user profile found in context", nil)

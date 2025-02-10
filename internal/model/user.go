@@ -25,6 +25,7 @@ func ValidateRole(role string) bool {
 	}
 	return false
 }
+
 type Provider string
 
 const (
@@ -66,12 +67,4 @@ type User struct {
 	ReceiverMessages  []Message   `gorm:"foreignKey:ReceiverID"`
 	Quotations        []Quotation `gorm:"foreignKey:CustomerID"`
 	Reviews           []Review    `gorm:"foreignKey:CustomerID"`
-}
-
-type UserDto struct {
-	ID                uint   `json:"id"`
-	Name              string `json:"name"`
-	PhoneNumber       string `json:"phone_number"`
-	ProfilePictureURL string `json:"profile_picture_url"`
-	Role              string `json:"role"`
 }
