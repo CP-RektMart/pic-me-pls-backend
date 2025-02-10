@@ -14,13 +14,14 @@ import (
 )
 
 type AppConfig struct {
-	Server   server.Config     `envPrefix:"SERVER_"`
-	Logger   logger.Config     `envPrefix:"LOGGER_"`
-	Postgres postgres.Config   `envPrefix:"POSTGRES_"`
-	Redis    redis.Config      `envPrefix:"REDIS_"`
-	Cors     server.CorsConfig `envPrefix:"CORS_"`
-	JWT      jwt.Config        `envPrefix:"JWT_"`
-	Storage  storage.Config    `envPrefix:"STORAGE_"`
+	Server         server.Config     `envPrefix:"SERVER_"`
+	Logger         logger.Config     `envPrefix:"LOGGER_"`
+	Postgres       postgres.Config   `envPrefix:"POSTGRES_"`
+	Redis          redis.Config      `envPrefix:"REDIS_"`
+	Cors           server.CorsConfig `envPrefix:"CORS_"`
+	JWT            jwt.Config        `envPrefix:"JWT_"`
+	Storage        storage.Config    `envPrefix:"STORAGE_"`
+	GoogleClientID string            `env:"GOOGLE_CLIENT_ID"`
 }
 
 func Load() *AppConfig {
