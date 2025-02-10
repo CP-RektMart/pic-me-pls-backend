@@ -1,0 +1,15 @@
+info:
+  contact: {}
+  description: pic-me-pls API documentation
+  title: pic-me-pls API
+  version: "1.0"
+paths: {}
+schemes:
+- https
+- http
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

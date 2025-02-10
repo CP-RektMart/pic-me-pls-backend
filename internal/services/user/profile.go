@@ -9,6 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// HandlerUpdateProfile updates the user's profile information
+// @Summary Update user profile
+// @Description Updates the user's profile information including email, phone number, social media links, and bank account details
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param updateUserRequest body dto.UpdateUserRequest true "User profile update data"
+// @Success 200 {object} dto.HttpResponse "Profile updated successfully"
+// @Failure 400 {object} dto.HttpResponse "Bad request, invalid input data"
+// @Failure 404 {object} dto.HttpResponse "User not found"
+// @Failure 500 {object} dto.HttpResponse "Internal server error"
+// @Router /api/v1/user/profile [post]
 func (h *Handler) HandlerUpdateProfile(c *fiber.Ctx) error {
 	// TODO: get payload from jwt (middleware) or something bababa -->
 	req := new(dto.UpdateUserRequest)
@@ -22,7 +34,7 @@ func (h *Handler) HandlerUpdateProfile(c *fiber.Ctx) error {
 	req.AccountNo = "123123123123"
 	// -->
 
-	// TODO: Upload Image 
+	// TODO: Upload Image
 
 	updatedUser, err := h.updateUserDB(h.store.DB, req)
 	if err != nil {

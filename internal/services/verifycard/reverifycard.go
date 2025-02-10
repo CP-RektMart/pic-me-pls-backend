@@ -10,6 +10,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// HandlerReVerifyCard re-verifies the user's card information
+// @Summary Re-verify user's card information
+// @Description Re-verifies and updates the card details, associating it with the user's account
+// @Tags verifycard
+// @Accept json
+// @Produce json
+// @Param verifyCardRequest body dto.VerifyCardRequest true "Card re-verification details"
+// @Success 200 {object} dto.HttpResponse "Card re-verification successful"
+// @Failure 400 {object} dto.HttpResponse "Bad request. Invalid or incomplete data"
+// @Failure 500 {object} dto.HttpResponse "Internal server error"
+// @Router /api/v1/auth/reverify [patch]
 func (h *Handler) HandlerReVerifyCard(c *fiber.Ctx) error {
 	// TODO: get payload from jwt (middleware) or something -->
 	email := "user3@example.com"
@@ -27,7 +38,7 @@ func (h *Handler) HandlerReVerifyCard(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto.HttpResponse{
-		Result: updatedUser,
+		Result: updatedUser, 
 	})
 }
 
@@ -59,7 +70,7 @@ func (h *Handler) updateCitizenCard(db *gorm.DB, req *dto.VerifyCardRequest, ema
 	// Find and delete the old CitizenCard within the transaction
 	if photographer.CitizenCardID != nil {
 		var oldCitizenCard model.CitizenCard
-	
+
 		if err := tx.First(&oldCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
 			tx.Rollback() // Rollback the transaction if the old citizen card is not found
 			return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("Error finding old citizen card: %v", err))
