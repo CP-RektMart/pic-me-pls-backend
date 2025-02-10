@@ -74,7 +74,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "get user profile",
+                "description": "Retrieves the authenticated user's profile.",
                 "consumes": [
                     "application/json"
                 ],
@@ -84,7 +84,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "get user profile",
+                "summary": "Get user profile",
                 "operationId": "get-me",
                 "responses": {
                     "200": {

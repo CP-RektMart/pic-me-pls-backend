@@ -70,7 +70,7 @@
                         "Bearer": []
                     }
                 ],
-                "description": "get user profile",
+                "description": "Retrieves the authenticated user's profile.",
                 "consumes": [
                     "application/json"
                 ],
@@ -80,7 +80,7 @@
                 "tags": [
                     "user"
                 ],
-                "summary": "get user profile",
+                "summary": "Get user profile",
                 "operationId": "get-me",
                 "responses": {
                     "200": {

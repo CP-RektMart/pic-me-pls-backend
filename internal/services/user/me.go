@@ -9,16 +9,16 @@ import (
 )
 
 // handlerGetMe godoc
-// @summary get user profile
-// @description get user profile
+// @summary Get user profile
+// @description Retrieves the authenticated user's profile.
 // @tags user
 // @security Bearer
 // @id get-me
 // @accept json
 // @produce json
-// @response 200 {object} dto.BaseUserDTO "OK"
-// @response 400 {object} dto.HttpResponse "Bad Request"
-// @response 500 {object} dto.HttpResponse "Internal Server Error"
+// @success 200 {object} dto.BaseUserDTO "OK"
+// @failure 400 {object} dto.HttpResponse "Bad Request"
+// @failure 500 {object} dto.HttpResponse "Internal Server Error"
 // @Router /api/v1/me [GET]
 func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())

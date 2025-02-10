@@ -89,7 +89,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: get user profile
+      description: Retrieves the authenticated user's profile.
       operationId: get-me
       produces:
       - application/json
@@ -108,7 +108,7 @@ paths:
             $ref: '#/definitions/dto.HttpResponse'
       security:
       - Bearer: []
-      summary: get user profile
+      summary: Get user profile
       tags:
       - user
 schemes:
