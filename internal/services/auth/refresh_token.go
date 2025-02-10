@@ -9,6 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// HandleRefreshToken godoc
+// @summary refresh token
+// @tags auth
+// @id refresh-token
+// @accept json
+// @produce json
+// @param RefreshRequest body dto.RefreshTokenRequest true "refresh token request"
+// @response 200 {object} dto.TokenResponse "OK"
+// @response 400 {object} dto.HttpResponse "Bad Request"
+// @response 401 {object} dto.HttpResponse "Unauthorized"
+// @response 500 {object} dto.HttpResponse "Internal Server Error"
+// @Router /api/v1/auth/refresh-token [POST]
 func (h *Handler) HandleRefreshToken(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 
