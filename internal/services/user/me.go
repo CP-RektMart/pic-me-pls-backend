@@ -22,14 +22,12 @@ import (
 // @Router /api/v1/me [GET]
 func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
-
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
 	var user model.User
 	result := h.store.DB.First(&user, userId)
-
 	if result.Error != nil {
 		return apperror.Internal("failed to get user", nil)
 	}
