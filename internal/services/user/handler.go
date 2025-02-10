@@ -2,32 +2,20 @@ package user
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/go-playground/validator/v10"
-	"github.com/gofiber/fiber/v2"
 )
 
 type Handler struct {
-	store    *database.Store
-	validate *validator.Validate
+	store          *database.Store
+	validate       *validator.Validate
+	authMiddleware authentication.AuthMiddleware
 }
 
-func NewHandler(store *database.Store, validate *validator.Validate) *Handler {
+func NewHandler(store *database.Store, validate *validator.Validate, authMiddle authentication.AuthMiddleware) *Handler {
 	return &Handler{
-		store:    store,
-		validate: validate,
+		store:          store,
+		validate:       validate,
+		authMiddleware: authMiddle,
 	}
-}
-
-func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
-	userDto, ok := c.Locals("user").(*dto.BaseUserDTO)
-
-	if !ok {
-		return apperror.BadRequest("no user profile found in context", nil)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"profile": userDto,
-	})
 }
