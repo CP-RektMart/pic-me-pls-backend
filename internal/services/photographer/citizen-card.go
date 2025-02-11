@@ -30,7 +30,7 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error finding citizen card")
 	}
 
-	citizenCardDTO := dto.CitizenCard{
+	citizenCardDTO := dto.CitizenCardResponse{
 		CitizenID:  citizenCard.CitizenID,
 		LaserID:    citizenCard.LaserID,
 		Picture:    citizenCard.Picture,

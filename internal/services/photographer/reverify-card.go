@@ -25,7 +25,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.CitizenCard)
+	req := new(dto.CitizenCardRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -46,7 +46,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	}
 
 	var oldPictureURL string
-	updatedUser, err := h.updateCitizenCard(req, userId, &oldPictureURL)
+	user, err := h.updateCitizenCard(req, userId, &oldPictureURL)
 	if err != nil {
 		if req.Picture != "" {
 			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(req.Picture))
@@ -64,12 +64,19 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		}
 	}
 
+	response := dto.CitizenCardResponse{
+		CitizenID:  user.CitizenID,
+		LaserID:    user.LaserID,
+		Picture:    user.Picture,
+		ExpireDate: user.ExpireDate,
+	}
+
 	return c.JSON(dto.HttpResponse{
-		Result: updatedUser,
+		Result: response,
 	})
 }
 
-func (h *Handler) updateCitizenCard(req *dto.CitizenCard, userId uint, oldPictureURL *string) (*model.CitizenCard, error) {
+func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, oldPictureURL *string) (*model.CitizenCard, error) {
 	var newCitizenCard model.CitizenCard
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
