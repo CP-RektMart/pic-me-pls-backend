@@ -15,17 +15,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// HandlerUpdateProfile updates the user's profile information
-// @Summary Update user profile
-// @Description Updates the user's profile information including email, phone number, social media links, and bank account details
-// @Tags user
-// @Accept json
-// @Produce json
-// @Param BaseUserDTO body dto.BaseUserDTO true "User profile details"// @Success 200 {object} dto.HttpResponse "Profile updated successfully"
-// @Failure 400 {object} dto.HttpResponse "Bad request, invalid input data"
-// @Failure 404 {object} dto.HttpResponse "User not found"
-// @Failure 500 {object} dto.HttpResponse "Internal server error"
-// @Router /api/v1/me [patch]
+// @Summary			Update me
+// @Description		Update user's profile
+// @Tags			user
+// @Router			/api/v1/me [PATCH]
+// @Success			200	{object}	dto.HttpResponse{result=dto.BaseUserDTO}
+// @Failure			400	{object}	dto.HttpResponse
+// @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {

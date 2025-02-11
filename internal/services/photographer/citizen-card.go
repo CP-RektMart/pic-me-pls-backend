@@ -7,18 +7,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// handlerGetMe godoc
-// @summary Get citizen card
-// @description Retrieves the authenticated phtographer's citizen card
-// @tags user
-// @security Bearer
-// @id get-citizen-card
-// @accept json
-// @produce json
-// @success 200 {object} dto.BaseUserDTO "OK"
-// @failure 400 {object} dto.HttpResponse "Bad Request"
-// @failure 500 {object} dto.HttpResponse "Internal Server Error"
-// @Router /api/v1/photographer/citizen-card [GET]
+// @Summary			Get Citizen Card
+// @Description		Get Photographer Citizen Card
+// @Tags			photographer
+// @Router			/api/v1/photographer/citizen-card [GET]
+// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCard}
+// @Failure			400	{object}	dto.HttpResponse
+// @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
@@ -42,5 +37,7 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 		ExpireDate: citizenCard.ExpireDate,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{Result: citizenCardDTO})
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+		Result: citizenCardDTO,
+	})
 }

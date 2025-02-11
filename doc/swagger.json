@@ -13,39 +13,28 @@
     "paths": {
         "/api/v1/auth/login": {
             "post": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "provider can be GOOGLE,  role can be CUSTOMER, PHOTOGRAPHER, ADMIN",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                "description": "Login",
                 "tags": [
                     "auth"
                 ],
-                "summary": "login with external service provider",
-                "operationId": "login",
-                "parameters": [
-                    {
-                        "description": "login request",
-                        "name": "LoginRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.LoginRequest"
-                        }
-                    }
-                ],
+                "summary": "Login",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.LoginResponse"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.LoginResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -65,23 +54,23 @@
         },
         "/api/v1/auth/logout": {
             "post": {
-                "security": [
+                "description": "Logout",
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update user profile",
+                "parameters": [
                     {
-                        "Bearer": []
+                        "description": "User profile details",
+                        "name": "BaseUserDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseUserDTO"
+                        }
                     }
                 ],
-                "description": "Removing their authentication token form cache",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "logout the user",
-                "operationId": "logout",
+                "summary": "Logout",
                 "responses": {
                     "204": {
                         "description": "No Content"
@@ -103,43 +92,32 @@
         },
         "/api/v1/auth/refresh-token": {
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                "description": "Refresh Token",
                 "tags": [
                     "auth"
                 ],
-                "summary": "refresh token",
-                "operationId": "refresh-token",
-                "parameters": [
-                    {
-                        "description": "refresh token request",
-                        "name": "RefreshRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.RefreshTokenRequest"
-                        }
-                    }
-                ],
+                "summary": "Refresh Token",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.TokenResponse"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.TokenResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/dto.HttpResponse"
                         }
@@ -153,122 +131,30 @@
                 }
             }
         },
-        "/api/v1/auth/reverify": {
-            "patch": {
-                "description": "Re-verifies and updates the card details, associating it with the user's account",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "photographer"
-                ],
-                "summary": "Re-verify user's card information",
-                "parameters": [
-                    {
-                        "description": "Citizen card details",
-                        "name": "CitizenCard",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CitizenCard"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Card re-verification successful",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request. Invalid or incomplete data",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/auth/verify": {
-            "post": {
-                "description": "Verifies the user's card information and associates it with their account",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "photographer"
-                ],
-                "summary": "Verify user's card details",
-                "parameters": [
-                    {
-                        "description": "Citizen card details",
-                        "name": "CitizenCard",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CitizenCard"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Verification successful",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request. Card already verified or invalid data",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/me": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Retrieves the authenticated user's profile.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                "description": "Get me",
                 "tags": [
                     "user"
                 ],
-                "summary": "Get user profile",
-                "operationId": "get-me",
+                "summary": "Get me",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.BaseUserDTO"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.BaseUserDTO"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -286,28 +172,134 @@
                 }
             },
             "patch": {
-                "description": "Updates the user's profile information including email, phone number, social media links, and bank account details",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                "description": "Update user's profile",
                 "tags": [
                     "user"
                 ],
-                "summary": "Update user profile",
-                "parameters": [
-                    {
-                        "description": "User profile details",
-                        "name": "BaseUserDTO",
-                        "in": "body",
-                        "required": true,
+                "summary": "Update me",
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.BaseUserDTO"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.BaseUserDTO"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
                         }
                     }
+                }
+            }
+        },
+        "/api/v1/photographer/citizen-card": {
+            "get": {
+                "description": "Get Photographer Citizen Card",
+                "tags": [
+                    "photographer"
                 ],
+                "summary": "Get Citizen Card",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.CitizenCard"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/photographer/reverify": {
+            "patch": {
+                "description": "Reverify Photographer Citizen Card",
+                "tags": [
+                    "photographer"
+                ],
+                "summary": "Reverify Citizen Card",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.CitizenCard"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/photographer/verify": {
+            "post": {
+                "description": "Verify Photographer Citizen Card",
+                "tags": [
+                    "photographer"
+                ],
+                "summary": "Verify Citizen Card",
                 "responses": {
                     "400": {
                         "description": "Bad request, invalid input data",
@@ -443,27 +435,6 @@
                 "result": {}
             }
         },
-        "dto.LoginRequest": {
-            "type": "object",
-            "required": [
-                "idToken",
-                "provider",
-                "role"
-            ],
-            "properties": {
-                "idToken": {
-                    "type": "string"
-                },
-                "provider": {
-                    "description": "GOOGLE",
-                    "type": "string"
-                },
-                "role": {
-                    "description": "CUSTOMER, PHOTOGRAPHER, ADMIN",
-                    "type": "string"
-                }
-            }
-        },
         "dto.LoginResponse": {
             "type": "object",
             "properties": {
@@ -478,17 +449,6 @@
                 },
                 "user": {
                     "$ref": "#/definitions/dto.BaseUserDTO"
-                }
-            }
-        },
-        "dto.RefreshTokenRequest": {
-            "type": "object",
-            "required": [
-                "refreshToken"
-            ],
-            "properties": {
-                "refreshToken": {
-                    "type": "string"
                 }
             }
         },

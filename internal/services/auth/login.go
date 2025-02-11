@@ -12,19 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// handlerLogin godoc
-// @summary login with external service provider
-// @description provider can be GOOGLE,  role can be CUSTOMER, PHOTOGRAPHER, ADMIN
-// @tags auth
-// @security Bearer
-// @id login
-// @accept json
-// @produce json
-// @param LoginRequest body dto.LoginRequest true "login request"
-// @response 200 {object} dto.LoginResponse "OK"
-// @response 400 {object} dto.HttpResponse "Bad Request"
-// @response 500 {object} dto.HttpResponse "Internal Server Error"
-// @Router /api/v1/auth/login [POST]
+// @Summary			Login
+// @Description		Login
+// @Tags			auth
+// @Router			/api/v1/auth/login [POST]
+// @Success			200	{object}	dto.HttpResponse{result=dto.LoginResponse}
+// @Failure			400	{object}	dto.HttpResponse
+// @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 
@@ -81,7 +75,9 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 		User:          userDTO,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{Result: result})
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+		Result: result,
+	})
 }
 
 func (h *Handler) validateIDToken(c context.Context, idToken string) (*model.User, error) {

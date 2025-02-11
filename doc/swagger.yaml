@@ -46,21 +46,6 @@ definitions:
         type: string
       result: {}
     type: object
-  dto.LoginRequest:
-    properties:
-      idToken:
-        type: string
-      provider:
-        description: GOOGLE
-        type: string
-      role:
-        description: CUSTOMER, PHOTOGRAPHER, ADMIN
-        type: string
-    required:
-    - idToken
-    - provider
-    - role
-    type: object
   dto.LoginResponse:
     properties:
       accessToken:
@@ -71,13 +56,6 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/dto.BaseUserDTO'
-    type: object
-  dto.RefreshTokenRequest:
-    properties:
-      refreshToken:
-        type: string
-    required:
-    - refreshToken
     type: object
   dto.TokenResponse:
     properties:
@@ -96,24 +74,17 @@ info:
 paths:
   /api/v1/auth/login:
     post:
-      consumes:
-      - application/json
-      description: provider can be GOOGLE,  role can be CUSTOMER, PHOTOGRAPHER, ADMIN
-      operationId: login
-      parameters:
-      - description: login request
-        in: body
-        name: LoginRequest
-        required: true
-        schema:
-          $ref: '#/definitions/dto.LoginRequest'
-      produces:
-      - application/json
+      description: Login
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.LoginResponse'
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.LoginResponse'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -122,171 +93,12 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.HttpResponse'
-      security:
-      - Bearer: []
-      summary: login with external service provider
+      summary: Login
       tags:
       - auth
   /api/v1/auth/logout:
     post:
-      consumes:
-      - application/json
-      description: Removing their authentication token form cache
-      operationId: logout
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-      security:
-      - Bearer: []
-      summary: logout the user
-      tags:
-      - auth
-  /api/v1/auth/refresh-token:
-    post:
-      consumes:
-      - application/json
-      operationId: refresh-token
-      parameters:
-      - description: refresh token request
-        in: body
-        name: RefreshRequest
-        required: true
-        schema:
-          $ref: '#/definitions/dto.RefreshTokenRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.TokenResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-      summary: refresh token
-      tags:
-      - auth
-  /api/v1/auth/reverify:
-    patch:
-      consumes:
-      - application/json
-      description: Re-verifies and updates the card details, associating it with the
-        user's account
-      parameters:
-      - description: Citizen card details
-        in: body
-        name: CitizenCard
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CitizenCard'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Card re-verification successful
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "400":
-          description: Bad request. Invalid or incomplete data
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-      summary: Re-verify user's card information
-      tags:
-      - photographer
-  /api/v1/auth/verify:
-    post:
-      consumes:
-      - application/json
-      description: Verifies the user's card information and associates it with their
-        account
-      parameters:
-      - description: Citizen card details
-        in: body
-        name: CitizenCard
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CitizenCard'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Verification successful
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "400":
-          description: Bad request. Card already verified or invalid data
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-      summary: Verify user's card details
-      tags:
-      - photographer
-  /api/v1/me:
-    get:
-      consumes:
-      - application/json
-      description: Retrieves the authenticated user's profile.
-      operationId: get-me
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.BaseUserDTO'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-      security:
-      - Bearer: []
-      summary: Get user profile
-      tags:
-      - user
-    patch:
-      consumes:
-      - application/json
-      description: Updates the user's profile information including email, phone number,
-        social media links, and bank account details
-      parameters:
-      - description: User profile details
-        in: body
-        name: BaseUserDTO
-        required: true
-        schema:
-          $ref: '#/definitions/dto.BaseUserDTO'
-      produces:
-      - application/json
+      description: Logout
       responses:
         "400":
           description: Bad request, invalid input data
@@ -324,11 +136,145 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.HttpResponse'
-      security:
-      - Bearer: []
-      summary: Get citizen card
+      summary: Logout
+      tags:
+      - auth
+  /api/v1/auth/refresh-token:
+    post:
+      description: Refresh Token
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.TokenResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: Refresh Token
+      tags:
+      - auth
+  /api/v1/me:
+    get:
+      description: Get me
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.BaseUserDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: Get me
       tags:
       - user
+    patch:
+      description: Update user's profile
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.BaseUserDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: Update me
+      tags:
+      - user
+  /api/v1/photographer/citizen-card:
+    get:
+      description: Get Photographer Citizen Card
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.CitizenCard'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: Get Citizen Card
+      tags:
+      - photographer
+  /api/v1/photographer/reverify:
+    patch:
+      description: Reverify Photographer Citizen Card
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.CitizenCard'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: Reverify Citizen Card
+      tags:
+      - photographer
+  /api/v1/photographer/verify:
+    post:
+      description: Verify Photographer Citizen Card
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: Verify Citizen Card
+      tags:
+      - photographer
 schemes:
 - https
 - http

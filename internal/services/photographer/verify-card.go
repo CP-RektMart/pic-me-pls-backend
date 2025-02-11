@@ -12,17 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// verifyCardHandler verifies the user's card information
-// @Summary Verify user's card details
-// @Description Verifies the user's card information and associates it with their account
-// @Tags photographer
-// @Accept json
-// @Produce json
-// @Param CitizenCard body dto.CitizenCard true "Citizen card details"
-// @Success 200 {object} dto.HttpResponse "Verification successful"
-// @Failure 400 {object} dto.HttpResponse "Bad request. Card already verified or invalid data"
-// @Failure 500 {object} dto.HttpResponse "Internal server error"
-// @Router /api/v1/auth/verify [post]
+// @Summary			Verify Citizen Card
+// @Description		Verify Photographer Citizen Card
+// @Tags			photographer
+// @Router			/api/v1/photographer/verify [POST]
+// @Success			204
+// @Failure			400	{object}	dto.HttpResponse
+// @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
