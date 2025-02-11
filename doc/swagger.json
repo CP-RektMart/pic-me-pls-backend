@@ -56,7 +56,19 @@
             "post": {
                 "description": "Logout",
                 "tags": [
-                    "auth"
+                    "user"
+                ],
+                "summary": "Update user profile",
+                "parameters": [
+                    {
+                        "description": "User profile details",
+                        "name": "BaseUserDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseUserDTO"
+                        }
+                    }
                 ],
                 "summary": "Logout",
                 "responses": {
@@ -289,8 +301,52 @@
                 ],
                 "summary": "Verify Citizen Card",
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "400": {
+                        "description": "Bad request, invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/photographer/citizen-card": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves the authenticated phtographer's citizen card",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get citizen card",
+                "operationId": "get-citizen-card",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseUserDTO"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",

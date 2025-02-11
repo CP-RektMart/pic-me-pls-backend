@@ -100,8 +100,34 @@ paths:
     post:
       description: Logout
       responses:
-        "204":
-          description: No Content
+        "400":
+          description: Bad request, invalid input data
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: Update user profile
+      tags:
+      - user
+  /api/v1/photographer/citizen-card:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the authenticated phtographer's citizen card
+      operationId: get-citizen-card
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseUserDTO'
         "400":
           description: Bad Request
           schema:
