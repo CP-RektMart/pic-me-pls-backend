@@ -34,5 +34,8 @@ func (s *Server) RegisterRoutes(
 	auth := v1.Group("/auth")
 	auth.Post("/login", authHandler.HandleLogin)
 	auth.Post("/refresh-token", authHandler.HandleRefreshToken)
+
+	// user
+	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
 	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 }
