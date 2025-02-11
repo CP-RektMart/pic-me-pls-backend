@@ -1,15 +1,14 @@
 package photographer
 
 import (
-	"fmt"
 	"path"
 	"strconv"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
+	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
@@ -25,13 +24,12 @@ import (
 // @Failure 500 {object} dto.HttpResponse "Internal server error"
 // @Router /api/v1/auth/reverify [patch]
 func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
-	claims, err := h.authMiddleware.GetJWTEntityFromContext(c.UserContext())
-	if claims.Role != model.UserRolePhotographer {
-		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not photographer"))
+	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	if err != nil {
+		return errors.Wrap(err, "failed to get user id from context")
 	}
-	userID := claims.ID
-	req := new(dto.VerifyCardRequest)
 
+	req := new(dto.VerifyCardRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -40,10 +38,11 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	var signedURL string = ""
 	file, err := c.FormFile("citizen_card")
-	if err != nil {
-		signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userID))
+	// if error mean cannot get file just ignore.
+	// because field is not provide mean not change.
+	if err == nil {
+		signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
 		if err != nil {
 			return errors.Wrap(err, "File upload failed")
 		}
@@ -51,10 +50,10 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	}
 
 	var oldPictureURL string
-	updatedUser, err := h.updateCitizenCard(req, userID, &oldPictureURL)
+	updatedUser, err := h.updateCitizenCard(req, userId, &oldPictureURL)
 	if err != nil {
-		if signedURL != "" {
-			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userID)+path.Base(signedURL))
+		if req.Picture != "" {
+			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(req.Picture))
 			if err != nil {
 				return errors.Wrap(err, "Fail to delete the picture")
 			}
@@ -63,7 +62,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	}
 
 	if oldPictureURL != "" && oldPictureURL != req.Picture {
-		err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userID)+path.Base(oldPictureURL))
+		err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(oldPictureURL))
 		if err != nil {
 			return errors.Wrap(err, "Fail to delete old picture")
 		}
@@ -74,13 +73,13 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userID uint, oldPictureURL *string) (*model.CitizenCard, error) {
+func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userId uint, oldPictureURL *string) (*model.CitizenCard, error) {
 	var newCitizenCard model.CitizenCard
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		// Find the photographer associated with the user
 		var photographer model.Photographer
-		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
+		if err := tx.First(&photographer, "user_id = ?", userId).Error; err != nil {
 			return errors.Wrap(err, "Photographer not found for user")
 		}
 
@@ -92,6 +91,7 @@ func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userID uint, old
 				if err := tx2.First(&oldCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
 					return errors.Wrap(err, "Error finding old citizen card")
 				}
+				// Assign old picture URL if needed
 				if oldPictureURL != nil {
 					*oldPictureURL = oldCitizenCard.Picture
 				}
@@ -138,6 +138,6 @@ func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userID uint, old
 	return &newCitizenCard, nil
 }
 
-func citizenCardFolder(userID uint) string {
-	return "/citizen_card/" + strconv.FormatUint(uint64(userID), 10)
+func citizenCardFolder(userId uint) string {
+	return "/citizen_card/" + strconv.FormatUint(uint64(userId), 10)
 }

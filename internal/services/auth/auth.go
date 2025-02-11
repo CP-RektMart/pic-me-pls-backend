@@ -11,16 +11,16 @@ type Handler struct {
 	store          *database.Store
 	validate       *validator.Validate
 	jwtService     *jwt.JWT
-	authMiddleware authentication.AuthMiddleware
+	authmiddleware authentication.AuthMiddleware
 	googleClientID string
 }
 
-func NewHandler(store *database.Store, validate *validator.Validate, jwtService *jwt.JWT, authMiddleware authentication.AuthMiddleware, googleClientID string) *Handler {
+func NewHandler(store *database.Store, validate *validator.Validate, jwtService *jwt.JWT, authmiddleware authentication.AuthMiddleware, googleClientID string) *Handler {
 	return &Handler{
 		store:          store,
 		validate:       validate,
 		jwtService:     jwtService,
-		authMiddleware: authMiddleware,
+		authmiddleware: authmiddleware,
 		googleClientID: googleClientID,
 	}
 }

@@ -52,9 +52,7 @@ func (c *Client) MoveFile(ctx context.Context, source string, destination string
 }
 
 func (c *Client) DeleteFile(ctx context.Context, path string) error {
-	var paths []string
-	paths = append(paths, path)
-	if _, err := c.Client.RemoveFile(c.Bucket, paths); err != nil {
+	if err := c.DeleteFiles(ctx, []string{path}); err != nil {
 		return errors.Wrap(err, "failed to delete file")
 	}
 	return nil

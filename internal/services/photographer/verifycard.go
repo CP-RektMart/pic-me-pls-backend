@@ -2,14 +2,14 @@ package photographer
 
 import (
 	"context"
-	"fmt"
 	"mime/multipart"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
+	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/pkg/errors"
+	"gorm.io/gorm"
 )
 
 // verifyCardHandler verifies the user's card information
@@ -24,13 +24,12 @@ import (
 // @Failure 500 {object} dto.HttpResponse "Internal server error"
 // @Router /api/v1/auth/verify [post]
 func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
-	claims, err := h.authMiddleware.GetJWTEntityFromContext(c.UserContext())
-	if claims.Role != model.UserRolePhotographer {
-		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not photographer"))
+	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	if err != nil {
+		return errors.Wrap(err, "failed to get user id from context")
 	}
-	userID := claims.ID
-	req := new(dto.VerifyCardRequest)
 
+	req := new(dto.VerifyCardRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -41,16 +40,16 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 
 	file, err := c.FormFile("citizen_card")
 	if err != nil {
-		signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userID))
-		if err != nil {
-			return errors.Wrap(err, "File upload failed")
-		}
-		req.Picture = signedURL
-	} else {
 		return apperror.BadRequest("citizen_card is require", errors.Errorf("Field Missing"))
 	}
 
-	err = h.createCitizenCard(req, userID)
+	signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
+	if err != nil {
+		return errors.Wrap(err, "File upload failed")
+	}
+	req.Picture = signedURL
+
+	err = h.createCitizenCard(req, userId)
 	if err != nil {
 		return errors.Wrap(err, "Fail to create citizen card")
 	}
@@ -75,37 +74,40 @@ func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, 
 	return signedURL, nil
 }
 
-func (h *Handler) createCitizenCard(req *dto.VerifyCardRequest, userID uint) error {
+func (h *Handler) createCitizenCard(req *dto.VerifyCardRequest, userId uint) error {
 	var citizenCard model.CitizenCard
 
-	// Find the photographer associated with the user
-	var photographer model.Photographer
-	if err := h.store.DB.First(&photographer, "user_id = ?", userID).Error; err != nil {
-		return errors.Wrap(err, "Photographer not found for user")
-	}
+	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
+		// Find the photographer associated with the user
+		var photographer model.Photographer
+		if err := tx.First(&photographer, "user_id = ?", userId).Error; err != nil {
+			return errors.Wrap(err, "Photographer not found for user")
+		}
 
-	// Check if the photographer already has a CitizenCard
-	if photographer.CitizenCardID != nil {
-		// Return custom error code and message if already verified
-		return apperror.BadRequest("photographer already has a citizen card", errors.Errorf("Already verified"))
-	}
+		// Check if the photographer already has a CitizenCard
+		if photographer.CitizenCardID != nil {
+			return apperror.BadRequest("photographer already has a citizen card", errors.Errorf("Already verified"))
+		}
 
-	// Create the CitizenCard using the request data
-	citizenCard.CitizenID = req.CitizenID
-	citizenCard.LaserID = req.LaserID
-	citizenCard.Picture = req.Picture
-	citizenCard.ExpireDate = req.ExpireDate
+		// Create the CitizenCard using the request data
+		citizenCard.CitizenID = req.CitizenID
+		citizenCard.LaserID = req.LaserID
+		citizenCard.Picture = req.Picture
+		citizenCard.ExpireDate = req.ExpireDate
 
-	// Insert the CitizenCard into the database
-	if err := h.store.DB.Create(&citizenCard).Error; err != nil {
-		return errors.Wrap(err, "Error creating citizen card")
-	}
+		// Insert the CitizenCard into the database
+		if err := tx.Create(&citizenCard).Error; err != nil {
+			return errors.Wrap(err, "Error creating citizen card")
+		}
 
-	// Update the photographer's CitizenCardID with the new CitizenCard ID
-	photographer.CitizenCardID = &citizenCard.ID
-	if err := h.store.DB.Save(&photographer).Error; err != nil {
-		return errors.Wrap(err, "Error updating photographer with citizen card")
-	}
+		// Update the photographer's CitizenCardID with the new CitizenCard ID
+		photographer.CitizenCardID = &citizenCard.ID
+		if err := tx.Save(&photographer).Error; err != nil {
+			return errors.Wrap(err, "Error updating photographer with citizen card")
+		}
 
-	return nil
+		return nil
+	})
+
+	return err
 }
