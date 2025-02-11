@@ -68,7 +68,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 		Email:             user.Email,
 		ProfilePictureURL: user.ProfilePictureURL,
 		Role:              user.Role.String(),
-		PhoneNumber:       "",
+		PhoneNumber:       user.PhoneNumber,
 		Facebook:          "",
 		Instagram:         "",
 		AccountNo:         "",

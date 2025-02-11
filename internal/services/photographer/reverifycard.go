@@ -1,6 +1,8 @@
 package photographer
 
 import (
+	"fmt"
+	"path"
 	"strconv"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -24,7 +26,7 @@ import (
 func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	claims, err := h.authMiddleware.GetJWTEntityFromContext(c.UserContext())
 	if claims.Role != model.UserRolePhotographer {
-		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "User should be photographer"))
+		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not photographer"))
 	}
 	userID := claims.ID
 	req := new(dto.VerifyCardRequest)
@@ -33,36 +35,32 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	folder := strconv.FormatUint(uint64(userID), 10) + "/citizen_card/"
-	signedURL, err := h.UploadCardFile(c, folder)
+	signedURL, fileUploaded, err := h.uploadCardFile(c, citizenCardFolder(userID))
 	if err != nil {
-		// TODO: remove picture [Currently bug: failed to delete file: body must be object]
-		// if fileUploaded {
-		// 	h.store.Storage.DeleteFile(c.UserContext(), folder+signedURL)
-		// }
 		return errors.Wrap(err, "File upload failed")
 	}
 
-	req.Picture = signedURL
+	if fileUploaded {
+		req.Picture = signedURL
+	}
 
-	updatedUser, _, err := h.updateCitizenCard(req, userID)
+	var oldPictureURL string
+	updatedUser, err := h.updateCitizenCard(req, userID, &oldPictureURL)
 	if err != nil {
+		h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userID)+path.Base(signedURL))
 		return err
 	}
 
-	// TODO: remove old picture [Currently bug: failed to delete file: body must be object]
-	// if oldPictureURL != "" && oldPictureURL != req.ProfilePictureURL {
-	// 	fileName := path.Base(oldPictureURL)
-	// 	err := h.store.Storage.DeleteFile(c.UserContext(), folder+fileName)
-	// 	fmt.Println(err)
-	// }
+	if oldPictureURL != "" && oldPictureURL != req.Picture {
+		h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userID)+path.Base(oldPictureURL))
+	}
 
 	return c.JSON(dto.HttpResponse{
 		Result: updatedUser,
 	})
 }
 
-func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userID uint) (*model.CitizenCard, string, error) {
+func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userID uint, oldPictureURL *string) (*model.CitizenCard, error) {
 	// Start a new transaction
 	tx := h.store.DB.Begin()
 
@@ -77,22 +75,24 @@ func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userID uint) (*m
 	var photographer model.Photographer
 	if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
 		tx.Rollback() // Rollback the transaction if the photographer is not found
-		return nil, "", errors.Wrap(err, "Photographer not found for user")
+		return nil, errors.Wrap(err, "Photographer not found for user")
 	}
-	var oldPictureURL string
+
 	// Find and delete the old CitizenCard within the transaction
 	if photographer.CitizenCardID != nil {
 		var oldCitizenCard model.CitizenCard
 
 		if err := tx.First(&oldCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
 			tx.Rollback() // Rollback the transaction if the old citizen card is not found
-			return nil, "", errors.Wrap(err, "Error finding old citizen card")
+			return nil, errors.Wrap(err, "Error finding old citizen card")
 		}
-		oldPictureURL = oldCitizenCard.Picture
+		if oldPictureURL != nil {
+			oldPictureURL = &oldCitizenCard.Picture
+		}
 		// Delete the old CitizenCard within the transaction
 		if err := tx.Delete(&oldCitizenCard).Error; err != nil {
 			tx.Rollback() // Rollback the transaction if there's an error deleting the old citizen card
-			return nil, "", errors.Wrap(err, "Error deleting old citizen card")
+			return nil, errors.Wrap(err, "Error deleting old citizen card")
 		}
 	}
 
@@ -107,20 +107,24 @@ func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userID uint) (*m
 	// Insert the new CitizenCard into the database within the transaction
 	if err := tx.Create(&newCitizenCard).Error; err != nil {
 		tx.Rollback() // Rollback the transaction if there's an error creating the new citizen card
-		return nil, "", errors.Wrap(err, "Error creating new citizen card")
+		return nil, errors.Wrap(err, "Error creating new citizen card")
 	}
 
 	// Update the photographer's CitizenCardID with the new CitizenCard ID within the transaction
 	photographer.CitizenCardID = &newCitizenCard.ID
 	if err := tx.Save(&photographer).Error; err != nil {
 		tx.Rollback() // Rollback the transaction if there's an error updating the photographer
-		return nil, "", errors.Wrap(err, "Error updating photographer with new citizen card")
+		return nil, errors.Wrap(err, "Error updating photographer with new citizen card")
 	}
 
 	// Commit the transaction after all operations succeed
 	if err := tx.Commit().Error; err != nil {
-		return nil, "", errors.Wrap(err, "Error committing transaction")
+		return nil, errors.Wrap(err, "Error committing transaction")
 	}
 
-	return &newCitizenCard, oldPictureURL, nil
+	return &newCitizenCard, nil
+}
+
+func citizenCardFolder(userID uint) string {
+	return "/citizen_card/" + strconv.FormatUint(uint64(userID), 10)
 }

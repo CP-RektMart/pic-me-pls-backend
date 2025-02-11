@@ -1,6 +1,7 @@
 package user
 
 import (
+	"path"
 	"strconv"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -25,10 +26,7 @@ import (
 // @Failure 500 {object} dto.HttpResponse "Internal server error"
 // @Router /api/v1/user/profile [patch]
 func (h *Handler) HandleUpdateProfile(c *fiber.Ctx) error {
-	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
-	if err != nil {
-		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "User ID not found"))
-	}
+	userID, _ := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 
 	req := new(dto.BaseUserDTO)
 
@@ -36,9 +34,7 @@ func (h *Handler) HandleUpdateProfile(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	// Upload file (if present)
-	folder := strconv.FormatUint(uint64(userID), 10) + "/profile/"
-	signedURL, fileUploaded, err := h.UploadProfileFile(c, folder)
+	signedURL, fileUploaded, err := h.uploadProfileFile(c, profileFolder(userID))
 	if err != nil {
 		return errors.Wrap(err, "File upload failed")
 	}
@@ -47,33 +43,31 @@ func (h *Handler) HandleUpdateProfile(c *fiber.Ctx) error {
 		req.ProfilePictureURL = signedURL
 	}
 
-	updatedUser, _, err := h.updateUserDB(userID, req)
+	var oldPictureURL string
+	updatedUser, err := h.updateUserDB(userID, req, &oldPictureURL)
 	if err != nil {
-		// TODO: remove picture [Currently bug: failed to delete file: body must be object]
-		// if fileUploaded {
-		// 	h.store.Storage.DeleteFile(c.UserContext(), folder+signedURL)
-		// }
+		if fileUploaded {
+			h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userID)+path.Base(signedURL))
+		}
 		if err == gorm.ErrRecordNotFound {
-			return apperror.BadRequest("User not found", err)
+			return errors.Wrap(err, "User not found")
 		}
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	// TODO: remove old picture [Currently bug: failed to delete file: body must be object]
-	// if oldPictureURL != "" && oldPictureURL != req.ProfilePictureURL {
-	// 	fileName := path.Base(oldPictureURL)
-	// 	err := h.store.Storage.DeleteFile(c.UserContext(), folder+fileName)
-	// 	fmt.Println(err)
-	// }
+	if oldPictureURL != "" && oldPictureURL != req.ProfilePictureURL {
+		h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userID)+path.Base(oldPictureURL))
+	}
 
 	return c.JSON(dto.HttpResponse{
 		Result: updatedUser,
 	})
 }
 
-func (h *Handler) UploadProfileFile(c *fiber.Ctx, folder string) (string, bool, error) {
+func (h *Handler) uploadProfileFile(c *fiber.Ctx, folder string) (string, bool, error) {
 	file, err := c.FormFile("profile")
 	if err != nil {
+		// This allows because if the field is not provided mean they dont change the pictrue
 		return "", false, nil
 	}
 
@@ -92,14 +86,15 @@ func (h *Handler) UploadProfileFile(c *fiber.Ctx, folder string) (string, bool, 
 	return signedURL, true, nil
 }
 
-func (h *Handler) updateUserDB(userID uint, req *dto.BaseUserDTO) (*model.User, string, error) {
+func (h *Handler) updateUserDB(userID uint, req *dto.BaseUserDTO, oldPictureURL *string) (*model.User, error) {
 	var user model.User
 
 	if err := h.store.DB.First(&user, "id = ?", userID).Error; err != nil {
-		return nil, "", errors.Wrap(err, "User not found")
+		return nil, errors.Wrap(err, "User not found")
 	}
-
-	oldPictureURL := user.ProfilePictureURL
+	if oldPictureURL != nil {
+		oldPictureURL = &user.ProfilePictureURL
+	}
 
 	updateField := func(field *string, newValue string) {
 		if newValue != "" {
@@ -117,8 +112,12 @@ func (h *Handler) updateUserDB(userID uint, req *dto.BaseUserDTO) (*model.User, 
 	updateField(&user.BankBranch, req.BankBranch)
 
 	if err := h.store.DB.Save(&user).Error; err != nil {
-		return nil, "", errors.Wrap(err, "File to update user")
+		return nil, errors.Wrap(err, "File to update user")
 	}
 
-	return &user, oldPictureURL, nil
+	return &user, nil
+}
+
+func profileFolder(userID uint) string {
+	return "/profile/" + strconv.FormatUint(uint64(userID), 10)
 }
