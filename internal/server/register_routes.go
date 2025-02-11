@@ -37,4 +37,5 @@ func (s *Server) RegisterRoutes(
 
 	// user
 	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
+	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 }

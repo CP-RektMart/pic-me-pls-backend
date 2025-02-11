@@ -178,8 +178,8 @@ func (j *JWT) GetCachedTokens(ctx context.Context, userID uint) (*model.CachedTo
 	return &cachedToken, nil
 }
 
-func (j *JWT) RemoveToken(ctx context.Context, cache *redis.Client, userID uint) error {
-	return cache.Del(ctx, j.newTokenKey(userID)).Err()
+func (j *JWT) RemoveToken(ctx context.Context, userID uint) error {
+	return j.cache.Del(ctx, j.newTokenKey(userID)).Err()
 }
 
 func (j *JWT) newTokenKey(userID uint) string {
