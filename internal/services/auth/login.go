@@ -38,7 +38,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	OAuthUser.Role = model.UserRole(req.Role)
 
 	var user *model.User
-	var token *dto.TokenResponse
+	var token *model.Token
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		user, err = h.getOrCreateUser(tx, OAuthUser)
@@ -53,7 +53,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 
 		return nil
 	}); err != nil {
-		return err
+		return errors.Wrap(err, "failed to create user and token")
 	}
 
 	userDTO := dto.BaseUserDTO{
@@ -71,8 +71,12 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	}
 
 	result := dto.LoginResponse{
-		TokenResponse: *token,
-		User:          userDTO,
+		TokenResponse: dto.TokenResponse{
+			AccessToken:  token.AccessToken,
+			RefreshToken: token.RefreshToken,
+			Exp:          token.Exp,
+		},
+		User: userDTO,
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{

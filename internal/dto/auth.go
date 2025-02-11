@@ -7,7 +7,7 @@ type LoginRequest struct {
 }
 
 type TokenResponse struct {
-	AcessToken   string `json:"accessToken"`
+	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
 	Exp          int64  `json:"exp"`
 }

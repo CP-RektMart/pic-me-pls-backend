@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/cockroachdb/errors"
 	"github.com/golang-jwt/jwt/v5"
@@ -142,7 +141,7 @@ func (j *JWT) ParseToken(tokenString string, isRefreshToken bool) (JWTentity, er
 	return *claims, nil
 }
 
-func (j *JWT) GenerateAndStoreTokenPair(ctx context.Context, user *model.User) (*dto.TokenResponse, error) {
+func (j *JWT) GenerateAndStoreTokenPair(ctx context.Context, user *model.User) (*model.Token, error) {
 	cachedToken, accessToken, refreshToken, exp, err := j.GenerateTokenPair(*user)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to generate token pair")
@@ -157,8 +156,8 @@ func (j *JWT) GenerateAndStoreTokenPair(ctx context.Context, user *model.User) (
 		return nil, errors.Wrap(err, "failed to store cache tokens")
 	}
 
-	return &dto.TokenResponse{
-		AcessToken:   accessToken,
+	return &model.Token{
+		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		Exp:          exp,
 	}, nil
