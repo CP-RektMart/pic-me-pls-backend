@@ -67,6 +67,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/auth/logout": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Removing their authentication token form cache",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "logout the user",
+                "operationId": "logout",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/auth/refresh-token": {
             "post": {
                 "consumes": [
@@ -119,6 +157,98 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/auth/reverify": {
+            "patch": {
+                "description": "Re-verifies and updates the card details, associating it with the user's account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photographer"
+                ],
+                "summary": "Re-verify user's card information",
+                "parameters": [
+                    {
+                        "description": "Citizen card details",
+                        "name": "CitizenCard",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CitizenCard"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card re-verification successful",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. Invalid or incomplete data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/verify": {
+            "post": {
+                "description": "Verifies the user's card information and associates it with their account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photographer"
+                ],
+                "summary": "Verify user's card details",
+                "parameters": [
+                    {
+                        "description": "Citizen card details",
+                        "name": "CitizenCard",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CitizenCard"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Verification successful",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. Card already verified or invalid data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/me": {
             "get": {
                 "security": [
@@ -158,16 +288,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/api/v1/auth/logout": {
-            "post": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Removing their authentication token form cache",
+            },
+            "patch": {
+                "description": "Updates the user's profile information including email, phone number, social media links, and bank account details",
                 "consumes": [
                     "application/json"
                 ],
@@ -175,13 +298,67 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "user"
                 ],
-                "summary": "logout the user",
-                "operationId": "logout",
+                "summary": "Update user profile",
+                "parameters": [
+                    {
+                        "description": "User profile details",
+                        "name": "BaseUserDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseUserDTO"
+                        }
+                    }
+                ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "400": {
+                        "description": "Bad request, invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/photographer/citizen-card": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves the authenticated phtographer's citizen card",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get citizen card",
+                "operationId": "get-citizen-card",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseUserDTO"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -203,11 +380,26 @@ const docTemplate = `{
         "dto.BaseUserDTO": {
             "type": "object",
             "properties": {
+                "account_no": {
+                    "type": "string"
+                },
+                "bank": {
+                    "type": "string"
+                },
+                "bank_branch": {
+                    "type": "string"
+                },
                 "email": {
+                    "type": "string"
+                },
+                "facebook": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "instagram": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -219,6 +411,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CitizenCard": {
+            "type": "object",
+            "required": [
+                "citizen_id",
+                "expire_date",
+                "laser_id",
+                "picture"
+            ],
+            "properties": {
+                "citizen_id": {
+                    "type": "string"
+                },
+                "expire_date": {
+                    "type": "string"
+                },
+                "laser_id": {
+                    "type": "string"
+                },
+                "picture": {
                     "type": "string"
                 }
             }

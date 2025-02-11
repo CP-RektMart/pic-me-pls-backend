@@ -18,7 +18,7 @@ import (
 // @Tags photographer
 // @Accept json
 // @Produce json
-// @Param verifyCardRequest body dto.VerifyCardRequest true "Card verification details"
+// @Param CitizenCard body dto.CitizenCard true "Citizen card details"
 // @Success 200 {object} dto.HttpResponse "Verification successful"
 // @Failure 400 {object} dto.HttpResponse "Bad request. Card already verified or invalid data"
 // @Failure 500 {object} dto.HttpResponse "Internal server error"

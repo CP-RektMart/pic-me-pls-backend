@@ -21,12 +21,11 @@ import (
 // @Tags user
 // @Accept json
 // @Produce json
-// @Param updateUserRequest body dto.UpdateUserRequest true "User profile update data"
-// @Success 200 {object} dto.HttpResponse "Profile updated successfully"
+// @Param BaseUserDTO body dto.BaseUserDTO true "User profile details"// @Success 200 {object} dto.HttpResponse "Profile updated successfully"
 // @Failure 400 {object} dto.HttpResponse "Bad request, invalid input data"
 // @Failure 404 {object} dto.HttpResponse "User not found"
 // @Failure 500 {object} dto.HttpResponse "Internal server error"
-// @Router /api/v1/user/profile [patch]
+// @Router /api/v1/me [patch]
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {

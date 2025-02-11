@@ -18,7 +18,7 @@ import (
 // @success 200 {object} dto.BaseUserDTO "OK"
 // @failure 400 {object} dto.HttpResponse "Bad Request"
 // @failure 500 {object} dto.HttpResponse "Internal Server Error"
-// @Router /api/v1/me [GET]
+// @Router /api/v1/photographer/citizen-card [GET]
 func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
