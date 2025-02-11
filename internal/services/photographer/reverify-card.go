@@ -68,7 +68,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.JSON(dto.HttpResponse[*model.CitizenCard]{
+	return c.JSON(dto.HttpResponse{
 		Result: updatedUser,
 	})
 }

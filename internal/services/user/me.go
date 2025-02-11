@@ -41,5 +41,7 @@ func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 		Role:              user.Role.String(),
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.BaseUserDTO]{Result: userDTO})
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+		Result: userDTO,
+	})
 }
