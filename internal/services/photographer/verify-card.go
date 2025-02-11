@@ -16,7 +16,8 @@ import (
 // @Description		Verify Photographer Citizen Card
 // @Tags			photographer
 // @Router			/api/v1/photographer/verify [POST]
-// @Success			204
+// @Body			{object}		dto.CitizenCardRequest
+// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {

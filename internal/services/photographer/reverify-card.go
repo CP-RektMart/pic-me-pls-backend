@@ -16,7 +16,8 @@ import (
 // @Description		Reverify Photographer Citizen Card
 // @Tags			photographer
 // @Router			/api/v1/photographer/reverify [PATCH]
-// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCard}
+// @Body			{object}		dto.CitizenCardRequest
+// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {

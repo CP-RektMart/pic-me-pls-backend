@@ -60,19 +60,7 @@ const docTemplate = `{
             "post": {
                 "description": "Logout",
                 "tags": [
-                    "user"
-                ],
-                "summary": "Update user profile",
-                "parameters": [
-                    {
-                        "description": "User profile details",
-                        "name": "BaseUserDTO",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.BaseUserDTO"
-                        }
-                    }
+                    "auth"
                 ],
                 "summary": "Logout",
                 "responses": {
@@ -234,7 +222,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "result": {
-                                            "$ref": "#/definitions/dto.CitizenCard"
+                                            "$ref": "#/definitions/dto.CitizenCardResponse"
                                         }
                                     }
                                 }
@@ -275,7 +263,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "result": {
-                                            "$ref": "#/definitions/dto.CitizenCard"
+                                            "$ref": "#/definitions/dto.CitizenCardResponse"
                                         }
                                     }
                                 }
@@ -305,51 +293,22 @@ const docTemplate = `{
                 ],
                 "summary": "Verify Citizen Card",
                 "responses": {
-                    "400": {
-                        "description": "Bad request, invalid input data",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/photographer/citizen-card": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Retrieves the authenticated phtographer's citizen card",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get citizen card",
-                "operationId": "get-citizen-card",
-                "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.BaseUserDTO"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.CitizenCardResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -407,22 +366,16 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CitizenCard": {
+        "dto.CitizenCardResponse": {
             "type": "object",
-            "required": [
-                "citizen_id",
-                "expire_date",
-                "laser_id",
-                "picture"
-            ],
             "properties": {
-                "citizen_id": {
+                "citizenId": {
                     "type": "string"
                 },
-                "expire_date": {
+                "expireDate": {
                     "type": "string"
                 },
-                "laser_id": {
+                "laserId": {
                     "type": "string"
                 },
                 "picture": {
