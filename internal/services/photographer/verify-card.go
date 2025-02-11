@@ -29,7 +29,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.VerifyCardRequest)
+	req := new(dto.CitizenCard)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -74,7 +74,7 @@ func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, 
 	return signedURL, nil
 }
 
-func (h *Handler) createCitizenCard(req *dto.VerifyCardRequest, userId uint) error {
+func (h *Handler) createCitizenCard(req *dto.CitizenCard, userId uint) error {
 	var citizenCard model.CitizenCard
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
