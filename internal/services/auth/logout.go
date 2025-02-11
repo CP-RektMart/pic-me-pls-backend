@@ -6,6 +6,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// handlerLogout godoc
+// @summary logout the user
+// @description Removing their authentication token form cache
+// @tags auth
+// @security Bearer
+// @id logout
+// @accept json
+// @produce json
+// @response 204 {object} dto.HttpResponse "No Content"
+// @response 400 {object} dto.HttpResponse "Bad Request"
+// @response 500 {object} dto.HttpResponse "Internal Server Error"
+// @Router /api/v1/auth/login [POST]
 func (h *Handler) HandleLogout(c *fiber.Ctx) error {
 
 	ctx := c.UserContext()

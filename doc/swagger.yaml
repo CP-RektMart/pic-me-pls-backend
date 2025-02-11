@@ -56,6 +56,32 @@ paths:
     post:
       consumes:
       - application/json
+      description: Removing their authentication token form cache
+      operationId: logout
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      security:
+      - Bearer: []
+      summary: logout the user
+      tags:
+      - auth
+  /api/v1/auth/logout:
+    post:
+      consumes:
+      - application/json
       description: provider can be GOOGLE,  role can be CUSTOMER, PHOTOGRAPHER, ADMIN
       operationId: login
       parameters:
@@ -85,32 +111,6 @@ paths:
       summary: login with external service provider
       tags:
       - auth
-  /api/v1/auth/logout:
-    post:
-      consumes:
-      - application/json
-      description: Logs out the user by removing their authentication token.
-      operationId: logout
-      tags:
-        - auth
-      security:
-        - Bearer: []
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        "204":
-          description: No Content - Successfully logged out.
-        "401":
-          description: Unauthorized - User is not authenticated.
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "500":
-          description: Internal Server Error - Token removal failed.
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-      
 schemes:
 - https
 - http
