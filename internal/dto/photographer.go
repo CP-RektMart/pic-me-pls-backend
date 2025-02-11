@@ -2,9 +2,16 @@ package dto
 
 import "time"
 
-type CitizenCard struct {
-	CitizenID  string    `json:"citizen_id" validate:"required"`
-	LaserID    string    `json:"laser_id" validate:"required"`
+type CitizenCardRequest struct {
+	CitizenID  string    `json:"citizenId" validate:"required"`
+	LaserID    string    `json:"laserId" validate:"required"`
 	Picture    string    `json:"picture" validate:"required"`
-	ExpireDate time.Time `json:"expire_date" validate:"required"`
+	ExpireDate time.Time `json:"expireDate" validate:"required"`
+}
+
+type CitizenCardResponse struct {
+	CitizenID  string    `json:"citizenId"`
+	LaserID    string    `json:"laserId"`
+	Picture    string    `json:"picture"`
+	ExpireDate time.Time `json:"expireDate"`
 }

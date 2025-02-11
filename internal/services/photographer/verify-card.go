@@ -16,7 +16,8 @@ import (
 // @Description		Verify Photographer Citizen Card
 // @Tags			photographer
 // @Router			/api/v1/photographer/verify [POST]
-// @Success			204
+// @Param 			RequestBody 	body 	dto.CitizenCardRequest 	true 	"request request"
+// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
@@ -25,7 +26,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.CitizenCard)
+	req := new(dto.CitizenCardRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -45,12 +46,21 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 	}
 	req.Picture = signedURL
 
-	err = h.createCitizenCard(req, userId)
+	user, err := h.createCitizenCard(req, userId)
 	if err != nil {
 		return errors.Wrap(err, "Fail to create citizen card")
 	}
 
-	return c.SendStatus(fiber.StatusNoContent)
+	response := dto.CitizenCardResponse{
+		CitizenID:  user.CitizenID,
+		LaserID:    user.LaserID,
+		Picture:    user.Picture,
+		ExpireDate: user.ExpireDate,
+	}
+
+	return c.JSON(dto.HttpResponse{
+		Result: response,
+	})
 }
 
 func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, folder string) (string, error) {
@@ -70,10 +80,10 @@ func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, 
 	return signedURL, nil
 }
 
-func (h *Handler) createCitizenCard(req *dto.CitizenCard, userId uint) error {
+func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, userId uint) (*model.CitizenCard, error) {
 	var citizenCard model.CitizenCard
 
-	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
+	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		// Find the photographer associated with the user
 		var photographer model.Photographer
 		if err := tx.First(&photographer, "user_id = ?", userId).Error; err != nil {
@@ -103,7 +113,9 @@ func (h *Handler) createCitizenCard(req *dto.CitizenCard, userId uint) error {
 		}
 
 		return nil
-	})
+	}); err != nil {
+		return nil, errors.Wrap(err, "failed to create citizen card")
+	}
 
-	return err
+	return &citizenCard, nil
 }

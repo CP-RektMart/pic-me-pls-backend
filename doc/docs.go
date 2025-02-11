@@ -22,6 +22,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -60,19 +71,7 @@ const docTemplate = `{
             "post": {
                 "description": "Logout",
                 "tags": [
-                    "user"
-                ],
-                "summary": "Update user profile",
-                "parameters": [
-                    {
-                        "description": "User profile details",
-                        "name": "BaseUserDTO",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.BaseUserDTO"
-                        }
-                    }
+                    "auth"
                 ],
                 "summary": "Logout",
                 "responses": {
@@ -101,6 +100,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Refresh Token",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RefreshTokenRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -234,7 +244,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "result": {
-                                            "$ref": "#/definitions/dto.CitizenCard"
+                                            "$ref": "#/definitions/dto.CitizenCardResponse"
                                         }
                                     }
                                 }
@@ -263,6 +273,17 @@ const docTemplate = `{
                     "photographer"
                 ],
                 "summary": "Reverify Citizen Card",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CitizenCardRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -275,7 +296,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "result": {
-                                            "$ref": "#/definitions/dto.CitizenCard"
+                                            "$ref": "#/definitions/dto.CitizenCardResponse"
                                         }
                                     }
                                 }
@@ -304,52 +325,34 @@ const docTemplate = `{
                     "photographer"
                 ],
                 "summary": "Verify Citizen Card",
-                "responses": {
-                    "400": {
-                        "description": "Bad request, invalid input data",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/photographer/citizen-card": {
-            "get": {
-                "security": [
+                "parameters": [
                     {
-                        "Bearer": []
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CitizenCardRequest"
+                        }
                     }
                 ],
-                "description": "Retrieves the authenticated phtographer's citizen card",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get citizen card",
-                "operationId": "get-citizen-card",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.BaseUserDTO"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.CitizenCardResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -407,22 +410,39 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CitizenCard": {
+        "dto.CitizenCardRequest": {
             "type": "object",
             "required": [
-                "citizen_id",
-                "expire_date",
-                "laser_id",
+                "citizenId",
+                "expireDate",
+                "laserId",
                 "picture"
             ],
             "properties": {
-                "citizen_id": {
+                "citizenId": {
                     "type": "string"
                 },
-                "expire_date": {
+                "expireDate": {
                     "type": "string"
                 },
-                "laser_id": {
+                "laserId": {
+                    "type": "string"
+                },
+                "picture": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CitizenCardResponse": {
+            "type": "object",
+            "properties": {
+                "citizenId": {
+                    "type": "string"
+                },
+                "expireDate": {
+                    "type": "string"
+                },
+                "laserId": {
                     "type": "string"
                 },
                 "picture": {
@@ -439,6 +459,27 @@ const docTemplate = `{
                 "result": {}
             }
         },
+        "dto.LoginRequest": {
+            "type": "object",
+            "required": [
+                "idToken",
+                "provider",
+                "role"
+            ],
+            "properties": {
+                "idToken": {
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "GOOGLE",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "CUSTOMER, PHOTOGRAPHER, ADMIN",
+                    "type": "string"
+                }
+            }
+        },
         "dto.LoginResponse": {
             "type": "object",
             "properties": {
@@ -453,6 +494,17 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/dto.BaseUserDTO"
+                }
+            }
+        },
+        "dto.RefreshTokenRequest": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "type": "string"
                 }
             }
         },

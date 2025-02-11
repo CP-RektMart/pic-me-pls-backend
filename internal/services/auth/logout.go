@@ -13,7 +13,6 @@ import (
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleLogout(c *fiber.Ctx) error {
-
 	ctx := c.UserContext()
 
 	userID, err := h.authmiddleware.GetUserIDFromContext(ctx)
@@ -26,5 +25,4 @@ func (h *Handler) HandleLogout(c *fiber.Ctx) error {
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
-
 }
