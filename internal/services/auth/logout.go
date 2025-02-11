@@ -17,7 +17,7 @@ import (
 // @response 204 {object} dto.HttpResponse "No Content"
 // @response 400 {object} dto.HttpResponse "Bad Request"
 // @response 500 {object} dto.HttpResponse "Internal Server Error"
-// @Router /api/v1/auth/login [POST]
+// @Router /api/v1/auth/logout [POST]
 func (h *Handler) HandleLogout(c *fiber.Ctx) error {
 
 	ctx := c.UserContext()
