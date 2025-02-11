@@ -37,5 +37,13 @@ func (s *Server) RegisterRoutes(
 
 	// user
 	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
+	v1.Patch("/me", authMiddleware.Auth, userHandler.HandleUpdateMe)
+
+	// verify citizen card
+	photographer := v1.Group("/photographer")
+	photographer.Get("/citizen-card", authMiddleware.AuthPhotographer, photographerHandler.HandleGetCitizenCard)
+	photographer.Post("/verify", authMiddleware.AuthPhotographer, photographerHandler.HandleVerifyCard)
+	photographer.Patch("/reverify", authMiddleware.AuthPhotographer, photographerHandler.HandleReVerifyCard)
+
 	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 }

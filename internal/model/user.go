@@ -62,9 +62,17 @@ type User struct {
 	Email             string `gorm:"not null;unique"`
 	PhoneNumber       string `gorm:"size:10"`
 	ProfilePictureURL string
-	Role              UserRole    `gorm:"not null"`
-	SenderMessages    []Message   `gorm:"foreignKey:SenderID"`
-	ReceiverMessages  []Message   `gorm:"foreignKey:ReceiverID"`
-	Quotations        []Quotation `gorm:"foreignKey:CustomerID"`
-	Reviews           []Review    `gorm:"foreignKey:CustomerID"`
+	Role              UserRole `gorm:"not null"`
+
+	SenderMessages   []Message   `gorm:"foreignKey:SenderID"`
+	ReceiverMessages []Message   `gorm:"foreignKey:ReceiverID"`
+	Quotations       []Quotation `gorm:"foreignKey:CustomerID"`
+	Reviews          []Review    `gorm:"foreignKey:CustomerID"`
+
+	Facebook  string `gorm:"size:255"`
+	Instagram string `gorm:"size:255"`
+
+	Bank       string `gorm:"size:255"`
+	AccountNo  string `gorm:"size:20"`
+	BankBranch string `gorm:"size:255"`
 }

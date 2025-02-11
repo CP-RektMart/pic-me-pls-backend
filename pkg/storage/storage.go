@@ -32,15 +32,15 @@ func New(ctx context.Context, config Config) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) UploadFile(ctx context.Context, path string, contentType string, data io.Reader, overwrite bool) error {
+func (c *Client) UploadFile(ctx context.Context, path string, contentType string, data io.Reader, overwrite bool) (string, error) {
 	if _, err := c.Client.UploadFile(c.Bucket, path, data, storage_go.FileOptions{
 		ContentType: &contentType,
 		Upsert:      &overwrite,
 	}); err != nil {
-		return errors.Wrap(err, "failed to upload file")
+		return "", errors.Wrap(err, "failed to upload file")
 	}
 
-	return nil
+	return c.Client.GetPublicUrl(c.Bucket, path).SignedURL, nil
 }
 
 func (c *Client) MoveFile(ctx context.Context, source string, destination string) error {
@@ -55,7 +55,6 @@ func (c *Client) DeleteFile(ctx context.Context, path string) error {
 	if err := c.DeleteFiles(ctx, []string{path}); err != nil {
 		return errors.Wrap(err, "failed to delete file")
 	}
-
 	return nil
 }
 

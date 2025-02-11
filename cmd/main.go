@@ -58,7 +58,7 @@ func main() {
 	exampleHandler := example.NewHandler(store)
 	authHandler := auth.NewHandler(store, validate, jwtService, authMiddleware, config.GoogleClientID)
 	userHandler := user.NewHandler(store, validate, authMiddleware)
-	photographerHandler := photographer.NewHandler(store, validate)
+	photographerHandler := photographer.NewHandler(store, validate, authMiddleware)
 	galleryHandler := gallery.NewHandler(store, validate)
 	reviewHandler := review.NewHandler(store, validate)
 	categoryHandler := category.NewHandler(store, validate)
