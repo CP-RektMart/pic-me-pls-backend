@@ -24,6 +24,22 @@ definitions:
       role:
         type: string
     type: object
+  dto.CitizenCardRequest:
+    properties:
+      citizenId:
+        type: string
+      expireDate:
+        type: string
+      laserId:
+        type: string
+      picture:
+        type: string
+    required:
+    - citizenId
+    - expireDate
+    - laserId
+    - picture
+    type: object
   dto.CitizenCardResponse:
     properties:
       citizenId:
@@ -41,6 +57,21 @@ definitions:
         type: string
       result: {}
     type: object
+  dto.LoginRequest:
+    properties:
+      idToken:
+        type: string
+      provider:
+        description: GOOGLE
+        type: string
+      role:
+        description: CUSTOMER, PHOTOGRAPHER, ADMIN
+        type: string
+    required:
+    - idToken
+    - provider
+    - role
+    type: object
   dto.LoginResponse:
     properties:
       accessToken:
@@ -51,6 +82,13 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/dto.BaseUserDTO'
+    type: object
+  dto.RefreshTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
     type: object
   dto.TokenResponse:
     properties:
@@ -70,6 +108,13 @@ paths:
   /api/v1/auth/login:
     post:
       description: Login
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
       responses:
         "200":
           description: OK
@@ -111,6 +156,13 @@ paths:
   /api/v1/auth/refresh-token:
     post:
       description: Refresh Token
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RefreshTokenRequest'
       responses:
         "200":
           description: OK
@@ -206,6 +258,13 @@ paths:
   /api/v1/photographer/reverify:
     patch:
       description: Reverify Photographer Citizen Card
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CitizenCardRequest'
       responses:
         "200":
           description: OK
@@ -230,6 +289,13 @@ paths:
   /api/v1/photographer/verify:
     post:
       description: Verify Photographer Citizen Card
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CitizenCardRequest'
       responses:
         "200":
           description: OK

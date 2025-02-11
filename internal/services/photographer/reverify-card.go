@@ -16,7 +16,7 @@ import (
 // @Description		Reverify Photographer Citizen Card
 // @Tags			photographer
 // @Router			/api/v1/photographer/reverify [PATCH]
-// @Body			{object}		dto.CitizenCardRequest
+// @Param 			RequestBody 	body 	dto.CitizenCardRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse

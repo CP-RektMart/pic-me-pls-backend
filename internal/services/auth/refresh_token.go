@@ -13,7 +13,7 @@ import (
 // @Description		Refresh Token
 // @Tags			auth
 // @Router			/api/v1/auth/refresh-token [POST]
-// @Body			{object}		dto.RefreshTokenRequest
+// @Param 			RequestBody 	body 	dto.RefreshTokenRequest 	true 	"request request"
 // @Success			200 {object}	dto.HttpResponse{result=dto.TokenResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse

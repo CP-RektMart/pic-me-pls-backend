@@ -16,7 +16,7 @@ import (
 // @Description		Login
 // @Tags			auth
 // @Router			/api/v1/auth/login [POST]
-// @Body			{object}		dto.LoginRequest
+// @Param 			RequestBody 	body 	dto.LoginRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse{result=dto.LoginResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
