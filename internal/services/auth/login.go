@@ -57,7 +57,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to create user and token")
 	}
 
-	userDTO := dto.BaseUserDTO{
+	userDTO := dto.UserResponse{
 		ID:                user.ID,
 		Name:              user.Name,
 		Email:             user.Email,

@@ -14,7 +14,7 @@ type TokenResponse struct {
 
 type LoginResponse struct {
 	TokenResponse
-	User BaseUserDTO `json:"user"`
+	User UserResponse `json:"user"`
 }
 
 type RefreshTokenRequest struct {

@@ -1,29 +1,4 @@
 definitions:
-  dto.BaseUserDTO:
-    properties:
-      account_no:
-        type: string
-      bank:
-        type: string
-      bank_branch:
-        type: string
-      email:
-        type: string
-      facebook:
-        type: string
-      id:
-        type: integer
-      instagram:
-        type: string
-      name:
-        type: string
-      phone_number:
-        type: string
-      profile_picture_url:
-        type: string
-      role:
-        type: string
-    type: object
   dto.CitizenCardRequest:
     properties:
       citizenId:
@@ -81,7 +56,7 @@ definitions:
       refreshToken:
         type: string
       user:
-        $ref: '#/definitions/dto.BaseUserDTO'
+        $ref: '#/definitions/dto.UserResponse'
     type: object
   dto.RefreshTokenRequest:
     properties:
@@ -97,6 +72,62 @@ definitions:
       exp:
         type: integer
       refreshToken:
+        type: string
+    type: object
+  dto.UserRequest:
+    properties:
+      account_no:
+        type: string
+      bank:
+        type: string
+      bank_branch:
+        type: string
+      email:
+        type: string
+      facebook:
+        type: string
+      id:
+        type: integer
+      instagram:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      profile_picture_url:
+        type: string
+      role:
+        type: string
+    required:
+    - email
+    - id
+    - name
+    - phone_number
+    - role
+    type: object
+  dto.UserResponse:
+    properties:
+      account_no:
+        type: string
+      bank:
+        type: string
+      bank_branch:
+        type: string
+      email:
+        type: string
+      facebook:
+        type: string
+      id:
+        type: integer
+      instagram:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      profile_picture_url:
+        type: string
+      role:
         type: string
     type: object
 info:
@@ -195,7 +226,7 @@ paths:
             - $ref: '#/definitions/dto.HttpResponse'
             - properties:
                 result:
-                  $ref: '#/definitions/dto.BaseUserDTO'
+                  $ref: '#/definitions/dto.UserResponse'
               type: object
         "400":
           description: Bad Request
@@ -210,6 +241,13 @@ paths:
       - user
     patch:
       description: Update user's profile
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRequest'
       responses:
         "200":
           description: OK
@@ -218,7 +256,7 @@ paths:
             - $ref: '#/definitions/dto.HttpResponse'
             - properties:
                 result:
-                  $ref: '#/definitions/dto.BaseUserDTO'
+                  $ref: '#/definitions/dto.UserResponse'
               type: object
         "400":
           description: Bad Request

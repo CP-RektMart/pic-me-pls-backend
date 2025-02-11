@@ -164,7 +164,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "result": {
-                                            "$ref": "#/definitions/dto.BaseUserDTO"
+                                            "$ref": "#/definitions/dto.UserResponse"
                                         }
                                     }
                                 }
@@ -191,6 +191,17 @@ const docTemplate = `{
                     "user"
                 ],
                 "summary": "Update me",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -203,7 +214,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "result": {
-                                            "$ref": "#/definitions/dto.BaseUserDTO"
+                                            "$ref": "#/definitions/dto.UserResponse"
                                         }
                                     }
                                 }
@@ -372,44 +383,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.BaseUserDTO": {
-            "type": "object",
-            "properties": {
-                "account_no": {
-                    "type": "string"
-                },
-                "bank": {
-                    "type": "string"
-                },
-                "bank_branch": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "facebook": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "instagram": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "profile_picture_url": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.CitizenCardRequest": {
             "type": "object",
             "required": [
@@ -493,7 +466,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/dto.BaseUserDTO"
+                    "$ref": "#/definitions/dto.UserResponse"
                 }
             }
         },
@@ -518,6 +491,89 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "id",
+                "name",
+                "phone_number",
+                "role"
+            ],
+            "properties": {
+                "account_no": {
+                    "type": "string"
+                },
+                "bank": {
+                    "type": "string"
+                },
+                "bank_branch": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "facebook": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "instagram": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "profile_picture_url": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserResponse": {
+            "type": "object",
+            "properties": {
+                "account_no": {
+                    "type": "string"
+                },
+                "bank": {
+                    "type": "string"
+                },
+                "bank_branch": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "facebook": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "instagram": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "profile_picture_url": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 }
             }

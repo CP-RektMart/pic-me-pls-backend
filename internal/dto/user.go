@@ -1,6 +1,20 @@
 package dto
 
-type BaseUserDTO struct {
+type UserRequest struct {
+	ID                uint   `json:"id" validate:"required"`
+	Name              string `json:"name" validate:"required"`
+	Email             string `json:"email" validate:"required"`
+	PhoneNumber       string `json:"phone_number" validate:"required"`
+	ProfilePictureURL string `json:"profile_picture_url"`
+	Role              string `json:"role" validate:"required" validate:"required"`
+	Facebook          string `json:"facebook"`
+	Instagram         string `json:"instagram"`
+	Bank              string `json:"bank"`
+	AccountNo         string `json:"account_no"`
+	BankBranch        string `json:"bank_branch"`
+}
+
+type UserResponse struct {
 	ID                uint   `json:"id"`
 	Name              string `json:"name"`
 	Email             string `json:"email"`
