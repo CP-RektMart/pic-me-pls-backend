@@ -38,4 +38,10 @@ func (s *Server) RegisterRoutes(
 	// user
 	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
 	v1.Patch("/me", authMiddleware.Auth, userHandler.HandleUpdateMe)
+
+	// verify citizen card
+	photographer := v1.Group("/photographer")
+	photographer.Post("/verify", authMiddleware.Auth, photographerHandler.HandleVerifyCard)
+	photographer.Patch("/reverify", authMiddleware.Auth, photographerHandler.HandleReVerifyCard)
+
 }
