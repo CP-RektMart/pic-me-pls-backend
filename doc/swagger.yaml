@@ -46,6 +46,22 @@ definitions:
       user:
         $ref: '#/definitions/dto.BaseUserDTO'
     type: object
+  dto.RefreshTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
+    type: object
+  dto.TokenResponse:
+    properties:
+      accessToken:
+        type: string
+      exp:
+        type: integer
+      refreshToken:
+        type: string
+    type: object
 info:
   contact: {}
   description: pic-me-pls API documentation
@@ -85,6 +101,66 @@ paths:
       summary: login with external service provider
       tags:
       - auth
+  /api/v1/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      operationId: refresh-token
+      parameters:
+      - description: refresh token request
+        in: body
+        name: RefreshRequest
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: refresh token
+      tags:
+      - auth
+  /api/v1/me:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the authenticated user's profile.
+      operationId: get-me
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseUserDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      security:
+      - Bearer: []
+      summary: Get user profile
+      tags:
+      - user
 schemes:
 - https
 - http

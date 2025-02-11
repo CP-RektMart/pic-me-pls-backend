@@ -10,6 +10,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 )
 
 // HandlerReVerifyCard re-verifies the user's card information
@@ -35,24 +36,37 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	signedURL, fileUploaded, err := h.uploadCardFile(c, citizenCardFolder(userID))
-	if err != nil {
-		return errors.Wrap(err, "File upload failed")
+	if err := h.validate.Struct(req); err != nil {
+		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if fileUploaded {
+	var signedURL string = ""
+	file, err := c.FormFile("citizen_card")
+	if err != nil {
+		signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userID))
+		if err != nil {
+			return errors.Wrap(err, "File upload failed")
+		}
 		req.Picture = signedURL
 	}
 
 	var oldPictureURL string
 	updatedUser, err := h.updateCitizenCard(req, userID, &oldPictureURL)
 	if err != nil {
-		h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userID)+path.Base(signedURL))
-		return err
+		if signedURL != "" {
+			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userID)+path.Base(signedURL))
+			if err != nil {
+				return errors.Wrap(err, "Fail to delete the picture")
+			}
+		}
+		return errors.Wrap(err, "Error updating user profile")
 	}
 
 	if oldPictureURL != "" && oldPictureURL != req.Picture {
-		h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userID)+path.Base(oldPictureURL))
+		err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userID)+path.Base(oldPictureURL))
+		if err != nil {
+			return errors.Wrap(err, "Fail to delete old picture")
+		}
 	}
 
 	return c.JSON(dto.HttpResponse{
@@ -61,65 +75,64 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 }
 
 func (h *Handler) updateCitizenCard(req *dto.VerifyCardRequest, userID uint, oldPictureURL *string) (*model.CitizenCard, error) {
-	// Start a new transaction
-	tx := h.store.DB.Begin()
+	var newCitizenCard model.CitizenCard
 
-	// Rollback if there's any error during the transaction
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
+	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
+		// Find the photographer associated with the user
+		var photographer model.Photographer
+		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
+			return errors.Wrap(err, "Photographer not found for user")
 		}
-	}()
 
-	// Find the photographer associated with the user within the transaction
-	var photographer model.Photographer
-	if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
-		tx.Rollback() // Rollback the transaction if the photographer is not found
-		return nil, errors.Wrap(err, "Photographer not found for user")
-	}
-
-	// Find and delete the old CitizenCard within the transaction
-	if photographer.CitizenCardID != nil {
-		var oldCitizenCard model.CitizenCard
-
-		if err := tx.First(&oldCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
-			tx.Rollback() // Rollback the transaction if the old citizen card is not found
-			return nil, errors.Wrap(err, "Error finding old citizen card")
+		// If there's an existing CitizenCard, delete it
+		// (Photographer is created before citizen card in a first place)
+		if photographer.CitizenCardID != nil {
+			err := tx.Transaction(func(tx2 *gorm.DB) error {
+				var oldCitizenCard model.CitizenCard
+				if err := tx2.First(&oldCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
+					return errors.Wrap(err, "Error finding old citizen card")
+				}
+				if oldPictureURL != nil {
+					*oldPictureURL = oldCitizenCard.Picture
+				}
+				if err := tx2.Delete(&oldCitizenCard).Error; err != nil {
+					return errors.Wrap(err, "Error deleting old citizen card")
+				}
+				return nil
+			})
+			if err != nil {
+				return err
+			}
 		}
-		if oldPictureURL != nil {
-			oldPictureURL = &oldCitizenCard.Picture
+
+		// Create a new CitizenCard
+		err := tx.Transaction(func(tx3 *gorm.DB) error {
+			newCitizenCard = model.CitizenCard{
+				CitizenID:  req.CitizenID,
+				LaserID:    req.LaserID,
+				Picture:    req.Picture,
+				ExpireDate: req.ExpireDate,
+			}
+			if err := tx3.Create(&newCitizenCard).Error; err != nil {
+				return errors.Wrap(err, "Error creating new citizen card")
+			}
+			return nil
+		})
+		if err != nil {
+			return err // Rollback if creating new CitizenCard fails
 		}
-		// Delete the old CitizenCard within the transaction
-		if err := tx.Delete(&oldCitizenCard).Error; err != nil {
-			tx.Rollback() // Rollback the transaction if there's an error deleting the old citizen card
-			return nil, errors.Wrap(err, "Error deleting old citizen card")
+
+		// Update the photographer's CitizenCardID
+		photographer.CitizenCardID = &newCitizenCard.ID
+		if err := tx.Save(&photographer).Error; err != nil {
+			return errors.Wrap(err, "Error updating photographer with new citizen card")
 		}
-	}
 
-	// Create the new CitizenCard using the request data within the transaction
-	newCitizenCard := model.CitizenCard{
-		CitizenID:  req.CitizenID,
-		LaserID:    req.LaserID,
-		Picture:    req.Picture,
-		ExpireDate: req.ExpireDate,
-	}
+		return nil
+	})
 
-	// Insert the new CitizenCard into the database within the transaction
-	if err := tx.Create(&newCitizenCard).Error; err != nil {
-		tx.Rollback() // Rollback the transaction if there's an error creating the new citizen card
-		return nil, errors.Wrap(err, "Error creating new citizen card")
-	}
-
-	// Update the photographer's CitizenCardID with the new CitizenCard ID within the transaction
-	photographer.CitizenCardID = &newCitizenCard.ID
-	if err := tx.Save(&photographer).Error; err != nil {
-		tx.Rollback() // Rollback the transaction if there's an error updating the photographer
-		return nil, errors.Wrap(err, "Error updating photographer with new citizen card")
-	}
-
-	// Commit the transaction after all operations succeed
-	if err := tx.Commit().Error; err != nil {
-		return nil, errors.Wrap(err, "Error committing transaction")
+	if err != nil {
+		return nil, err
 	}
 
 	return &newCitizenCard, nil

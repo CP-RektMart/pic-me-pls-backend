@@ -1,8 +1,9 @@
 package photographer
 
 import (
+	"context"
 	"fmt"
-	"strconv"
+	"mime/multipart"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -31,49 +32,47 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 	req := new(dto.VerifyCardRequest)
 
 	if err := c.BodyParser(req); err != nil {
-		return errors.Wrap(err, "invalid request body")
+		return apperror.BadRequest("invalid request body", err)
 	}
 
-	folder := "/citizen_card/" + strconv.FormatUint(uint64(userID), 10)
-	signedURL, isUploaded, err := h.uploadCardFile(c, folder)
-	if err != nil {
-		return errors.Wrap(err, "File upload failed")
+	if err := h.validate.Struct(req); err != nil {
+		return apperror.BadRequest("invalid request body", err)
 	}
-	if isUploaded {
+
+	file, err := c.FormFile("citizen_card")
+	if err != nil {
+		signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userID))
+		if err != nil {
+			return errors.Wrap(err, "File upload failed")
+		}
 		req.Picture = signedURL
 	} else {
-		return errors.Wrap(errors.Errorf("Field Missing"), "citizen_card is require")
+		return apperror.BadRequest("citizen_card is require", errors.Errorf("Field Missing"))
 	}
 
 	err = h.createCitizenCard(req, userID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Fail to create citizen card")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) uploadCardFile(c *fiber.Ctx, folder string) (string, bool, error) {
-	file, err := c.FormFile("citizen_card")
-	if err != nil {
-		// This allows because if the field is not provided mean they dont change the picutre
-		return "", false, nil
-	}
-
+func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, folder string) (string, error) {
 	contentType := file.Header.Get("Content-Type")
 
 	src, err := file.Open()
 	if err != nil {
-		return "", false, errors.Wrap(err, "failed to open file")
+		return "", errors.Wrap(err, "failed to open file")
 	}
 	defer src.Close()
-	signedURL, err := h.store.Storage.UploadFile(c.UserContext(), folder+file.Filename, contentType, src, true)
+	signedURL, err := h.store.Storage.UploadFile(c, folder+file.Filename, contentType, src, true)
 	if err != nil {
 
-		return "", false, errors.Wrap(err, "failed to upload file")
+		return "", errors.Wrap(err, "failed to upload file")
 	}
 
-	return signedURL, true, nil
+	return signedURL, nil
 }
 
 func (h *Handler) createCitizenCard(req *dto.VerifyCardRequest, userID uint) error {
@@ -88,7 +87,7 @@ func (h *Handler) createCitizenCard(req *dto.VerifyCardRequest, userID uint) err
 	// Check if the photographer already has a CitizenCard
 	if photographer.CitizenCardID != nil {
 		// Return custom error code and message if already verified
-		return errors.Wrap(errors.Errorf("Already verified"), "photographer already has a citizen card")
+		return apperror.BadRequest("photographer already has a citizen card", errors.Errorf("Already verified"))
 	}
 
 	// Create the CitizenCard using the request data
