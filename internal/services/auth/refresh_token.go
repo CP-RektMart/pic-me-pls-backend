@@ -19,7 +19,7 @@ import (
 func (h *Handler) HandleRefreshToken(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 
-	var req dto.RefreshTokenRequest
+	req := new(dto.RefreshTokenRequest)
 	if err := c.BodyParser(&req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -50,5 +50,11 @@ func (h *Handler) HandleRefreshToken(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to generate token pair")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(tokens)
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+		Result: dto.TokenResponse{
+			AccessToken:  tokens.AccessToken,
+			RefreshToken: tokens.RefreshToken,
+			Exp:          tokens.Exp,
+		},
+	})
 }
