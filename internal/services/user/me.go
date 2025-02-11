@@ -9,18 +9,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// handlerGetMe godoc
-// @summary Get user profile
-// @description Retrieves the authenticated user's profile.
-// @tags user
-// @security Bearer
-// @id get-me
-// @accept json
-// @produce json
-// @success 200 {object} dto.BaseUserDTO "OK"
-// @failure 400 {object} dto.HttpResponse "Bad Request"
-// @failure 500 {object} dto.HttpResponse "Internal Server Error"
-// @Router /api/v1/me [GET]
+// @Summary			Get me
+// @Description		Get me
+// @Tags			user
+// @Router			/api/v1/me [GET]
+// @Success			200	{object}	dto.HttpResponse{result=dto.BaseUserDTO}
+// @Failure			400	{object}	dto.HttpResponse
+// @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {

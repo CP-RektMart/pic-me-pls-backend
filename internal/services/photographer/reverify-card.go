@@ -12,17 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// HandlerReVerifyCard re-verifies the user's card information
-// @Summary Re-verify user's card information
-// @Description Re-verifies and updates the card details, associating it with the user's account
-// @Tags photographer
-// @Accept json
-// @Produce json
-// @Param verifyCardRequest body dto.VerifyCardRequest true "Card re-verification details"
-// @Success 200 {object} dto.HttpResponse "Card re-verification successful"
-// @Failure 400 {object} dto.HttpResponse "Bad request. Invalid or incomplete data"
-// @Failure 500 {object} dto.HttpResponse "Internal server error"
-// @Router /api/v1/auth/reverify [patch]
+// @Summary			Reverify Citizen Card
+// @Description		Reverify Photographer Citizen Card
+// @Tags			photographer
+// @Router			/api/v1/photographer/reverify [PATCH]
+// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCard}
+// @Failure			400	{object}	dto.HttpResponse
+// @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
