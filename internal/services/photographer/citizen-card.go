@@ -32,7 +32,7 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 
 	var citizenCard model.CitizenCard
 	if err := h.store.DB.First(&citizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
-		return errors.Wrap(err, "Error finding old citizen card")
+		return errors.Wrap(err, "Error finding citizen card")
 	}
 
 	citizenCardDTO := dto.CitizenCard{
