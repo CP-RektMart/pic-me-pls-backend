@@ -28,7 +28,7 @@ func (h *Handler) HandlerUploadExample(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to upload file")
 	}
 
-	return c.JSON(dto.HttpResponse{
+	return c.JSON(dto.HttpResponse[string]{
 		Result: signedURL,
 	})
 }

@@ -81,7 +81,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 		User:          userDTO,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{Result: result})
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.LoginResponse]{Result: result})
 }
 
 func (h *Handler) validateIDToken(c context.Context, idToken string) (*model.User, error) {

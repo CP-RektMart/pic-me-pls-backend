@@ -68,7 +68,7 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 	s.app.Get("/health", func(c *fiber.Ctx) error {
-		return c.JSON(dto.HttpResponse{
+		return c.JSON(dto.HttpResponse[string]{
 			Result: "ok",
 		})
 	})

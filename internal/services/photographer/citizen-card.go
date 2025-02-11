@@ -42,5 +42,5 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 		ExpireDate: citizenCard.ExpireDate,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{Result: citizenCardDTO})
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.CitizenCard]{Result: citizenCardDTO})
 }

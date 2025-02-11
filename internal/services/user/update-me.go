@@ -72,7 +72,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.JSON(dto.HttpResponse{
+	return c.JSON(dto.HttpResponse[*model.User]{
 		Result: updatedUser,
 	})
 }

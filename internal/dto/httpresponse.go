@@ -1,6 +1,9 @@
 package dto
 
-type HttpResponse struct {
-	Result any    `json:"result" doc:"Result"`
-	Error  string `json:"error,omitempty" doc:"Error message"`
+type HttpResponse[T any] struct {
+	Result T `json:"result" doc:"Result"`
+}
+
+type HttpError struct {
+	Error string `json:"error" doc:"Error message"`
 }
