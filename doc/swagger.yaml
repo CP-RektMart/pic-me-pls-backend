@@ -96,8 +96,6 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "400":
           description: Bad Request
           schema:

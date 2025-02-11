@@ -88,10 +88,7 @@ const docTemplate = `{
                 "operationId": "logout",
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
