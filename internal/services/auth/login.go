@@ -129,5 +129,15 @@ func (h *Handler) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, e
 		return nil, errors.Wrap(err, "failed to create user")
 	}
 
+	if newUser.Role == model.UserRolePhotographer {
+		newPhotographer := model.Photographer{
+			UserID: newUser.ID,
+		}
+
+		if err := tx.Create(&newPhotographer).Error; err != nil {
+			return nil, errors.Wrap(err, "failed to create photographer")
+		}
+	}
+
 	return &newUser, nil
 }
