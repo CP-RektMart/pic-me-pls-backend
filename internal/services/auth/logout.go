@@ -9,6 +9,7 @@ import (
 // @Description		Logout
 // @Tags			auth
 // @Router			/api/v1/auth/logout [POST]
+// @Security		ApiKeyAuth
 // @Success			204
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse

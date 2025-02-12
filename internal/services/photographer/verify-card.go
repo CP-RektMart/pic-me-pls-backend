@@ -3,6 +3,7 @@ package photographer
 import (
 	"context"
 	"mime/multipart"
+	"time"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -16,8 +17,11 @@ import (
 // @Description		Verify Photographer Citizen Card
 // @Tags			photographer
 // @Router			/api/v1/photographer/verify [POST]
-// @Param 			RequestBody 	body 	dto.CitizenCardRequest 	true 	"request request"
-// @Param 			cardPicture formData 	file		true	"Card picture"
+// @Security		ApiKeyAuth
+// @Param 			cardPicture 	formData 	file		false	"Card picture (optional)"
+// @Param 			citizenId 		formData 	string		true	"Citizen ID"
+// @Param 			laserId 		formData 	string		true	"Laser ID"
+// @Param 			expireDate 		formData 	string		true	"Expire Date"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
@@ -28,7 +32,10 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 	}
 
 	req := new(dto.CitizenCardRequest)
-	if err := c.BodyParser(req); err != nil {
+	req.CitizenID = c.FormValue("citizenId")
+	req.LaserID = c.FormValue("laserId")
+	req.ExpireDate, err = time.Parse(time.RFC3339, c.FormValue("expireDate"))
+	if err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 

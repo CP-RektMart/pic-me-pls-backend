@@ -3,14 +3,13 @@ package dto
 import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 
 type UserUpdateRequest struct {
-	Name        string `form:"name"`
-	Email       string `form:"email"`
-	PhoneNumber string `form:"phoneNumber"`
-	Facebook    string `form:"facebook"`
-	Instagram   string `form:"instagram"`
-	Bank        string `form:"bank"`
-	AccountNo   string `form:"accountNo"`
-	BankBranch  string `form:"bankBranch"`
+	Name        string
+	PhoneNumber string
+	Facebook    string
+	Instagram   string
+	Bank        string
+	AccountNo   string
+	BankBranch  string
 }
 
 type UserResponse struct {

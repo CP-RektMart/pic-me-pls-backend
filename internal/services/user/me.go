@@ -13,6 +13,7 @@ import (
 // @Description		Get me
 // @Tags			user
 // @Router			/api/v1/me [GET]
+// @Security		ApiKeyAuth
 // @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse

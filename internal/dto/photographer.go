@@ -2,10 +2,11 @@ package dto
 
 import "time"
 
+// Form data
 type CitizenCardRequest struct {
-	CitizenID  string    `form:"citizenId" validate:"required"`
-	LaserID    string    `form:"laserId" validate:"required"`
-	ExpireDate time.Time `form:"expireDate" validate:"required"`
+	CitizenID  string    `validate:"required"`
+	LaserID    string    `validate:"required"`
+	ExpireDate time.Time `validate:"required"`
 }
 
 type CitizenCardResponse struct {

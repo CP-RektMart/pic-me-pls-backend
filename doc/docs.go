@@ -121,6 +121,11 @@ const docTemplate = `{
         },
         "/api/v1/auth/logout": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Logout",
                 "tags": [
                     "auth"
@@ -199,6 +204,11 @@ const docTemplate = `{
         },
         "/api/v1/me": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get me",
                 "tags": [
                     "user"
@@ -238,6 +248,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update user's profile",
                 "tags": [
                     "user"
@@ -245,18 +260,51 @@ const docTemplate = `{
                 "summary": "Update me",
                 "parameters": [
                     {
-                        "description": "request request",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UserUpdateRequest"
-                        }
-                    },
-                    {
                         "type": "file",
                         "description": "Profile picture (optional)",
                         "name": "profilePicture",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Phone Number",
+                        "name": "phoneNumber",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facebook",
+                        "name": "facebook",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Instagram",
+                        "name": "instagram",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bank",
+                        "name": "bank",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Account No",
+                        "name": "accountNo",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bank Branch",
+                        "name": "bankBranch",
                         "in": "formData"
                     }
                 ],
@@ -296,6 +344,11 @@ const docTemplate = `{
         },
         "/api/v1/photographer/citizen-card": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get Photographer Citizen Card",
                 "tags": [
                     "photographer"
@@ -337,6 +390,11 @@ const docTemplate = `{
         },
         "/api/v1/photographer/reverify": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Reverify Photographer Citizen Card",
                 "tags": [
                     "photographer"
@@ -344,19 +402,31 @@ const docTemplate = `{
                 "summary": "Reverify Citizen Card",
                 "parameters": [
                     {
-                        "description": "request request",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CitizenCardRequest"
-                        }
-                    },
-                    {
                         "type": "file",
                         "description": "Card picture (optional)",
                         "name": "cardPicture",
                         "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Citizen ID",
+                        "name": "citizenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Laser ID",
+                        "name": "laserId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Expire Date",
+                        "name": "expireDate",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -395,6 +465,11 @@ const docTemplate = `{
         },
         "/api/v1/photographer/verify": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Verify Photographer Citizen Card",
                 "tags": [
                     "photographer"
@@ -402,18 +477,29 @@ const docTemplate = `{
                 "summary": "Verify Citizen Card",
                 "parameters": [
                     {
-                        "description": "request request",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CitizenCardRequest"
-                        }
+                        "type": "file",
+                        "description": "Card picture (optional)",
+                        "name": "cardPicture",
+                        "in": "formData"
                     },
                     {
-                        "type": "file",
-                        "description": "Card picture",
-                        "name": "cardPicture",
+                        "type": "string",
+                        "description": "Citizen ID",
+                        "name": "citizenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Laser ID",
+                        "name": "laserId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Expire Date",
+                        "name": "expireDate",
                         "in": "formData",
                         "required": true
                     }
@@ -454,25 +540,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.CitizenCardRequest": {
-            "type": "object",
-            "required": [
-                "citizenId",
-                "expireDate",
-                "laserId"
-            ],
-            "properties": {
-                "citizenId": {
-                    "type": "string"
-                },
-                "expireDate": {
-                    "type": "string"
-                },
-                "laserId": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.CitizenCardResponse": {
             "type": "object",
             "properties": {
@@ -615,39 +682,10 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "dto.UserUpdateRequest": {
-            "type": "object",
-            "properties": {
-                "account_no": {
-                    "type": "string"
-                },
-                "bank": {
-                    "type": "string"
-                },
-                "bank_branch": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "facebook": {
-                    "type": "string"
-                },
-                "instagram": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                }
-            }
         }
     },
     "securityDefinitions": {
-        "Bearer": {
+        "ApiKeyAuth": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
@@ -657,12 +695,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
+	Version:          "0.1",
 	Host:             "",
 	BasePath:         "",
-	Schemes:          []string{"https", "http"},
-	Title:            "pic-me-pls API",
-	Description:      "pic-me-pls API documentation",
+	Schemes:          []string{},
+	Title:            "Pic Me Pls API",
+	Description:      "Pic Me Pls API Documentation",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

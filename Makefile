@@ -4,5 +4,8 @@ server:
 swagger:
 	swag init -g cmd/main.go --output doc
 
+lint:
+	golangci-lint run
+
 .PHONY:
 	server swagger
