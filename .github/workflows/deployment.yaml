@@ -12,6 +12,22 @@ jobs:
       packages: write
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.5"
+          cache: true
+          cache-dependency-path: "go.sum"
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.60
+      - name: swagger
+        uses: yegorrybchenko/go-swag-action@v0.1
+        with:
+          command: init -g cmd/main.go
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Login to GitHub Container Registry
