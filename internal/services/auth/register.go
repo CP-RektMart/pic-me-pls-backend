@@ -2,9 +2,11 @@ package auth
 
 import (
 	"context"
+	"strings"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/utils/convert"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
@@ -12,18 +14,18 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary			Login
-// @Description		Login
+// @Summary			Register
+// @Description			Register
 // @Tags			auth
-// @Router			/api/v1/auth/login [POST]
-// @Param 			RequestBody 	body 	dto.LoginRequest 	true 	"request request"
-// @Success			200	{object}	dto.HttpResponse{result=dto.LoginResponse}
+// @Router			/api/v1/auth/Register [POST]
+// @Param 			RequestBody 	body 	dto.RegisterRequest 	true 	"request request"
+// @Success			200	{object}	dto.HttpResponse{result=dto.RegisterResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
-func (h *Handler) HandleLogin(c *fiber.Ctx) error {
+func (h *Handler) HandleRegister(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 
-	req := new(dto.LoginRequest)
+	req := new(dto.RegisterRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -42,7 +44,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	var token *model.Token
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		user, err = h.getOrCreateUser(tx, OAuthUser)
+		user, err = h.createUser(tx, OAuthUser)
 		if err != nil {
 			return errors.Wrap(err, "failed to get or create user")
 		}
@@ -57,27 +59,13 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to create user and token")
 	}
 
-	userDTO := dto.UserResponse{
-		ID:                user.ID,
-		Name:              user.Name,
-		Email:             user.Email,
-		ProfilePictureURL: user.ProfilePictureURL,
-		Role:              user.Role.String(),
-		PhoneNumber:       user.PhoneNumber,
-		Facebook:          "",
-		Instagram:         "",
-		AccountNo:         "",
-		Bank:              "",
-		BankBranch:        "",
-	}
-
-	result := dto.LoginResponse{
+	result := dto.RegisterResponse{
 		TokenResponse: dto.TokenResponse{
 			AccessToken:  token.AccessToken,
 			RefreshToken: token.RefreshToken,
 			Exp:          token.Exp,
 		},
-		User: userDTO,
+		User: convert.ToUserResponse(*user),
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
@@ -113,36 +101,20 @@ func (h *Handler) validateIDToken(c context.Context, idToken string) (*model.Use
 	}, nil
 }
 
-func (h *Handler) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, error) {
-	var existingUser model.User
-	err := tx.Where("email = ?", user.Email).First(&existingUser).Error
-	if err == nil {
-		return &existingUser, nil
-	}
+func (h *Handler) createUser(tx *gorm.DB, user *model.User) (*model.User, error) {
+	if err := tx.Save(user).Error; err != nil {
+		if strings.Contains(err.Error(), "duplicate") {
+			return nil, apperror.BadRequest("this account already register", err)
+		}
 
-	if err != gorm.ErrRecordNotFound {
-		return nil, errors.Wrap(err, "failed to get user")
-	}
-
-	newUser := model.User{
-		Name:              user.Name,
-		Email:             user.Email,
-		ProfilePictureURL: user.ProfilePictureURL,
-		Role:              user.Role,
-	}
-	if err := tx.Create(&newUser).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to create user")
 	}
 
-	if newUser.Role == model.UserRolePhotographer {
-		newPhotographer := model.Photographer{
-			UserID: newUser.ID,
-		}
-
-		if err := tx.Create(&newPhotographer).Error; err != nil {
+	if user.Role == model.UserRolePhotographer {
+		if err := tx.Create(&model.Photographer{UserID: user.ID}).Error; err != nil {
 			return nil, errors.Wrap(err, "failed to create photographer")
 		}
 	}
 
-	return &newUser, nil
+	return user, nil
 }

@@ -1,6 +1,6 @@
 package dto
 
-type LoginRequest struct {
+type RegisterRequest struct {
 	Provider string `json:"provider" validate:"required,provider"` // GOOGLE
 	Role     string `json:"role" validate:"required,role"`         // CUSTOMER, PHOTOGRAPHER, ADMIN
 	IDToken  string `json:"idToken" validate:"required"`
@@ -12,7 +12,7 @@ type TokenResponse struct {
 	Exp          int64  `json:"exp"`
 }
 
-type LoginResponse struct {
+type RegisterResponse struct {
 	TokenResponse
 	User UserResponse `json:"user"`
 }
