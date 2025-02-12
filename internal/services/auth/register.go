@@ -13,10 +13,10 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary			Register
-// @Description			Register
+// @Summary			register
+// @Description			register
 // @Tags			auth
-// @Router			/api/v1/auth/Register [POST]
+// @Router			/api/v1/auth/register [POST]
 // @Param 			RequestBody 	body 	dto.RegisterRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse{result=dto.RegisterResponse}
 // @Failure			400	{object}	dto.HttpResponse
