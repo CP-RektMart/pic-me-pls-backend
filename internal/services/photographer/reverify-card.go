@@ -59,12 +59,14 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	if oldPictureURL != "" && oldPictureURL != signedURL {
-		err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(oldPictureURL))
-		if err != nil {
-			return errors.Wrap(err, "Fail to delete old picture")
-		}
-	}
+	// if oldPictureURL != "" && oldPictureURL != signedURL {
+	// 	fmt.Println(oldPictureURL)
+	// 	fmt.Println(citizenCardFolder(userId) + path.Base(oldPictureURL))
+	// 	err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(oldPictureURL))
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "Fail to delete old picture")
+	// 	}
+	// }
 
 	response := dto.CitizenCardResponse{
 		CitizenID:  user.CitizenID,
@@ -144,5 +146,5 @@ func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, si
 }
 
 func citizenCardFolder(userId uint) string {
-	return "/citizen_card/" + strconv.FormatUint(uint64(userId), 10)
+	return "citizen_card/" + strconv.FormatUint(uint64(userId), 10) + "/"
 }
