@@ -28,7 +28,7 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 	}
 
 	if photographer.CitizenCardID == nil {
-		return errors.Wrap(errors.Errorf("Not Found Citizencard"), "Citizen card not found for photographer")
+		return apperror.NotFound("Citizen card is null", err)
 	}
 
 	var citizenCard model.CitizenCard
