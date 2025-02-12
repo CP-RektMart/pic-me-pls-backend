@@ -134,6 +134,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.HttpResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Logout
       tags:
       - auth
