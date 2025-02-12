@@ -6,10 +6,10 @@ import (
 )
 
 type CitizenCardRequest struct {
-	CitizenID  string                `from:"citizenId"`
-	LaserID    string                `from:"laserId"`
-	Picture    *multipart.FileHeader `from:"picture"`
-	ExpireDate time.Time             `from:"expireDate"`
+	CitizenID  string                `from:"citizenId" validate:"required"`
+	LaserID    string                `from:"laserId" validate:"required"`
+	Picture    *multipart.FileHeader `from:"picture" validate:"required"`
+	ExpireDate time.Time             `from:"expireDate" validate:"required"`
 }
 
 type CitizenCardResponse struct {
