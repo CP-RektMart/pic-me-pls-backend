@@ -18,7 +18,7 @@ type UserResponse struct {
 	Name              string `json:"name"`
 	Email             string `json:"email"`
 	PhoneNumber       string `json:"phoneNumber"`
-	ProfilePictureURL string `json:"profilePicture_url"`
+	ProfilePictureURL string `json:"profilePictureUrl"`
 	Role              string `json:"role"`
 	Facebook          string `json:"facebook,omitempty"`
 	Instagram         string `json:"instagram,omitempty"`
