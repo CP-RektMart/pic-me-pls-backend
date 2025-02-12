@@ -1,7 +1,5 @@
 package dto
 
-import "mime/multipart"
-
 type UserRequest struct {
 	ID                uint   `json:"id" validate:"required"`
 	Name              string `json:"name" validate:"required"`
@@ -14,17 +12,6 @@ type UserRequest struct {
 	Bank              string `json:"bank"`
 	AccountNo         string `json:"account_no"`
 	BankBranch        string `json:"bank_branch"`
-}
-
-type UserUpdateRequest struct {
-	Name           string                `form:"name"`
-	PhoneNumber    string                `form:"phone_number"`
-	ProfilePicture *multipart.FileHeader `form:"profile_picture"`
-	Facebook       string                `form:"facebook"`
-	Instagram      string                `form:"instagram"`
-	Bank           string                `form:"bank"`
-	AccountNo      string                `form:"account_no"`
-	BankBranch     string                `form:"bank_branch"`
 }
 
 type UserResponse struct {
