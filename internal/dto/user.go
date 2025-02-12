@@ -1,17 +1,14 @@
 package dto
 
-type UserRequest struct {
-	ID                uint   `json:"id" validate:"required"`
-	Name              string `json:"name" validate:"required"`
-	Email             string `json:"email" validate:"required"`
-	PhoneNumber       string `json:"phone_number" validate:"required"`
-	ProfilePictureURL string `json:"profile_picture_url"`
-	Role              string `json:"role" validate:"required"`
-	Facebook          string `json:"facebook"`
-	Instagram         string `json:"instagram"`
-	Bank              string `json:"bank"`
-	AccountNo         string `json:"account_no"`
-	BankBranch        string `json:"bank_branch"`
+type UserUpdateRequest struct {
+	Name              string `form:"name"`
+	Email             string `form:"email"`
+	PhoneNumber       string `form:"phone_number"`
+	Facebook          string `form:"facebook"`
+	Instagram         string `form:"instagram"`
+	Bank              string `form:"bank"`
+	AccountNo         string `form:"account_no"`
+	BankBranch        string `form:"bank_branch"`
 }
 
 type UserResponse struct {

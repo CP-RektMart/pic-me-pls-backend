@@ -17,7 +17,7 @@ import (
 // @Tags			photographer
 // @Router			/api/v1/photographer/reverify [PATCH]
 // @Param 			RequestBody 	body 	dto.CitizenCardRequest 	true 	"request request"
-// @Param 			card_picture formData 	file		false	"Card picture (optional)"
+// @Param 			cardPicture formData 	file		false	"Card picture (optional)"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
@@ -36,22 +36,22 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("card_picture")
+	file, err := c.FormFile("cardPicture")
 	// if error mean cannot get file just ignore.
 	// because field is not provide mean not change.
+	var signedURL string
 	if err == nil {
-		signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
+		signedURL, err = h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
 		if err != nil {
 			return errors.Wrap(err, "File upload failed")
 		}
-		req.Picture = signedURL
 	}
 
-	var oldPictureURL string
-	user, err := h.updateCitizenCard(req, userId, &oldPictureURL)
+	// var oldPictureURL string
+	user, err := h.updateCitizenCard(req, userId, signedURL, nil)
 	if err != nil {
-		if req.Picture != "" {
-			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(req.Picture))
+		if signedURL != "" {
+			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(signedURL))
 			if err != nil {
 				return errors.Wrap(err, "Fail to delete the picture")
 			}
@@ -59,12 +59,14 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	if oldPictureURL != "" && oldPictureURL != req.Picture {
-		err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(oldPictureURL))
-		if err != nil {
-			return errors.Wrap(err, "Fail to delete old picture")
-		}
-	}
+	// if oldPictureURL != "" && oldPictureURL != signedURL {
+	// 	fmt.Println(oldPictureURL)
+	// 	fmt.Println(citizenCardFolder(userId) + path.Base(oldPictureURL))
+	// 	err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(oldPictureURL))
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "Fail to delete old picture")
+	// 	}
+	// }
 
 	response := dto.CitizenCardResponse{
 		CitizenID:  user.CitizenID,
@@ -78,7 +80,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, oldPictureURL *string) (*model.CitizenCard, error) {
+func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, signedURL string, oldPictureURL *string) (*model.CitizenCard, error) {
 	var newCitizenCard model.CitizenCard
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
@@ -115,7 +117,7 @@ func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, ol
 			newCitizenCard = model.CitizenCard{
 				CitizenID:  req.CitizenID,
 				LaserID:    req.LaserID,
-				Picture:    req.Picture,
+				Picture:    signedURL,
 				ExpireDate: req.ExpireDate,
 			}
 			if err := tx3.Create(&newCitizenCard).Error; err != nil {
@@ -144,5 +146,5 @@ func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, ol
 }
 
 func citizenCardFolder(userId uint) string {
-	return "/citizen_card/" + strconv.FormatUint(uint64(userId), 10)
+	return "citizen_card/" + strconv.FormatUint(uint64(userId), 10) + "/"
 }
