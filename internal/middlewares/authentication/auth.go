@@ -126,15 +126,15 @@ func (r *authMiddleware) validateToken(ctx context.Context, bearerToken string) 
 		return jwt.JWTentity{}, errors.Wrap(err, "failed to parse  token")
 	}
 
-	cachedToken, err := r.jwtService.GetCachedTokens(ctx, parsedToken.ID)
-	if err != nil {
-		return jwt.JWTentity{}, errors.Wrap(err, "failed to get cached token")
-	}
+	// cachedToken, err := r.jwtService.GetCachedTokens(ctx, parsedToken.ID)
+	// if err != nil {
+	// 	return jwt.JWTentity{}, errors.Wrap(err, "failed to get cached token")
+	// }
 
-	err = r.jwtService.ValidateToken(*cachedToken, parsedToken, false)
-	if err != nil {
-		return jwt.JWTentity{}, errors.Wrap(err, "failed to validate token")
-	}
+	// err = r.jwtService.ValidateToken(*cachedToken, parsedToken, false)
+	// if err != nil {
+	// 	return jwt.JWTentity{}, errors.Wrap(err, "failed to validate token")
+	// }
 
 	return parsedToken, nil
 

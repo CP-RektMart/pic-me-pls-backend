@@ -50,8 +50,8 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		}
 	}
 
-	var oldPictureURL string
-	updatedUser, err := h.updateUserDB(userId, req, signedURL, &oldPictureURL)
+	// var oldPictureURL string
+	updatedUser, err := h.updateUserDB(userId, req, signedURL, ni)
 	if err != nil {
 		if signedURL != "" {
 			err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(signedURL))
@@ -62,12 +62,12 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	if oldPictureURL != "" && oldPictureURL != signedURL {
-		err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(oldPictureURL))
-		if err != nil {
-			return errors.Wrap(err, "Fail to delete old picture")
-		}
-	}
+	// if oldPictureURL != "" && oldPictureURL != signedURL {
+	// 	err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(oldPictureURL))
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "Fail to delete old picture")
+	// 	}
+	// }
 
 	response := dto.UserResponse{
 		ID:                updatedUser.ID,
@@ -147,5 +147,5 @@ func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest, signedUR
 }
 
 func profileFolder(userID uint) string {
-	return "/profile/" + strconv.FormatUint(uint64(userID), 10)
+	return "profile/" + strconv.FormatUint(uint64(userID), 10) + "/"
 }
