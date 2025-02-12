@@ -21,7 +21,7 @@ import (
 // @Param           laserId         formData    string       true  "Laser ID"
 // @Param           picture         formData    file         true "Citizen card picture"
 // @Param           expireDate      formData    string       true  "Expire date (YYYY-MM-DD)"
-// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
+// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCard}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
