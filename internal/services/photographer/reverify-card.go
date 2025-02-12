@@ -36,22 +36,22 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("citizen_card")
+	file, err := c.FormFile("card_picture")
 	// if error mean cannot get file just ignore.
 	// because field is not provide mean not change.
+	var signedURL string
 	if err == nil {
-		signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
+		signedURL, err = h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
 		if err != nil {
 			return errors.Wrap(err, "File upload failed")
 		}
-		req.Picture = signedURL
 	}
 
 	var oldPictureURL string
-	user, err := h.updateCitizenCard(req, userId, &oldPictureURL)
+	user, err := h.updateCitizenCard(req, userId, signedURL, &oldPictureURL)
 	if err != nil {
-		if req.Picture != "" {
-			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(req.Picture))
+		if signedURL != "" {
+			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(signedURL))
 			if err != nil {
 				return errors.Wrap(err, "Fail to delete the picture")
 			}
@@ -59,7 +59,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	if oldPictureURL != "" && oldPictureURL != req.Picture {
+	if oldPictureURL != "" && oldPictureURL != signedURL {
 		err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(oldPictureURL))
 		if err != nil {
 			return errors.Wrap(err, "Fail to delete old picture")
@@ -78,7 +78,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, oldPictureURL *string) (*model.CitizenCard, error) {
+func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, signedURL string, oldPictureURL *string) (*model.CitizenCard, error) {
 	var newCitizenCard model.CitizenCard
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
@@ -115,7 +115,7 @@ func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, ol
 			newCitizenCard = model.CitizenCard{
 				CitizenID:  req.CitizenID,
 				LaserID:    req.LaserID,
-				Picture:    req.Picture,
+				Picture:    signedURL,
 				ExpireDate: req.ExpireDate,
 			}
 			if err := tx3.Create(&newCitizenCard).Error; err != nil {
