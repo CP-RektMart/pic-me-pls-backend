@@ -16,11 +16,8 @@ import (
 // @Description		Verify Photographer Citizen Card
 // @Tags			photographer
 // @Router			/api/v1/photographer/verify [POST]
-// @Accept          multipart/form-data
-// @Param           citizenId       formData    string       true  "Citizen ID"
-// @Param           laserId         formData    string       true  "Laser ID"
-// @Param           picture         formData    file         true "Citizen card picture"
-// @Param           expireDate      formData    string       true  "Expire date (YYYY-MM-DD)"
+// @Param 			RequestBody 	body 	dto.CitizenCardRequest 	true 	"request request"
+// @Param 			card_picture formData 	file		true	"Card picture"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
@@ -39,7 +36,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("picture")
+	file, err := c.FormFile("card_picture")
 	if err != nil {
 		return apperror.BadRequest("citizen_card is require", errors.Errorf("Field Missing"))
 	}
@@ -48,8 +45,9 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 	if err != nil {
 		return errors.Wrap(err, "File upload failed")
 	}
+	req.Picture = signedURL
 
-	user, err := h.createCitizenCard(req, userId, signedURL)
+	user, err := h.createCitizenCard(req, userId)
 	if err != nil {
 		return errors.Wrap(err, "Fail to create citizen card")
 	}
@@ -57,7 +55,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 	response := dto.CitizenCardResponse{
 		CitizenID:  user.CitizenID,
 		LaserID:    user.LaserID,
-		PictureURL: user.Picture,
+		Picture:    user.Picture,
 		ExpireDate: user.ExpireDate,
 	}
 
@@ -83,7 +81,7 @@ func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, 
 	return signedURL, nil
 }
 
-func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, userId uint, signedURL string) (*model.CitizenCard, error) {
+func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, userId uint) (*model.CitizenCard, error) {
 	var citizenCard model.CitizenCard
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
@@ -101,7 +99,7 @@ func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, userId uint, si
 		// Create the CitizenCard using the request data
 		citizenCard.CitizenID = req.CitizenID
 		citizenCard.LaserID = req.LaserID
-		citizenCard.Picture = signedURL
+		citizenCard.Picture = req.Picture
 		citizenCard.ExpireDate = req.ExpireDate
 
 		// Insert the CitizenCard into the database

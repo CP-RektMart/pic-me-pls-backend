@@ -1,4 +1,20 @@
 definitions:
+  dto.CitizenCardRequest:
+    properties:
+      citizenId:
+        type: string
+      expireDate:
+        type: string
+      laserId:
+        type: string
+      picture:
+        type: string
+    required:
+    - citizenId
+    - expireDate
+    - laserId
+    - picture
+    type: object
   dto.CitizenCardResponse:
     properties:
       citizenId:
@@ -7,7 +23,7 @@ definitions:
         type: string
       laserId:
         type: string
-      picture_url:
+      picture:
         type: string
     type: object
   dto.HttpResponse:
@@ -57,6 +73,37 @@ definitions:
         type: integer
       refreshToken:
         type: string
+    type: object
+  dto.UserRequest:
+    properties:
+      account_no:
+        type: string
+      bank:
+        type: string
+      bank_branch:
+        type: string
+      email:
+        type: string
+      facebook:
+        type: string
+      id:
+        type: integer
+      instagram:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      profile_picture_url:
+        type: string
+      role:
+        type: string
+    required:
+    - email
+    - id
+    - name
+    - phone_number
+    - role
     type: object
   dto.UserResponse:
     properties:
@@ -193,42 +240,14 @@ paths:
       tags:
       - user
     patch:
-      consumes:
-      - multipart/form-data
-      description: Update user's profile, Send only the fields that need to be changed.
+      description: Update user's profile
       parameters:
-      - description: User's name
-        in: formData
-        name: name
-        type: string
-      - description: User's phone number
-        in: formData
-        name: phone_number
-        type: string
-      - description: User's profile picture
-        in: formData
-        name: profile_picture
-        type: file
-      - description: User's Facebook link
-        in: formData
-        name: facebook
-        type: string
-      - description: User's Instagram link
-        in: formData
-        name: instagram
-        type: string
-      - description: User's bank name
-        in: formData
-        name: bank
-        type: string
-      - description: User's bank account number
-        in: formData
-        name: account_no
-        type: string
-      - description: User's bank branch
-        in: formData
-        name: bank_branch
-        type: string
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRequest'
       responses:
         "200":
           description: OK
@@ -247,7 +266,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.HttpResponse'
-      summary: Update user's profile
+      summary: Update me
       tags:
       - user
   /api/v1/photographer/citizen-card:
@@ -276,27 +295,14 @@ paths:
       - photographer
   /api/v1/photographer/reverify:
     patch:
-      consumes:
-      - multipart/form-data
-      description: Allows photographers to update their citizen card details. Send
-        only the fields that need to be changed.
+      description: Reverify Photographer Citizen Card
       parameters:
-      - description: Citizen ID
-        in: formData
-        name: citizenId
-        type: string
-      - description: Laser ID
-        in: formData
-        name: laserId
-        type: string
-      - description: Citizen card picture
-        in: formData
-        name: picture
-        type: file
-      - description: Expire date (YYYY-MM-DD)
-        in: formData
-        name: expireDate
-        type: string
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CitizenCardRequest'
       responses:
         "200":
           description: OK
@@ -320,30 +326,14 @@ paths:
       - photographer
   /api/v1/photographer/verify:
     post:
-      consumes:
-      - multipart/form-data
       description: Verify Photographer Citizen Card
       parameters:
-      - description: Citizen ID
-        in: formData
-        name: citizenId
+      - description: request request
+        in: body
+        name: RequestBody
         required: true
-        type: string
-      - description: Laser ID
-        in: formData
-        name: laserId
-        required: true
-        type: string
-      - description: Citizen card picture
-        in: formData
-        name: picture
-        required: true
-        type: file
-      - description: Expire date (YYYY-MM-DD)
-        in: formData
-        name: expireDate
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/dto.CitizenCardRequest'
       responses:
         "200":
           description: OK
