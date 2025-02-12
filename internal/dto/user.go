@@ -8,7 +8,7 @@ type UserRequest struct {
 	Email             string `json:"email" validate:"required"`
 	PhoneNumber       string `json:"phone_number" validate:"required"`
 	ProfilePictureURL string `json:"profile_picture_url"`
-	Role              string `json:"role" validate:"required" validate:"required"`
+	Role              string `json:"role" validate:"required"`
 	Facebook          string `json:"facebook"`
 	Instagram         string `json:"instagram"`
 	Bank              string `json:"bank"`
