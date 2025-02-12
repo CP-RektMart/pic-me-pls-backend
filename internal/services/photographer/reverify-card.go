@@ -1,6 +1,7 @@
 package photographer
 
 import (
+	"mime/multipart"
 	"path"
 	"strconv"
 
@@ -36,11 +37,12 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("cardPicture")
+	var file *multipart.FileHeader
+	file, err = c.FormFile("cardPicture")
 	// if error mean cannot get file just ignore.
 	// because field is not provide mean not change.
-	var signedURL string
-	if err == nil {
+	var signedURL string = ""
+	if err == nil && file.Size != 0 {
 		signedURL, err = h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
 		if err != nil {
 			return errors.Wrap(err, "File upload failed")
@@ -60,8 +62,6 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	}
 
 	// if oldPictureURL != "" && oldPictureURL != signedURL {
-	// 	fmt.Println(oldPictureURL)
-	// 	fmt.Println(citizenCardFolder(userId) + path.Base(oldPictureURL))
 	// 	err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(oldPictureURL))
 	// 	if err != nil {
 	// 		return errors.Wrap(err, "Fail to delete old picture")
@@ -81,7 +81,13 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 }
 
 func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, signedURL string, oldPictureURL *string) (*model.CitizenCard, error) {
-	var newCitizenCard model.CitizenCard
+	var updatedCitizenCard model.CitizenCard
+
+	updateField := func(field *string, newValue string) {
+		if newValue != "" {
+			*field = newValue
+		}
+	}
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		// Find the photographer associated with the user
@@ -90,49 +96,40 @@ func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, si
 			return errors.Wrap(err, "Photographer not found for user")
 		}
 
-		// If there's an existing CitizenCard, delete it
-		// (Photographer is created before citizen card in a first place)
+		// Check if the photographer has an existing CitizenCard
 		if photographer.CitizenCardID != nil {
-			err := tx.Transaction(func(tx2 *gorm.DB) error {
-				var oldCitizenCard model.CitizenCard
-				if err := tx2.First(&oldCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
-					return errors.Wrap(err, "Error finding old citizen card")
-				}
-				// Assign old picture URL if needed
-				if oldPictureURL != nil {
-					*oldPictureURL = oldCitizenCard.Picture
-				}
-				if err := tx2.Delete(&oldCitizenCard).Error; err != nil {
-					return errors.Wrap(err, "Error deleting old citizen card")
-				}
-				return nil
-			})
-			if err != nil {
-				return err
+			// Find the existing CitizenCard
+			var existingCitizenCard model.CitizenCard
+			if err := tx.First(&existingCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
+				return errors.Wrap(err, "Error finding existing citizen card")
 			}
+
+			// Optionally assign old picture URL if needed
+			if oldPictureURL != nil {
+				*oldPictureURL = existingCitizenCard.Picture
+			}
+
+			existingCitizenCard.CitizenID = req.CitizenID
+			existingCitizenCard.LaserID = req.LaserID
+			updateField(&existingCitizenCard.Picture, signedURL)
+			existingCitizenCard.ExpireDate = req.ExpireDate
+
+			// Save the updated CitizenCard
+			if err := tx.Save(&existingCitizenCard).Error; err != nil {
+				return errors.Wrap(err, "Error updating existing citizen card")
+			}
+
+			// Return the updated citizen card
+			updatedCitizenCard = existingCitizenCard
+		} else {
+			// If no CitizenCard exists, create a new one (this block can be omitted if you want to handle that elsewhere)
+			return errors.New("No existing citizen card found for the photographer")
 		}
 
-		// Create a new CitizenCard
-		err := tx.Transaction(func(tx3 *gorm.DB) error {
-			newCitizenCard = model.CitizenCard{
-				CitizenID:  req.CitizenID,
-				LaserID:    req.LaserID,
-				Picture:    signedURL,
-				ExpireDate: req.ExpireDate,
-			}
-			if err := tx3.Create(&newCitizenCard).Error; err != nil {
-				return errors.Wrap(err, "Error creating new citizen card")
-			}
-			return nil
-		})
-		if err != nil {
-			return err // Rollback if creating new CitizenCard fails
-		}
-
-		// Update the photographer's CitizenCardID
-		photographer.CitizenCardID = &newCitizenCard.ID
+		// Update the photographer's CitizenCardID if necessary
+		photographer.CitizenCardID = &updatedCitizenCard.ID
 		if err := tx.Save(&photographer).Error; err != nil {
-			return errors.Wrap(err, "Error updating photographer with new citizen card")
+			return errors.Wrap(err, "Error updating photographer with citizen card")
 		}
 
 		return nil
@@ -142,7 +139,7 @@ func (h *Handler) updateCitizenCard(req *dto.CitizenCardRequest, userId uint, si
 		return nil, err
 	}
 
-	return &newCitizenCard, nil
+	return &updatedCitizenCard, nil
 }
 
 func citizenCardFolder(userId uint) string {

@@ -3,8 +3,10 @@ package photographer
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 // @Summary			Get Citizen Card
@@ -25,8 +27,15 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Photographer not found for user")
 	}
 
+	if photographer.CitizenCardID == nil {
+		return errors.Wrap(errors.Errorf("Not Found Citizencard"), "Citizen card not found for photographer")
+	}
+
 	var citizenCard model.CitizenCard
-	if err := h.store.DB.First(&citizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
+	if err := h.store.DB.First(&citizenCard, "id = ?", photographer.CitizenCardID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return apperror.NotFound("Citizen card not found", err)
+		}
 		return errors.Wrap(err, "Error finding citizen card")
 	}
 
