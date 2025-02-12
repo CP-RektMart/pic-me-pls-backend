@@ -1,14 +1,13 @@
 package dto
 
 type UserUpdateRequest struct {
-	Name              string `form:"name"`
-	Email             string `form:"email"`
-	PhoneNumber       string `form:"phone_number"`
-	Facebook          string `form:"facebook"`
-	Instagram         string `form:"instagram"`
-	Bank              string `form:"bank"`
-	AccountNo         string `form:"account_no"`
-	BankBranch        string `form:"bank_branch"`
+	Name        string
+	PhoneNumber string
+	Facebook    string
+	Instagram   string
+	Bank        string
+	AccountNo   string
+	BankBranch  string
 }
 
 type UserResponse struct {

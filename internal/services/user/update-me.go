@@ -19,8 +19,15 @@ import (
 // @Description		Update user's profile
 // @Tags			user
 // @Router			/api/v1/me [PATCH]
-// @Param 			RequestBody 	body 	dto.UserUpdateRequest 	true 	"request request"
-// @Param 			profilePicture formData 	file		false	"Profile picture (optional)"
+// @Security		ApiKeyAuth
+// @Param 			profilePicture 	formData 	file		false	"Profile picture (optional)"
+// @Param 			name 			formData 	string		false	"Name"
+// @Param 			phoneNumber 	formData 	string		false	"Phone Number"
+// @Param 			facebook 		formData 	string		false	"Facebook"
+// @Param 			instagram 		formData 	string		false	"Instagram"
+// @Param 			bank 			formData 	string		false	"Bank"
+// @Param 			accountNo 		formData 	string		false	"Account No"
+// @Param 			bankBranch 		formData 	string		false	"Bank Branch"
 // @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
@@ -31,9 +38,13 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	}
 
 	req := new(dto.UserUpdateRequest)
-	if err := c.BodyParser(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
-	}
+	req.Name = c.FormValue("name")
+	req.PhoneNumber = c.FormValue("phoneNumber")
+	req.Facebook = c.FormValue("facebook")
+	req.Instagram = c.FormValue("instagram")
+	req.Bank = c.FormValue("bank")
+	req.AccountNo = c.FormValue("accountNo")
+	req.BankBranch = c.FormValue("bankBranch")
 
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)

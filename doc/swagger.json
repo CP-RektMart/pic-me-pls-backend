@@ -1,14 +1,10 @@
 {
-    "schemes": [
-        "https",
-        "http"
-    ],
     "swagger": "2.0",
     "info": {
-        "description": "pic-me-pls API documentation",
-        "title": "pic-me-pls API",
+        "description": "Pic Me Pls API Documentation",
+        "title": "Pic Me Pls API",
         "contact": {},
-        "version": "1.0"
+        "version": "0.1"
     },
     "paths": {
         "/api/v1/auth/login": {
@@ -143,6 +139,11 @@
         },
         "/api/v1/me": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get me",
                 "tags": [
                     "user"
@@ -182,6 +183,11 @@
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update user's profile",
                 "tags": [
                     "user"
@@ -189,18 +195,51 @@
                 "summary": "Update me",
                 "parameters": [
                     {
-                        "description": "request request",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UserUpdateRequest"
-                        }
-                    },
-                    {
                         "type": "file",
                         "description": "Profile picture (optional)",
                         "name": "profilePicture",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Phone Number",
+                        "name": "phoneNumber",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facebook",
+                        "name": "facebook",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Instagram",
+                        "name": "instagram",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bank",
+                        "name": "bank",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Account No",
+                        "name": "accountNo",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bank Branch",
+                        "name": "bankBranch",
                         "in": "formData"
                     }
                 ],
@@ -240,6 +279,11 @@
         },
         "/api/v1/photographer/citizen-card": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get Photographer Citizen Card",
                 "tags": [
                     "photographer"
@@ -281,6 +325,11 @@
         },
         "/api/v1/photographer/reverify": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Reverify Photographer Citizen Card",
                 "tags": [
                     "photographer"
@@ -288,19 +337,31 @@
                 "summary": "Reverify Citizen Card",
                 "parameters": [
                     {
-                        "description": "request request",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CitizenCardRequest"
-                        }
-                    },
-                    {
                         "type": "file",
                         "description": "Card picture (optional)",
                         "name": "cardPicture",
                         "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Citizen ID",
+                        "name": "citizenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Laser ID",
+                        "name": "laserId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Expire Date",
+                        "name": "expireDate",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -339,6 +400,11 @@
         },
         "/api/v1/photographer/verify": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Verify Photographer Citizen Card",
                 "tags": [
                     "photographer"
@@ -346,18 +412,29 @@
                 "summary": "Verify Citizen Card",
                 "parameters": [
                     {
-                        "description": "request request",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CitizenCardRequest"
-                        }
+                        "type": "file",
+                        "description": "Card picture (optional)",
+                        "name": "cardPicture",
+                        "in": "formData"
                     },
                     {
-                        "type": "file",
-                        "description": "Card picture",
-                        "name": "cardPicture",
+                        "type": "string",
+                        "description": "Citizen ID",
+                        "name": "citizenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Laser ID",
+                        "name": "laserId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Expire Date",
+                        "name": "expireDate",
                         "in": "formData",
                         "required": true
                     }
@@ -398,25 +475,6 @@
         }
     },
     "definitions": {
-        "dto.CitizenCardRequest": {
-            "type": "object",
-            "required": [
-                "citizenId",
-                "expireDate",
-                "laserId"
-            ],
-            "properties": {
-                "citizenId": {
-                    "type": "string"
-                },
-                "expireDate": {
-                    "type": "string"
-                },
-                "laserId": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.CitizenCardResponse": {
             "type": "object",
             "properties": {
@@ -543,39 +601,10 @@
                     "type": "string"
                 }
             }
-        },
-        "dto.UserUpdateRequest": {
-            "type": "object",
-            "properties": {
-                "account_no": {
-                    "type": "string"
-                },
-                "bank": {
-                    "type": "string"
-                },
-                "bank_branch": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "facebook": {
-                    "type": "string"
-                },
-                "instagram": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                }
-            }
         }
     },
     "securityDefinitions": {
-        "Bearer": {
+        "ApiKeyAuth": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
