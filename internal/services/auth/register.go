@@ -18,7 +18,7 @@ import (
 // @Description			Register
 // @Tags			auth
 // @Router			/api/v1/auth/Register [POST]
-// @Param 			RequestBody 	body 	dto.RegisterRequest 	true 	"request request"
+// @Param 			RequestBody 	body 	dto.registerRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse{result=dto.RegisterResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
