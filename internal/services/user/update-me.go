@@ -15,21 +15,29 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// @Summary			Update me
-// @Description		Update user's profile
-// @Tags			user
-// @Router			/api/v1/me [PATCH]
-// @Param 			RequestBody 	body 	dto.UserRequest 	true 	"request request"
-// @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Summary         Update user's profile
+// @Description     Update user's profile, Send only the fields that need to be changed.
+// @Tags            user
+// @Router          /api/v1/me [PATCH]
+// @Accept          multipart/form-data
+// @Param           name            formData    string       false  "User's name"
+// @Param           phone_number    formData    string       false  "User's phone number"
+// @Param           profile_picture formData    file         false  "User's profile picture"
+// @Param           facebook        formData    string       false  "User's Facebook link"
+// @Param           instagram       formData    string       false  "User's Instagram link"
+// @Param           bank            formData    string       false  "User's bank name"
+// @Param           account_no      formData    string       false  "User's bank account number"
+// @Param           bank_branch     formData    string       false  "User's bank branch"
+// @Success         200            {object}    dto.HttpResponse{result=dto.UserResponse}
+// @Failure         400            {object}    dto.HttpResponse
+// @Failure         500            {object}    dto.HttpResponse
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.UserRequest)
+	req := new(dto.UserUpdateRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -41,19 +49,19 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	file, err := c.FormFile("profile")
 	// if error mean cannot get file just ignore.
 	// because field is not provide mean not change.
+	var signedURL string
 	if err == nil {
-		signedURL, err := h.uploadProfileFile(c.UserContext(), file, profileFolder(userId))
+		signedURL, err = h.uploadProfileFile(c.UserContext(), file, profileFolder(userId))
 		if err != nil {
 			return errors.Wrap(err, "File upload failed")
 		}
-		req.ProfilePictureURL = signedURL
 	}
 
 	var oldPictureURL string
-	updatedUser, err := h.updateUserDB(userId, req, &oldPictureURL)
+	updatedUser, err := h.updateUserDB(userId, req, signedURL, &oldPictureURL)
 	if err != nil {
-		if req.ProfilePictureURL != "" {
-			err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(req.ProfilePictureURL))
+		if signedURL != "" {
+			err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(signedURL))
 			if err != nil {
 				return errors.Wrap(err, "Fail to delete the picture")
 			}
@@ -61,7 +69,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	if oldPictureURL != "" && oldPictureURL != req.ProfilePictureURL {
+	if oldPictureURL != "" && oldPictureURL != signedURL {
 		err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(oldPictureURL))
 		if err != nil {
 			return errors.Wrap(err, "Fail to delete old picture")
@@ -103,7 +111,7 @@ func (h *Handler) uploadProfileFile(c context.Context, file *multipart.FileHeade
 	return signedURL, nil
 }
 
-func (h *Handler) updateUserDB(userID uint, req *dto.UserRequest, oldPictureURL *string) (*model.User, error) {
+func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest, signedURL string, oldPictureURL *string) (*model.User, error) {
 	var user model.User
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
@@ -124,7 +132,7 @@ func (h *Handler) updateUserDB(userID uint, req *dto.UserRequest, oldPictureURL 
 
 		updateField(&user.Name, req.Name)
 		updateField(&user.PhoneNumber, req.PhoneNumber)
-		updateField(&user.ProfilePictureURL, req.ProfilePictureURL)
+		updateField(&user.ProfilePictureURL, signedURL)
 		updateField(&user.Facebook, req.Facebook)
 		updateField(&user.Instagram, req.Instagram)
 		updateField(&user.Bank, req.Bank)
