@@ -17,7 +17,7 @@ import (
 // @Tags			photographer
 // @Router			/api/v1/photographer/reverify [PATCH]
 // @Param 			RequestBody 	body 	dto.CitizenCardRequest 	true 	"request request"
-// @Param 			card_picture formData 	file		false	"Card picture (optional)"
+// @Param 			cardPicture formData 	file		false	"Card picture (optional)"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
@@ -36,7 +36,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("card_picture")
+	file, err := c.FormFile("cardPicture")
 	// if error mean cannot get file just ignore.
 	// because field is not provide mean not change.
 	var signedURL string

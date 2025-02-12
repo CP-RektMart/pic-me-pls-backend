@@ -17,7 +17,7 @@ import (
 // @Tags			photographer
 // @Router			/api/v1/photographer/verify [POST]
 // @Param 			RequestBody 	body 	dto.CitizenCardRequest 	true 	"request request"
-// @Param 			card_picture formData 	file		true	"Card picture"
+// @Param 			cardPicture formData 	file		true	"Card picture"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
@@ -36,9 +36,9 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("card_picture")
+	file, err := c.FormFile("cardPicture")
 	if err != nil {
-		return apperror.BadRequest("card_picture is require", errors.Errorf("Field Missing"))
+		return apperror.BadRequest("card Picture is require", errors.Errorf("Field Missing"))
 	}
 
 	var signedURL string
