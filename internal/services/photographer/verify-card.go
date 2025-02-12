@@ -36,7 +36,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("citizen_card")
+	file, err := c.FormFile("card_picture")
 	if err != nil {
 		return apperror.BadRequest("citizen_card is require", errors.Errorf("Field Missing"))
 	}
