@@ -15,6 +15,58 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth/Register": {
+            "post": {
+                "description": "Register",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.RegisterResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/auth/login": {
             "post": {
                 "description": "Login",
@@ -45,7 +97,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "result": {
-                                            "$ref": "#/definitions/dto.LoginResponse"
+                                            "$ref": "#/definitions/dto.LoginRequest"
                                         }
                                     }
                                 }
@@ -451,6 +503,33 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "idToken",
+                "provider"
+            ],
+            "properties": {
+                "idToken": {
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "GOOGLE",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RefreshTokenRequest": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "idToken",
                 "provider",
                 "role"
             ],
@@ -468,7 +547,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.LoginResponse": {
+        "dto.RegisterResponse": {
             "type": "object",
             "properties": {
                 "accessToken": {
@@ -482,17 +561,6 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/dto.UserResponse"
-                }
-            }
-        },
-        "dto.RefreshTokenRequest": {
-            "type": "object",
-            "required": [
-                "refreshToken"
-            ],
-            "properties": {
-                "refreshToken": {
-                    "type": "string"
                 }
             }
         },

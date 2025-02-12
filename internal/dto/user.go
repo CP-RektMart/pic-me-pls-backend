@@ -1,14 +1,16 @@
 package dto
 
+import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+
 type UserUpdateRequest struct {
-	Name              string `form:"name"`
-	Email             string `form:"email"`
-	PhoneNumber       string `form:"phone_number"`
-	Facebook          string `form:"facebook"`
-	Instagram         string `form:"instagram"`
-	Bank              string `form:"bank"`
-	AccountNo         string `form:"account_no"`
-	BankBranch        string `form:"bank_branch"`
+	Name        string `form:"name"`
+	Email       string `form:"email"`
+	PhoneNumber string `form:"phone_number"`
+	Facebook    string `form:"facebook"`
+	Instagram   string `form:"instagram"`
+	Bank        string `form:"bank"`
+	AccountNo   string `form:"account_no"`
+	BankBranch  string `form:"bank_branch"`
 }
 
 type UserResponse struct {
@@ -23,4 +25,20 @@ type UserResponse struct {
 	Bank              string `json:"bank,omitempty"`
 	AccountNo         string `json:"account_no,omitempty"`
 	BankBranch        string `json:"bank_branch,omitempty"`
+}
+
+func ToUserResponse(user model.User) UserResponse {
+	return UserResponse{
+		ID:                user.ID,
+		Name:              user.Name,
+		Email:             user.Email,
+		PhoneNumber:       user.PhoneNumber,
+		ProfilePictureURL: user.ProfilePictureURL,
+		Role:              user.Role.String(),
+		Facebook:          user.Facebook,
+		Instagram:         user.Instagram,
+		Bank:              user.Bank,
+		AccountNo:         user.AccountNo,
+		BankBranch:        user.BankBranch,
+	}
 }
