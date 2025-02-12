@@ -3,7 +3,6 @@ package auth
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/utils/convert"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
@@ -62,7 +61,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 			RefreshToken: token.RefreshToken,
 			Exp:          token.Exp,
 		},
-		User: convert.ToUserResponse(*user),
+		User: dto.ToUserResponse(*user),
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
