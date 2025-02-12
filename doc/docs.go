@@ -186,62 +186,20 @@ const docTemplate = `{
                 }
             },
             "patch": {
-                "description": "Update user's profile, Send only the fields that need to be changed.",
-                "consumes": [
-                    "multipart/form-data"
-                ],
+                "description": "Update user's profile",
                 "tags": [
                     "user"
                 ],
-                "summary": "Update user's profile",
+                "summary": "Update me",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User's name",
-                        "name": "name",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User's phone number",
-                        "name": "phone_number",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "file",
-                        "description": "User's profile picture",
-                        "name": "profile_picture",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User's Facebook link",
-                        "name": "facebook",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User's Instagram link",
-                        "name": "instagram",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User's bank name",
-                        "name": "bank",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User's bank account number",
-                        "name": "account_no",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User's bank branch",
-                        "name": "bank_branch",
-                        "in": "formData"
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -321,38 +279,20 @@ const docTemplate = `{
         },
         "/api/v1/photographer/reverify": {
             "patch": {
-                "description": "Allows photographers to update their citizen card details. Send only the fields that need to be changed.",
-                "consumes": [
-                    "multipart/form-data"
-                ],
+                "description": "Reverify Photographer Citizen Card",
                 "tags": [
                     "photographer"
                 ],
                 "summary": "Reverify Citizen Card",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Citizen ID",
-                        "name": "citizenId",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Laser ID",
-                        "name": "laserId",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "file",
-                        "description": "Citizen card picture",
-                        "name": "picture",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Expire date (YYYY-MM-DD)",
-                        "name": "expireDate",
-                        "in": "formData"
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CitizenCardRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -392,41 +332,19 @@ const docTemplate = `{
         "/api/v1/photographer/verify": {
             "post": {
                 "description": "Verify Photographer Citizen Card",
-                "consumes": [
-                    "multipart/form-data"
-                ],
                 "tags": [
                     "photographer"
                 ],
                 "summary": "Verify Citizen Card",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Citizen ID",
-                        "name": "citizenId",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Laser ID",
-                        "name": "laserId",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "file",
-                        "description": "Citizen card picture",
-                        "name": "picture",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Expire date (YYYY-MM-DD)",
-                        "name": "expireDate",
-                        "in": "formData",
-                        "required": true
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CitizenCardRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -465,6 +383,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.CitizenCardRequest": {
+            "type": "object",
+            "required": [
+                "citizenId",
+                "expireDate",
+                "laserId",
+                "picture"
+            ],
+            "properties": {
+                "citizenId": {
+                    "type": "string"
+                },
+                "expireDate": {
+                    "type": "string"
+                },
+                "laserId": {
+                    "type": "string"
+                },
+                "picture": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CitizenCardResponse": {
             "type": "object",
             "properties": {
@@ -477,7 +418,7 @@ const docTemplate = `{
                 "laserId": {
                     "type": "string"
                 },
-                "picture_url": {
+                "picture": {
                     "type": "string"
                 }
             }
@@ -550,6 +491,51 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "id",
+                "name",
+                "phone_number",
+                "role"
+            ],
+            "properties": {
+                "account_no": {
+                    "type": "string"
+                },
+                "bank": {
+                    "type": "string"
+                },
+                "bank_branch": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "facebook": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "instagram": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "profile_picture_url": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 }
             }

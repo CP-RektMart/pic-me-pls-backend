@@ -33,7 +33,7 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 	citizenCardDTO := dto.CitizenCardResponse{
 		CitizenID:  citizenCard.CitizenID,
 		LaserID:    citizenCard.LaserID,
-		PictureURL: citizenCard.Picture,
+		Picture:    citizenCard.Picture,
 		ExpireDate: citizenCard.ExpireDate,
 	}
 
