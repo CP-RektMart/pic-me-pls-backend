@@ -36,7 +36,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("citizen_card")
+	file, err := c.FormFile("card_picture")
 	// if error mean cannot get file just ignore.
 	// because field is not provide mean not change.
 	if err == nil {
