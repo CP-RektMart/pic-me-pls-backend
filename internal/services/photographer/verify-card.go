@@ -17,6 +17,7 @@ import (
 // @Tags			photographer
 // @Router			/api/v1/photographer/verify [POST]
 // @Param 			RequestBody 	body 	dto.CitizenCardRequest 	true 	"request request"
+// @Param 			card_picture formData 	file		true	"Card picture"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse

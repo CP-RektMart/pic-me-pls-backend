@@ -16,11 +16,11 @@ VALUES
 ('User 5', 'user5@example.com', '5678901234', 'url5.jpg', 'Photographer');
 
 -- 2. Insert Photographers (only for Users with Role 'Photographer')
-INSERT INTO Photographers (User_ID, SSN, Is_Verified, Active_Status)
+INSERT INTO Photographers (User_ID, Is_Verified, Active_Status)
 VALUES
-(3, '123-45-6789', true, true),
-(4, '234-56-7890', true, true),
-(5, '345-67-8901', false, false);
+(3,  true, true),
+(4,  true, true),
+(5, false, false);
 
 
 -- 3. Insert Citizen Cards for Photographers
