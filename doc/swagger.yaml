@@ -7,13 +7,10 @@ definitions:
         type: string
       laserId:
         type: string
-      picture:
-        type: string
     required:
     - citizenId
     - expireDate
     - laserId
-    - picture
     type: object
   dto.CitizenCardResponse:
     properties:
@@ -74,37 +71,6 @@ definitions:
       refreshToken:
         type: string
     type: object
-  dto.UserRequest:
-    properties:
-      account_no:
-        type: string
-      bank:
-        type: string
-      bank_branch:
-        type: string
-      email:
-        type: string
-      facebook:
-        type: string
-      id:
-        type: integer
-      instagram:
-        type: string
-      name:
-        type: string
-      phone_number:
-        type: string
-      profile_picture_url:
-        type: string
-      role:
-        type: string
-    required:
-    - email
-    - id
-    - name
-    - phone_number
-    - role
-    type: object
   dto.UserResponse:
     properties:
       account_no:
@@ -128,6 +94,25 @@ definitions:
       profile_picture_url:
         type: string
       role:
+        type: string
+    type: object
+  dto.UserUpdateRequest:
+    properties:
+      account_no:
+        type: string
+      bank:
+        type: string
+      bank_branch:
+        type: string
+      email:
+        type: string
+      facebook:
+        type: string
+      instagram:
+        type: string
+      name:
+        type: string
+      phone_number:
         type: string
     type: object
 info:
@@ -247,7 +232,11 @@ paths:
         name: RequestBody
         required: true
         schema:
-          $ref: '#/definitions/dto.UserRequest'
+          $ref: '#/definitions/dto.UserUpdateRequest'
+      - description: Profile picture (optional)
+        in: formData
+        name: profilePicture
+        type: file
       responses:
         "200":
           description: OK
@@ -303,6 +292,10 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.CitizenCardRequest'
+      - description: Card picture (optional)
+        in: formData
+        name: cardPicture
+        type: file
       responses:
         "200":
           description: OK
@@ -334,6 +327,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.CitizenCardRequest'
+      - description: Card picture
+        in: formData
+        name: cardPicture
+        required: true
+        type: file
       responses:
         "200":
           description: OK

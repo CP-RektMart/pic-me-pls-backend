@@ -198,8 +198,14 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UserRequest"
+                            "$ref": "#/definitions/dto.UserUpdateRequest"
                         }
+                    },
+                    {
+                        "type": "file",
+                        "description": "Profile picture (optional)",
+                        "name": "profilePicture",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -293,6 +299,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.CitizenCardRequest"
                         }
+                    },
+                    {
+                        "type": "file",
+                        "description": "Card picture (optional)",
+                        "name": "cardPicture",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -345,6 +357,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.CitizenCardRequest"
                         }
+                    },
+                    {
+                        "type": "file",
+                        "description": "Card picture",
+                        "name": "cardPicture",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -388,8 +407,7 @@ const docTemplate = `{
             "required": [
                 "citizenId",
                 "expireDate",
-                "laserId",
-                "picture"
+                "laserId"
             ],
             "properties": {
                 "citizenId": {
@@ -399,9 +417,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "laserId": {
-                    "type": "string"
-                },
-                "picture": {
                     "type": "string"
                 }
             }
@@ -495,15 +510,8 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserRequest": {
+        "dto.UserResponse": {
             "type": "object",
-            "required": [
-                "email",
-                "id",
-                "name",
-                "phone_number",
-                "role"
-            ],
             "properties": {
                 "account_no": {
                     "type": "string"
@@ -540,7 +548,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserResponse": {
+        "dto.UserUpdateRequest": {
             "type": "object",
             "properties": {
                 "account_no": {
@@ -558,9 +566,6 @@ const docTemplate = `{
                 "facebook": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "instagram": {
                     "type": "string"
                 },
@@ -568,12 +573,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone_number": {
-                    "type": "string"
-                },
-                "profile_picture_url": {
-                    "type": "string"
-                },
-                "role": {
                     "type": "string"
                 }
             }
