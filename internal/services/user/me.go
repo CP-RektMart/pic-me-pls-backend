@@ -13,7 +13,7 @@ import (
 // @Description		Get me
 // @Tags			user
 // @Router			/api/v1/me [GET]
-// @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
+// @Success			200	{object}	dto.HttpResponse{result=dto.BaseUserDTO}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
@@ -28,7 +28,7 @@ func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 		return apperror.Internal("failed to get user", nil)
 	}
 
-	response := dto.UserResponse{
+	userDTO := dto.BaseUserDTO{
 		ID:                user.ID,
 		Name:              user.Name,
 		Email:             user.Email,
@@ -37,6 +37,6 @@ func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
-		Result: response,
+		Result: userDTO,
 	})
 }

@@ -19,8 +19,7 @@ import (
 // @Description		Update user's profile
 // @Tags			user
 // @Router			/api/v1/me [PATCH]
-// @Param 			RequestBody 	body 	dto.UserRequest 	true 	"request request"
-// @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
+// @Success			200	{object}	dto.HttpResponse{result=dto.BaseUserDTO}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
@@ -29,7 +28,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.UserRequest)
+	req := new(dto.BaseUserDTO)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -68,22 +67,8 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		}
 	}
 
-	response := dto.UserResponse{
-		ID:                updatedUser.ID,
-		Name:              updatedUser.Name,
-		Email:             updatedUser.Email,
-		PhoneNumber:       updatedUser.PhoneNumber,
-		ProfilePictureURL: updatedUser.ProfilePictureURL,
-		Role:              updatedUser.Role.String(),
-		Facebook:          updatedUser.Facebook,
-		Instagram:         updatedUser.Instagram,
-		Bank:              updatedUser.Bank,
-		AccountNo:         updatedUser.AccountNo,
-		BankBranch:        updatedUser.BankBranch,
-	}
-
 	return c.JSON(dto.HttpResponse{
-		Result: response,
+		Result: updatedUser,
 	})
 }
 
@@ -103,7 +88,7 @@ func (h *Handler) uploadProfileFile(c context.Context, file *multipart.FileHeade
 	return signedURL, nil
 }
 
-func (h *Handler) updateUserDB(userID uint, req *dto.UserRequest, oldPictureURL *string) (*model.User, error) {
+func (h *Handler) updateUserDB(userID uint, req *dto.BaseUserDTO, oldPictureURL *string) (*model.User, error) {
 	var user model.User
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
