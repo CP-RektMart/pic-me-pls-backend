@@ -19,9 +19,11 @@ import (
 // @Description		Update user's profile
 // @Tags			user
 // @Router			/api/v1/me [PATCH]
-// @Success			200	{object}	dto.HttpResponse{result=dto.BaseUserDTO}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Param 			RequestBody 	body 	dto.BaseUserDTO 	true	"User profile data"
+// @Param 			profile_picture formData 	file		false	"Profile picture (optional)"
+// @Success			200				{object}	dto.HttpResponse{result=dto.BaseUserDTO}
+// @Failure			400				{object}	dto.HttpResponse
+// @Failure			500				{object}	dto.HttpResponse
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
@@ -37,7 +39,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("profile")
+	file, err := c.FormFile("profile_picutre")
 	// if error mean cannot get file just ignore.
 	// because field is not provide mean not change.
 	if err == nil {

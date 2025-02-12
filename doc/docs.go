@@ -191,6 +191,23 @@ const docTemplate = `{
                     "user"
                 ],
                 "summary": "Update me",
+                "parameters": [
+                    {
+                        "description": "User profile data",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseUserDTO"
+                        }
+                    },
+                    {
+                        "type": "file",
+                        "description": "Profile picture (optional)",
+                        "name": "profile_picture",
+                        "in": "formData"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -282,6 +299,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.CitizenCardRequest"
                         }
+                    },
+                    {
+                        "type": "file",
+                        "description": "Card picture (optional)",
+                        "name": "card_picture",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -334,6 +357,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.CitizenCardRequest"
                         }
+                    },
+                    {
+                        "type": "file",
+                        "description": "Card picture",
+                        "name": "card_picture",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {

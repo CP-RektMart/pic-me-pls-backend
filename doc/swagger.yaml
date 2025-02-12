@@ -210,6 +210,17 @@ paths:
       - user
     patch:
       description: Update user's profile
+      parameters:
+      - description: User profile data
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.BaseUserDTO'
+      - description: Profile picture (optional)
+        in: formData
+        name: profile_picture
+        type: file
       responses:
         "200":
           description: OK
@@ -265,6 +276,10 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.CitizenCardRequest'
+      - description: Card picture (optional)
+        in: formData
+        name: card_picture
+        type: file
       responses:
         "200":
           description: OK
@@ -296,6 +311,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.CitizenCardRequest'
+      - description: Card picture
+        in: formData
+        name: card_picture
+        required: true
+        type: file
       responses:
         "200":
           description: OK
