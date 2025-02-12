@@ -13,14 +13,14 @@ import (
 )
 
 // @Summary			Reverify Citizen Card
-// @Description     Allows photographers to update their citizen card details. Send only the fields that need to be changed.
+// @Description     Allows photographers to update their citizen card details.
 // @Tags			photographer
 // @Router			/api/v1/photographer/reverify [PATCH]
 // @Accept          multipart/form-data
-// @Param           citizenId       formData    string       false  "Citizen ID"
-// @Param           laserId         formData    string       false  "Laser ID"
-// @Param           picture         formData    file         false "Citizen card picture"
-// @Param           expireDate      formData    string       false  "Expire date (YYYY-MM-DD)"
+// @Param           citizenId       formData    string       true  "Citizen ID"
+// @Param           laserId         formData    string       true  "Laser ID"
+// @Param           picture         formData    file         true "Citizen card picture"
+// @Param           expireDate      formData    string       true  "Expire date (YYYY-MM-DD)"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
