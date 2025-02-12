@@ -22,9 +22,9 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.60
-      - name: install swagger
-        run: go get -u github.com/swaggo/swag/cmd/swag
-      - name: generate swagger
-        run: swag init -g cmd/main.go
+      - name: swagger
+        uses: yegorrybchenko/go-swag-action@v0.1
+        with:
+          command: init -g cmd/main.go
       - name: build
         run: go build -o pic-me-pls-backend cmd/main.go
