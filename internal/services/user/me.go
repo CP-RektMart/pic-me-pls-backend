@@ -32,8 +32,14 @@ func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 		ID:                user.ID,
 		Name:              user.Name,
 		Email:             user.Email,
+		PhoneNumber:       user.PhoneNumber,
 		ProfilePictureURL: user.ProfilePictureURL,
 		Role:              user.Role.String(),
+		Facebook:          user.Facebook,
+		Instagram:         user.Instagram,
+		Bank:              user.Bank,
+		AccountNo:         user.AccountNo,
+		BankBranch:        user.BankBranch,
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
