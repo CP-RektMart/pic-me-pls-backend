@@ -23,6 +23,24 @@ definitions:
       provider:
         description: GOOGLE
         type: string
+    required:
+    - idToken
+    - provider
+    type: object
+  dto.RefreshTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
+    type: object
+  dto.RegisterRequest:
+    properties:
+      idToken:
+        type: string
+      provider:
+        description: GOOGLE
+        type: string
       role:
         description: CUSTOMER, PHOTOGRAPHER, ADMIN
         type: string
@@ -31,7 +49,7 @@ definitions:
     - provider
     - role
     type: object
-  dto.LoginResponse:
+  dto.RegisterResponse:
     properties:
       accessToken:
         type: string
@@ -41,13 +59,6 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/dto.UserResponse'
-    type: object
-  dto.RefreshTokenRequest:
-    properties:
-      refreshToken:
-        type: string
-    required:
-    - refreshToken
     type: object
   dto.TokenResponse:
     properties:
@@ -89,6 +100,37 @@ info:
   title: Pic Me Pls API
   version: "0.1"
 paths:
+  /api/v1/auth/Register:
+    post:
+      description: Register
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.RegisterResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: Register
+      tags:
+      - auth
   /api/v1/auth/login:
     post:
       description: Login
@@ -107,7 +149,7 @@ paths:
             - $ref: '#/definitions/dto.HttpResponse'
             - properties:
                 result:
-                  $ref: '#/definitions/dto.LoginResponse'
+                  $ref: '#/definitions/dto.LoginRequest'
               type: object
         "400":
           description: Bad Request

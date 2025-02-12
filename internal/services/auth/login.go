@@ -1,23 +1,20 @@
 package auth
 
 import (
-	"context"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
-	"google.golang.org/api/idtoken"
 	"gorm.io/gorm"
 )
 
 // @Summary			Login
-// @Description		Login
+// @Description			Login
 // @Tags			auth
 // @Router			/api/v1/auth/login [POST]
 // @Param 			RequestBody 	body 	dto.LoginRequest 	true 	"request request"
-// @Success			200	{object}	dto.HttpResponse{result=dto.LoginResponse}
+// @Success			200	{object}	dto.HttpResponse{result=dto.LoginRequest}
 // @Failure			400	{object}	dto.HttpResponse
 // @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleLogin(c *fiber.Ctx) error {
@@ -36,15 +33,16 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to validate id token")
 	}
-	OAuthUser.Role = model.UserRole(req.Role)
 
 	var user *model.User
 	var token *model.Token
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		user, err = h.getOrCreateUser(tx, OAuthUser)
-		if err != nil {
-			return errors.Wrap(err, "failed to get or create user")
+		if err := tx.Where("email = ?", OAuthUser.Email).First(&user).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return apperror.NotFound("account not found", err)
+			}
+			return errors.Wrap(err, "failed getting user")
 		}
 
 		token, err = h.jwtService.GenerateAndStoreTokenPair(ctx, user)
@@ -54,21 +52,7 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "failed to create user and token")
-	}
-
-	userDTO := dto.UserResponse{
-		ID:                user.ID,
-		Name:              user.Name,
-		Email:             user.Email,
-		ProfilePictureURL: user.ProfilePictureURL,
-		Role:              user.Role.String(),
-		PhoneNumber:       user.PhoneNumber,
-		Facebook:          "",
-		Instagram:         "",
-		AccountNo:         "",
-		Bank:              "",
-		BankBranch:        "",
+		return errors.Wrap(err, "failed to get user and token")
 	}
 
 	result := dto.LoginResponse{
@@ -77,72 +61,10 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 			RefreshToken: token.RefreshToken,
 			Exp:          token.Exp,
 		},
-		User: userDTO,
+		User: dto.ToUserResponse(*user),
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
 		Result: result,
 	})
-}
-
-func (h *Handler) validateIDToken(c context.Context, idToken string) (*model.User, error) {
-	payload, err := idtoken.Validate(c, idToken, h.googleClientID)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to validate id token")
-	}
-
-	name, ok := payload.Claims["name"].(string)
-	if !ok {
-		return nil, errors.New("name claim not found in id token")
-	}
-
-	email, ok := payload.Claims["email"].(string)
-	if !ok {
-		return nil, errors.New("email claim not found in id token")
-	}
-
-	picture, ok := payload.Claims["picture"].(string)
-	if !ok {
-		return nil, errors.New("picture claim not found in id token")
-	}
-
-	return &model.User{
-		Name:              name,
-		Email:             email,
-		ProfilePictureURL: picture,
-	}, nil
-}
-
-func (h *Handler) getOrCreateUser(tx *gorm.DB, user *model.User) (*model.User, error) {
-	var existingUser model.User
-	err := tx.Where("email = ?", user.Email).First(&existingUser).Error
-	if err == nil {
-		return &existingUser, nil
-	}
-
-	if err != gorm.ErrRecordNotFound {
-		return nil, errors.Wrap(err, "failed to get user")
-	}
-
-	newUser := model.User{
-		Name:              user.Name,
-		Email:             user.Email,
-		ProfilePictureURL: user.ProfilePictureURL,
-		Role:              user.Role,
-	}
-	if err := tx.Create(&newUser).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to create user")
-	}
-
-	if newUser.Role == model.UserRolePhotographer {
-		newPhotographer := model.Photographer{
-			UserID: newUser.ID,
-		}
-
-		if err := tx.Create(&newPhotographer).Error; err != nil {
-			return nil, errors.Wrap(err, "failed to create photographer")
-		}
-	}
-
-	return &newUser, nil
 }
