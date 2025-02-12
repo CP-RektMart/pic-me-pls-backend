@@ -19,7 +19,7 @@ import (
 // @Description		Update user's profile
 // @Tags			user
 // @Router			/api/v1/me [PATCH]
-// @Param 			RequestBody 	body 	dto.UserRequest 	true 	"request request"
+// @Param 			RequestBody 	body 	dto.UserUpdateRequest 	true 	"request request"
 // @Param 			profile_picture formData 	file		false	"Profile picture (optional)"
 // @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
 // @Failure			400	{object}	dto.HttpResponse
@@ -51,7 +51,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	}
 
 	// var oldPictureURL string
-	updatedUser, err := h.updateUserDB(userId, req, signedURL, ni)
+	updatedUser, err := h.updateUserDB(userId, req, signedURL, nil)
 	if err != nil {
 		if signedURL != "" {
 			err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(signedURL))

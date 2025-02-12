@@ -47,8 +47,8 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		}
 	}
 
-	var oldPictureURL string
-	user, err := h.updateCitizenCard(req, userId, signedURL, &oldPictureURL)
+	// var oldPictureURL string
+	user, err := h.updateCitizenCard(req, userId, signedURL, nil)
 	if err != nil {
 		if signedURL != "" {
 			err = h.store.Storage.DeleteFile(c.UserContext(), citizenCardFolder(userId)+path.Base(signedURL))
