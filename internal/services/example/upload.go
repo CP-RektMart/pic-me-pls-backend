@@ -12,7 +12,7 @@ func (h *Handler) HandlerUploadExample(c *fiber.Ctx) error {
 
 	file, err := c.FormFile("file")
 	if err != nil {
-		return apperror.BadRequest("failed to get file", err)
+		apperror.BadRequest("failed to get file", err)
 	}
 
 	contentType := file.Header.Get("Content-Type")
