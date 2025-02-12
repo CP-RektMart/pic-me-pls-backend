@@ -38,16 +38,16 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 
 	file, err := c.FormFile("card_picture")
 	if err != nil {
-		return apperror.BadRequest("citizen_card is require", errors.Errorf("Field Missing"))
+		return apperror.BadRequest("card_picture is require", errors.Errorf("Field Missing"))
 	}
 
-	signedURL, err := h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
+	var signedURL string
+	signedURL, err = h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
 	if err != nil {
 		return errors.Wrap(err, "File upload failed")
 	}
-	req.Picture = signedURL
 
-	user, err := h.createCitizenCard(req, userId)
+	user, err := h.createCitizenCard(req, signedURL, userId)
 	if err != nil {
 		return errors.Wrap(err, "Fail to create citizen card")
 	}
@@ -81,7 +81,7 @@ func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, 
 	return signedURL, nil
 }
 
-func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, userId uint) (*model.CitizenCard, error) {
+func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, signedURL string, userId uint) (*model.CitizenCard, error) {
 	var citizenCard model.CitizenCard
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
@@ -99,7 +99,7 @@ func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, userId uint) (*
 		// Create the CitizenCard using the request data
 		citizenCard.CitizenID = req.CitizenID
 		citizenCard.LaserID = req.LaserID
-		citizenCard.Picture = req.Picture
+		citizenCard.Picture = signedURL
 		citizenCard.ExpireDate = req.ExpireDate
 
 		// Insert the CitizenCard into the database

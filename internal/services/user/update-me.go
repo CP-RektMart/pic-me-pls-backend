@@ -30,7 +30,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.UserRequest)
+	req := new(dto.UserUpdateRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -42,19 +42,19 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	file, err := c.FormFile("profile_picture")
 	// if error mean cannot get file just ignore.
 	// because field is not provide mean not change.
+	var signedURL string
 	if err == nil {
-		signedURL, err := h.uploadProfileFile(c.UserContext(), file, profileFolder(userId))
+		signedURL, err = h.uploadProfileFile(c.UserContext(), file, profileFolder(userId))
 		if err != nil {
 			return errors.Wrap(err, "File upload failed")
 		}
-		req.ProfilePictureURL = signedURL
 	}
 
 	var oldPictureURL string
-	updatedUser, err := h.updateUserDB(userId, req, &oldPictureURL)
+	updatedUser, err := h.updateUserDB(userId, req, signedURL, &oldPictureURL)
 	if err != nil {
-		if req.ProfilePictureURL != "" {
-			err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(req.ProfilePictureURL))
+		if signedURL != "" {
+			err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(signedURL))
 			if err != nil {
 				return errors.Wrap(err, "Fail to delete the picture")
 			}
@@ -62,7 +62,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	if oldPictureURL != "" && oldPictureURL != req.ProfilePictureURL {
+	if oldPictureURL != "" && oldPictureURL != signedURL {
 		err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(oldPictureURL))
 		if err != nil {
 			return errors.Wrap(err, "Fail to delete old picture")
@@ -104,7 +104,7 @@ func (h *Handler) uploadProfileFile(c context.Context, file *multipart.FileHeade
 	return signedURL, nil
 }
 
-func (h *Handler) updateUserDB(userID uint, req *dto.UserRequest, oldPictureURL *string) (*model.User, error) {
+func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest, signedURL string, oldPictureURL *string) (*model.User, error) {
 	var user model.User
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
@@ -125,7 +125,7 @@ func (h *Handler) updateUserDB(userID uint, req *dto.UserRequest, oldPictureURL 
 
 		updateField(&user.Name, req.Name)
 		updateField(&user.PhoneNumber, req.PhoneNumber)
-		updateField(&user.ProfilePictureURL, req.ProfilePictureURL)
+		updateField(&user.ProfilePictureURL, signedURL)
 		updateField(&user.Facebook, req.Facebook)
 		updateField(&user.Instagram, req.Instagram)
 		updateField(&user.Bank, req.Bank)
