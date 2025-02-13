@@ -2,6 +2,8 @@ package dto
 
 import (
 	"time"
+
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 )
 
 // Form data
@@ -19,8 +21,15 @@ type CitizenCardResponse struct {
 }
 
 type PhotographerResponse struct {
-	ID           uint   `json:"id"`
-	Name         string `json:"name"`
-	IsVerified   bool   `json:"is_verified"`
-	ActiveStatus bool   `json:"active_status"`
+	ID           uint `json:"id"`
+	IsVerified   bool `json:"is_verified"`
+	ActiveStatus bool `json:"active_status"`
+}
+
+func ToPhotographerResponse(photographer model.Photographer) PhotographerResponse {
+	return PhotographerResponse{
+		ID:           photographer.ID,
+		IsVerified:   photographer.IsVerified,
+		ActiveStatus: photographer.ActiveStatus,
+	}
 }
