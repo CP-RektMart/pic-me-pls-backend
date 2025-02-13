@@ -47,4 +47,8 @@ func (s *Server) RegisterRoutes(
 	photographer.Patch("/reverify", authMiddleware.AuthPhotographer, photographerHandler.HandleReVerifyCard)
 
 	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+
+	// gallery
+	gallery := v1.Group("/gallery")
+	gallery.Get("/", galleryHandler.HandleGetAllGallery)
 }
