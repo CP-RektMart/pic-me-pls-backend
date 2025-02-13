@@ -17,3 +17,10 @@ type CitizenCardResponse struct {
 	Picture    string    `json:"picture"`
 	ExpireDate time.Time `json:"expireDate"`
 }
+
+type PhotographerResponse struct {
+	ID           uint   `json:"id"`
+	Name         string `json:"name"`
+	IsVerified   bool   `json:"is_verified"`
+	ActiveStatus bool   `json:"active_status"`
+}
