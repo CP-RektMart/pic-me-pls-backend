@@ -24,8 +24,8 @@ import (
 // @Param 			laserId 		formData 	string		true	"Laser ID"
 // @Param 			expireDate 		formData 	string		true	"Expire Date"
 // @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {

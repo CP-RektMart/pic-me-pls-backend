@@ -11,24 +11,16 @@ components:
         picture:
           type: string
       type: object
+    dto.HttpError:
+      properties:
+        error:
+          type: string
+      type: object
     dto.HttpResponse:
       allOf:
       - $ref: '#/components/schemas/result'
       properties:
-        error:
-          type: string
         result: {}
-      type: object
-    dto.LoginRequest:
-      properties:
-        idToken:
-          type: string
-        provider:
-          description: GOOGLE
-          type: string
-      required:
-      - idToken
-      - provider
       type: object
     dto.RefreshTokenRequest:
       properties:
@@ -116,67 +108,6 @@ info:
   version: "0.1"
 openapi: 3.1.0
 paths:
-  /api/v1/auth/login:
-    post:
-      description: Login
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.LoginRequest'
-        description: request request
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/result'
-                properties:
-                  error:
-                    type: string
-                  result: {}
-                type: object
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
-          description: Internal Server Error
-      summary: Login
-      tags:
-      - auth
-  /api/v1/auth/logout:
-    post:
-      description: Logout
-      responses:
-        "204":
-          description: No Content
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Logout
-      tags:
-      - auth
   /api/v1/auth/refresh-token:
     post:
       description: Refresh Token
@@ -195,8 +126,6 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/result'
                 properties:
-                  error:
-                    type: string
                   result: {}
                 type: object
           description: OK
@@ -204,13 +133,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
       summary: Refresh Token
       tags:
@@ -233,8 +162,6 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/result'
                 properties:
-                  error:
-                    type: string
                   result: {}
                 type: object
           description: OK
@@ -242,13 +169,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
       summary: register
       tags:
@@ -264,8 +191,6 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/result'
                 properties:
-                  error:
-                    type: string
                   result: {}
                 type: object
           description: OK
@@ -273,13 +198,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
@@ -302,8 +227,6 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/result'
                 properties:
-                  error:
-                    type: string
                   result: {}
                 type: object
           description: OK
@@ -311,13 +234,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
@@ -335,8 +258,6 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/result'
                 properties:
-                  error:
-                    type: string
                   result: {}
                 type: object
           description: OK
@@ -344,13 +265,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
@@ -375,8 +296,6 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/result'
                 properties:
-                  error:
-                    type: string
                   result: {}
                 type: object
           description: OK
@@ -384,13 +303,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
@@ -415,8 +334,6 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/result'
                 properties:
-                  error:
-                    type: string
                   result: {}
                 type: object
           description: OK
@@ -424,13 +341,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse'
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
       security:
       - ApiKeyAuth: []

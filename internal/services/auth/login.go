@@ -14,9 +14,9 @@ import (
 // @Tags			auth
 // @Router			/api/v1/auth/login [POST]
 // @Param 			RequestBody 	body 	dto.LoginRequest 	true 	"request request"
-// @Success			200	{object}	dto.HttpResponse{result=dto.LoginRequest}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Success			200	{object}	dto.HttpResponse{result=dto.LoginResponse}
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 

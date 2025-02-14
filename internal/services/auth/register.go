@@ -19,8 +19,8 @@ import (
 // @Router			/api/v1/auth/register [POST]
 // @Param 			RequestBody 	body 	dto.RegisterRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse{result=dto.RegisterResponse}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleRegister(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 

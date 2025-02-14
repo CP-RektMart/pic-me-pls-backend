@@ -15,8 +15,8 @@ import (
 // @Router			/api/v1/me [GET]
 // @Security		ApiKeyAuth
 // @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
