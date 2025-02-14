@@ -59,6 +59,9 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 		Use(requestlogger.New())
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
+	app.Get("/openapi.yaml", func(c *fiber.Ctx) error {
+		return c.SendFile("doc/swagger.yaml")
+	})
 
 	return &Server{
 		config: config,
