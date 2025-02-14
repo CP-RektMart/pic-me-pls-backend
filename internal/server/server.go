@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/CP-RektMart/pic-me-pls-backend/doc"
 	_ "github.com/CP-RektMart/pic-me-pls-backend/doc"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -16,6 +17,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	fiberSwagger "github.com/gofiber/swagger"
+	"github.com/swaggo/swag"
 )
 
 type Config struct {
@@ -56,6 +59,15 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 	})).
 		Use(requestid.New()).
 		Use(requestlogger.New())
+
+	swag.Register(doc.SwaggerInfo.InfoInstanceName, doc.SwaggerInfo)
+	app.Get("/swagger", func(c *fiber.Ctx) error {
+		return c.Redirect("/swagger/index.html")
+	})
+	app.Get("/swagger/*", fiberSwagger.HandlerDefault)
+	app.Get("/openapi.yaml", func(c *fiber.Ctx) error {
+		return c.SendFile("doc/swagger.yaml")
+	})
 
 	return &Server{
 		config: config,
