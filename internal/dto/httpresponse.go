@@ -1,7 +1,7 @@
 package dto
 
-type HttpResponse struct {
-	Result interface{} `json:"result"`
+type HttpResponse[T any] struct {
+	Result T `json:"result"`
 }
 
 type HttpError struct {

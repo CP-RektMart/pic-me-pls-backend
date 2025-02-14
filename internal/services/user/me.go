@@ -14,7 +14,7 @@ import (
 // @Tags			user
 // @Router			/api/v1/me [GET]
 // @Security		ApiKeyAuth
-// @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
+// @Success			200	{object}	dto.HttpResponse[dto.UserResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
@@ -43,7 +43,7 @@ func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 		BankBranch:        user.BankBranch,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.UserResponse]{
 		Result: response,
 	})
 }

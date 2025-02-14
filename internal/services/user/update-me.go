@@ -28,7 +28,7 @@ import (
 // @Param 			bank 			formData 	string		false	"Bank"
 // @Param 			accountNo 		formData 	string		false	"Account No"
 // @Param 			bankBranch 		formData 	string		false	"Bank Branch"
-// @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
+// @Success			200	{object}	dto.HttpResponse[dto.UserResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
@@ -94,7 +94,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		BankBranch:        updatedUser.BankBranch,
 	}
 
-	return c.JSON(dto.HttpResponse{
+	return c.JSON(dto.HttpResponse[dto.UserResponse]{
 		Result: response,
 	})
 }

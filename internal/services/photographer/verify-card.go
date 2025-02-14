@@ -22,7 +22,7 @@ import (
 // @Param 			citizenId 		formData 	string		true	"Citizen ID"
 // @Param 			laserId 		formData 	string		true	"Laser ID"
 // @Param 			expireDate 		formData 	string		true	"Expire Date"
-// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
+// @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
@@ -66,7 +66,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		ExpireDate: user.ExpireDate,
 	}
 
-	return c.JSON(dto.HttpResponse{
+	return c.JSON(dto.HttpResponse[dto.CitizenCardResponse]{
 		Result: response,
 	})
 }

@@ -18,7 +18,7 @@ import (
 // @Tags			auth
 // @Router			/api/v1/auth/register [POST]
 // @Param 			RequestBody 	body 	dto.RegisterRequest 	true 	"request request"
-// @Success			200	{object}	dto.HttpResponse{result=dto.RegisterResponse}
+// @Success			200	{object}	dto.HttpResponse[dto.RegisterResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleRegister(c *fiber.Ctx) error {
@@ -67,7 +67,7 @@ func (h *Handler) HandleRegister(c *fiber.Ctx) error {
 		User: dto.ToUserResponse(*user),
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.RegisterResponse]{
 		Result: result,
 	})
 }
