@@ -13,7 +13,7 @@ func (s *Server) RegisterDocs() {
 		return c.Redirect("/swagger/index.html")
 	})
 	s.app.Get("/swagger/*", fiberSwagger.HandlerDefault)
-	s.app.Get("/openapi.yaml", func(c *fiber.Ctx) error {
+	s.app.Get("/openapi", func(c *fiber.Ctx) error {
 		return c.SendFile("doc/swagger.yaml")
 	})
 }
