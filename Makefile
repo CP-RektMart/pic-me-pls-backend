@@ -2,7 +2,7 @@ server:
 	go run cmd/main.go
 
 swagger:
-	swag init -g cmd/main.go --output doc
+	swag init -v3.1 -g cmd/main.go --output doc
 
 lint:
 	golangci-lint run
