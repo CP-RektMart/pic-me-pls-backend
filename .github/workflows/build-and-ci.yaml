@@ -23,6 +23,8 @@ jobs:
         with:
           version: v1.60
       - name: generate swagger
-        run: go generate ./...
+        run: |
+          go install github.com/swaggo/swag/v2/cmd/swag@v2.0.0-rc4
+          go generate ./...
       - name: build
         run: go build -o pic-me-pls-backend cmd/main.go
