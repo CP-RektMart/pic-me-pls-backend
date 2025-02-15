@@ -1,8 +1,8 @@
 server:
-	go run cmd/main.go
+	go generate ./... && go run cmd/main.go
 
-swagger:
-	swag init -g cmd/main.go --output doc
+generate:
+	go generate ./...
 
 lint:
 	golangci-lint run
