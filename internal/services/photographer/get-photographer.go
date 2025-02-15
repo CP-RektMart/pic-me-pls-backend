@@ -12,19 +12,26 @@ import (
 func (h *Handler) HandleGetAllPhotographer(c *fiber.Ctx) error {
 	var photographers []model.Photographer
 
-	if err := h.store.DB.Find(&photographers).Error; err != nil {
+	page := c.QueryInt("page", 1)
+	limit := 5
+	offset := (page - 1) * limit
+
+	if err := h.store.DB.Limit(limit).Offset(offset).Find(&photographers).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("No photographers found", err)
 		}
 		return errors.Wrap(err, "Error retrieving photographers")
 	}
 
-	var photograperResponses []dto.PhotographerResponse
+	var photographerResponses []dto.PhotographerResponse
 	for _, photographer := range photographers {
-		photograperResponses = append(photograperResponses, dto.ToPhotographerResponse(photographer))
+		photographerResponses = append(photographerResponses, dto.ToPhotographerResponse(photographer))
 	}
 
+	var totalCount int64
+	h.store.DB.Model(&model.Photographer{}).Count(&totalCount)
+
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[[]dto.PhotographerResponse]{
-		Result: photograperResponses,
+		Result: photographerResponses,
 	})
 }
