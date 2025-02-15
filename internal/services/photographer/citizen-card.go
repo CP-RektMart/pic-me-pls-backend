@@ -14,9 +14,9 @@ import (
 // @Tags			photographer
 // @Router			/api/v1/photographer/citizen-card [GET]
 // @Security		ApiKeyAuth
-// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
@@ -47,7 +47,7 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 		ExpireDate: citizenCard.ExpireDate,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.CitizenCardResponse]{
 		Result: citizenCardDTO,
 	})
 }
