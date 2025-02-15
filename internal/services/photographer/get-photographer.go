@@ -24,7 +24,7 @@ func (h *Handler) HandleGetAllPhotographer(c *fiber.Ctx) error {
 		photograperResponses = append(photograperResponses, dto.ToPhotographerResponse(photographer))
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[[]dto.PhotographerResponse]{
 		Result: photograperResponses,
 	})
 }
