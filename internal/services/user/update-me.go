@@ -20,6 +20,7 @@ import (
 // @Tags			user
 // @Router			/api/v1/me [PATCH]
 // @Security		ApiKeyAuth
+// @Accept			multipart/form-data
 // @Param 			profilePicture 	formData 	file		false	"Profile picture (optional)"
 // @Param 			name 			formData 	string		false	"Name"
 // @Param 			phoneNumber 	formData 	string		false	"Phone Number"

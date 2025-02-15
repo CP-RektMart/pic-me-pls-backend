@@ -294,7 +294,7 @@ paths:
       description: Update user's profile
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: string
         description: Bank Branch
@@ -354,7 +354,7 @@ paths:
       description: Reverify Photographer Citizen Card
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: string
         description: Expire Date
@@ -388,7 +388,7 @@ paths:
       description: Verify Photographer Citizen Card
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: string
         description: Expire Date

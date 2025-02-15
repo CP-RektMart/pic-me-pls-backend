@@ -18,6 +18,7 @@ import (
 // @Tags			photographer
 // @Router			/api/v1/photographer/verify [POST]
 // @Security		ApiKeyAuth
+// @Accept			multipart/form-data
 // @Param 			cardPicture 	formData 	file		false	"Card picture (optional)"
 // @Param 			citizenId 		formData 	string		true	"Citizen ID"
 // @Param 			laserId 		formData 	string		true	"Laser ID"
