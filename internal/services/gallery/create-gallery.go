@@ -2,7 +2,6 @@ package gallery
 
 import (
 	"context"
-	"fmt"
 	"mime/multipart"
 	"strconv"
 
@@ -68,7 +67,6 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 
 	var uploadedPhotoURLs []string
 	for _, file := range files {
-		fmt.Println("Processing file:", file.Filename)
 
 		signedURL, err := h.uploadGalleryPhoto(c.UserContext(), file, galleryFolder(createdGallery.ID))
 		if err != nil {
