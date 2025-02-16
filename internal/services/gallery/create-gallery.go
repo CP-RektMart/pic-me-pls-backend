@@ -88,7 +88,7 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		GalleryPhotos:    uploadedPhotoURLs,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.GalleryResponse]{
 		Result: response,
 	})
 }
