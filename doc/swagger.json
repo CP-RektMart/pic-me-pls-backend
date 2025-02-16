@@ -1,659 +1,756 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "description": "Pic Me Pls API Documentation",
-    "title": "Pic Me Pls API",
-    "contact": {},
-    "version": "0.1"
-  },
-  "paths": {
-    "/api/v1/auth/Register": {
-      "post": {
-        "description": "Register",
-        "tags": ["auth"],
-        "summary": "Register",
-        "parameters": [
-          {
-            "description": "request request",
-            "name": "RequestBody",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.RegisterRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/dto.HttpResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "$ref": "#/definitions/dto.RegisterResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          }
-        }
-      }
+    "swagger": "2.0",
+    "info": {
+        "description": "Pic Me Pls API Documentation",
+        "title": "Pic Me Pls API",
+        "contact": {},
+        "version": "0.1"
     },
-    "/api/v1/auth/login": {
-      "post": {
-        "description": "Login",
-        "tags": ["auth"],
-        "summary": "Login",
-        "parameters": [
-          {
-            "description": "request request",
-            "name": "RequestBody",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.LoginRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/dto.HttpResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "$ref": "#/definitions/dto.LoginRequest"
+    "paths": {
+        "/api/v1/auth/login": {
+            "post": {
+                "description": "Login",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginRequest"
+                        }
                     }
-                  }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
                 }
-              ]
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Logout",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Logout",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
+        },
+        "/api/v1/auth/refresh-token": {
+            "post": {
+                "description": "Refresh Token",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh Token",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RefreshTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
             }
-          }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "description": "register",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "register",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_RegisterResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/gallery": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create gallery by photographer",
+                "tags": [
+                    "gallery"
+                ],
+                "summary": "Create gallery",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Gallery name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Price",
+                        "name": "price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Gallery photos",
+                        "name": "galleryPhotos",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_GalleryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/me": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get me",
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get me",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update user's profile",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update me",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Profile picture (optional)",
+                        "name": "profilePicture",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Phone Number",
+                        "name": "phoneNumber",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facebook",
+                        "name": "facebook",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Instagram",
+                        "name": "instagram",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bank",
+                        "name": "bank",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Account No",
+                        "name": "accountNo",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bank Branch",
+                        "name": "bankBranch",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/photographer/citizen-card": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get Photographer Citizen Card",
+                "tags": [
+                    "photographer"
+                ],
+                "summary": "Get Citizen Card",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_CitizenCardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/photographer/reverify": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Reverify Photographer Citizen Card",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "photographer"
+                ],
+                "summary": "Reverify Citizen Card",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Card picture (optional)",
+                        "name": "cardPicture",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Citizen ID",
+                        "name": "citizenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Laser ID",
+                        "name": "laserId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Expire Date",
+                        "name": "expireDate",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_CitizenCardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/photographer/verify": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Verify Photographer Citizen Card",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "photographer"
+                ],
+                "summary": "Verify Citizen Card",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Card picture (optional)",
+                        "name": "cardPicture",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Citizen ID",
+                        "name": "citizenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Laser ID",
+                        "name": "laserId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Expire Date",
+                        "name": "expireDate",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse-dto_CitizenCardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
         }
-      }
     },
-    "/api/v1/auth/logout": {
-      "post": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "description": "Logout",
-        "tags": ["auth"],
-        "summary": "Logout",
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
+    "definitions": {
+        "dto.CitizenCardResponse": {
+            "type": "object",
+            "properties": {
+                "citizenId": {
+                    "type": "string"
+                },
+                "expireDate": {
+                    "type": "string"
+                },
+                "laserId": {
+                    "type": "string"
+                },
+                "picture": {
+                    "type": "string"
+                }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
+        },
+        "dto.GalleryResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "galleryPhotos": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "photographerId": {
+                    "type": "integer"
+                },
+                "photographerName": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
             }
-          }
+        },
+        "dto.HttpError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.HttpResponse-dto_CitizenCardResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/dto.CitizenCardResponse"
+                }
+            }
+        },
+        "dto.HttpResponse-dto_GalleryResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/dto.GalleryResponse"
+                }
+            }
+        },
+        "dto.HttpResponse-dto_LoginResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/dto.LoginResponse"
+                }
+            }
+        },
+        "dto.HttpResponse-dto_RegisterResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/dto.RegisterResponse"
+                }
+            }
+        },
+        "dto.HttpResponse-dto_TokenResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/dto.TokenResponse"
+                }
+            }
+        },
+        "dto.HttpResponse-dto_UserResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/dto.UserResponse"
+                }
+            }
+        },
+        "dto.LoginRequest": {
+            "type": "object",
+            "required": [
+                "idToken",
+                "provider"
+            ],
+            "properties": {
+                "idToken": {
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "GOOGLE",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "exp": {
+                    "type": "integer"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/dto.UserResponse"
+                }
+            }
+        },
+        "dto.RefreshTokenRequest": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "idToken",
+                "provider",
+                "role"
+            ],
+            "properties": {
+                "idToken": {
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "GOOGLE",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "CUSTOMER, PHOTOGRAPHER, ADMIN",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RegisterResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "exp": {
+                    "type": "integer"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/dto.UserResponse"
+                }
+            }
+        },
+        "dto.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "exp": {
+                    "type": "integer"
+                },
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserResponse": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "bank": {
+                    "type": "string"
+                },
+                "bankBranch": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "facebook": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "instagram": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "profilePictureUrl": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
         }
-      }
     },
-    "/api/v1/auth/refresh-token": {
-      "post": {
-        "description": "Refresh Token",
-        "tags": ["auth"],
-        "summary": "Refresh Token",
-        "parameters": [
-          {
-            "description": "request request",
-            "name": "RequestBody",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.RefreshTokenRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/dto.HttpResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "$ref": "#/definitions/dto.TokenResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          }
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
-      }
-    },
-    "/api/v1/me": {
-      "get": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "description": "Get me",
-        "tags": ["user"],
-        "summary": "Get me",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/dto.HttpResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "$ref": "#/definitions/dto.UserResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          }
-        }
-      },
-      "patch": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "description": "Update user's profile",
-        "tags": ["user"],
-        "summary": "Update me",
-        "parameters": [
-          {
-            "type": "file",
-            "description": "Profile picture (optional)",
-            "name": "profilePicture",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Name",
-            "name": "name",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Phone Number",
-            "name": "phoneNumber",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Facebook",
-            "name": "facebook",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Instagram",
-            "name": "instagram",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Bank",
-            "name": "bank",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Account No",
-            "name": "accountNo",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Bank Branch",
-            "name": "bankBranch",
-            "in": "formData"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/dto.HttpResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "$ref": "#/definitions/dto.UserResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/photographer/citizen-card": {
-      "get": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "description": "Get Photographer Citizen Card",
-        "tags": ["photographer"],
-        "summary": "Get Citizen Card",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/dto.HttpResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "$ref": "#/definitions/dto.CitizenCardResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/photographer/reverify": {
-      "patch": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "description": "Reverify Photographer Citizen Card",
-        "tags": ["photographer"],
-        "summary": "Reverify Citizen Card",
-        "parameters": [
-          {
-            "type": "file",
-            "description": "Card picture (optional)",
-            "name": "cardPicture",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Citizen ID",
-            "name": "citizenId",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Laser ID",
-            "name": "laserId",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Expire Date",
-            "name": "expireDate",
-            "in": "formData",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/dto.HttpResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "$ref": "#/definitions/dto.CitizenCardResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/photographer/verify": {
-      "post": {
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "description": "Verify Photographer Citizen Card",
-        "tags": ["photographer"],
-        "summary": "Verify Citizen Card",
-        "parameters": [
-          {
-            "type": "file",
-            "description": "Card picture (optional)",
-            "name": "cardPicture",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Citizen ID",
-            "name": "citizenId",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Laser ID",
-            "name": "laserId",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Expire Date",
-            "name": "expireDate",
-            "in": "formData",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/dto.HttpResponse"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "$ref": "#/definitions/dto.CitizenCardResponse"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/dto.HttpResponse"
-            }
-          }
-        }
-      }
     }
-  },
-  "definitions": {
-    "dto.CitizenCardResponse": {
-      "type": "object",
-      "properties": {
-        "citizenId": {
-          "type": "string"
-        },
-        "expireDate": {
-          "type": "string"
-        },
-        "laserId": {
-          "type": "string"
-        },
-        "picture": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.HttpResponse": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        },
-        "result": {}
-      }
-    },
-    "dto.LoginRequest": {
-      "type": "object",
-      "required": ["idToken", "provider"],
-      "properties": {
-        "idToken": {
-          "type": "string"
-        },
-        "provider": {
-          "description": "GOOGLE",
-          "type": "string"
-        }
-      }
-    },
-    "dto.RefreshTokenRequest": {
-      "type": "object",
-      "required": ["refreshToken"],
-      "properties": {
-        "refreshToken": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.RegisterRequest": {
-      "type": "object",
-      "required": ["idToken", "provider", "role"],
-      "properties": {
-        "idToken": {
-          "type": "string"
-        },
-        "provider": {
-          "description": "GOOGLE",
-          "type": "string"
-        },
-        "role": {
-          "description": "CUSTOMER, PHOTOGRAPHER, ADMIN",
-          "type": "string"
-        }
-      }
-    },
-    "dto.RegisterResponse": {
-      "type": "object",
-      "properties": {
-        "accessToken": {
-          "type": "string"
-        },
-        "exp": {
-          "type": "integer"
-        },
-        "refreshToken": {
-          "type": "string"
-        },
-        "user": {
-          "$ref": "#/definitions/dto.UserResponse"
-        }
-      }
-    },
-    "dto.TokenResponse": {
-      "type": "object",
-      "properties": {
-        "accessToken": {
-          "type": "string"
-        },
-        "exp": {
-          "type": "integer"
-        },
-        "refreshToken": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.UserResponse": {
-      "type": "object",
-      "properties": {
-        "account_no": {
-          "type": "string"
-        },
-        "bank": {
-          "type": "string"
-        },
-        "bank_branch": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "facebook": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer"
-        },
-        "instagram": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "phone_number": {
-          "type": "string"
-        },
-        "profile_picture_url": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        }
-      }
-    }
-  },
-  "securityDefinitions": {
-    "ApiKeyAuth": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
-    }
-  }
 }

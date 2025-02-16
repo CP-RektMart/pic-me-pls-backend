@@ -20,11 +20,11 @@ import (
 // @Security		ApiKeyAuth
 // @Param 			name 			formData 	string		true	"Gallery name"
 // @Param 			description		formData 	string		true	"Description"
-// @Param 			price			formData 	int		true	"Price"
-// @Param 			galleryPhotos 	formData 	file		true	"Gallery photos"
-// @Success			200	{object}	dto.HttpResponse{result=dto.GalleryResponse}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Param 			price			formData 	int			true	"Price"
+// @Param 			galleryPhotos	formData 	file		true	"Gallery photos"
+// @Success			200	{object}	dto.HttpResponse[dto.GalleryResponse]
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
@@ -76,18 +76,16 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		uploadedPhotoURLs = append(uploadedPhotoURLs, signedURL)
 	}
 
-	response := dto.GalleryResponse{
-		ID:               createdGallery.ID,
-		Name:             createdGallery.Name,
-		Description:      createdGallery.Description,
-		Price:            createdGallery.Price,
-		PhotographerID:   createdGallery.PhotographerID,
-		PhotographerName: createdGallery.Photographer.User.Name,
-		GalleryPhotos:    uploadedPhotoURLs,
-	}
-
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.GalleryResponse]{
-		Result: response,
+		Result: dto.GalleryResponse{
+			ID:               createdGallery.ID,
+			Name:             createdGallery.Name,
+			Description:      createdGallery.Description,
+			Price:            createdGallery.Price,
+			PhotographerID:   createdGallery.PhotographerID,
+			PhotographerName: createdGallery.Photographer.User.Name,
+			GalleryPhotos:    uploadedPhotoURLs,
+		},
 	})
 }
 
