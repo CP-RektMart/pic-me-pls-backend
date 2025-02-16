@@ -1,6 +1,11 @@
 package gallery
 
 import (
+	"context"
+	"fmt"
+	"mime/multipart"
+	"strconv"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -16,12 +21,25 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 	}
 
 	req := new(dto.GalleryRequest)
-	if err := c.BodyParser(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
+	req.Name = c.FormValue("name")
+	req.Description = c.FormValue("description")
+	price, err := strconv.ParseFloat(c.FormValue("price"), 64)
+	if err != nil {
+		return apperror.BadRequest("invalid price value", err)
 	}
+	req.Price = price
 
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
+	}
+
+	form, err := c.MultipartForm()
+	if err != nil {
+		return apperror.BadRequest("failed to parse multipart form", err)
+	}
+	files := form.File["galleryPhotos"]
+	if len(files) == 0 {
+		return apperror.BadRequest("Gallery picture is required", errors.Errorf("field missing"))
 	}
 
 	gallery := &model.Gallery{
@@ -34,6 +52,18 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 	createdGallery, err := h.CreateGallery(gallery, userId)
 	if err != nil {
 		return errors.Wrap(err, "failed to create gallery")
+	}
+
+	var uploadedPhotoURLs []string
+	for _, file := range files {
+		fmt.Println("Processing file:", file.Filename)
+
+		signedURL, err := h.uploadGalleryPhoto(c.UserContext(), file, galleryFolder(userId))
+		if err != nil {
+			return errors.Wrap(err, "failed to upload photos")
+		}
+
+		uploadedPhotoURLs = append(uploadedPhotoURLs, signedURL)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
@@ -60,4 +90,25 @@ func (h *Handler) CreateGallery(gallery *model.Gallery, userId uint) (*model.Gal
 	}
 
 	return gallery, nil
+}
+
+func (h *Handler) uploadGalleryPhoto(c context.Context, file *multipart.FileHeader, folder string) (string, error) {
+	contentType := file.Header.Get("Content-Type")
+
+	src, err := file.Open()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to open file")
+	}
+	defer src.Close()
+
+	signedURL, err := h.store.Storage.UploadFile(c, folder+file.Filename, contentType, src, true)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to upload file")
+	}
+
+	return signedURL, nil
+}
+
+func galleryFolder(userId uint) string {
+	return "gallery_photos/" + strconv.FormatUint(uint64(userId), 10) + "/"
 }
