@@ -14,6 +14,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary			Create gallery
+// @Description		Create gallery by photographer
+// @Tags			gallery
+// @Router			/api/v1/gallery [POST]
+// @Security		ApiKeyAuth
+// @Param 			name 			formData 	string		true	"Gallery name"
+// @Param 			description		formData 	string		true	"Description"
+// @Param 			price			formData 	int		true	"Price"
+// @Param 			galleryPhotos 	formData 	file		true	"Gallery photos"
+// @Success			200	{object}	dto.HttpResponse{result=dto.GalleryResponse}
+// @Failure			400	{object}	dto.HttpResponse
+// @Failure			500	{object}	dto.HttpResponse
 func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {

@@ -10,6 +10,25 @@ definitions:
       picture:
         type: string
     type: object
+  dto.GalleryResponse:
+    properties:
+      description:
+        type: string
+      galleryPhotos:
+        items:
+          type: string
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+      photographerId:
+        type: integer
+      photographerName:
+        type: string
+      price:
+        type: number
+    type: object
   dto.HttpResponse:
     properties:
       error:
@@ -71,11 +90,11 @@ definitions:
     type: object
   dto.UserResponse:
     properties:
-      account_no:
+      accountNo:
         type: string
       bank:
         type: string
-      bank_branch:
+      bankBranch:
         type: string
       email:
         type: string
@@ -87,9 +106,9 @@ definitions:
         type: string
       name:
         type: string
-      phone_number:
+      phoneNumber:
         type: string
-      profile_picture_url:
+      profilePictureUrl:
         type: string
       role:
         type: string
@@ -100,37 +119,6 @@ info:
   title: Pic Me Pls API
   version: "0.1"
 paths:
-  /api/v1/auth/Register:
-    post:
-      description: Register
-      parameters:
-      - description: request request
-        in: body
-        name: RequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/dto.RegisterRequest'
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.RegisterResponse'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-      summary: Register
-      tags:
-      - auth
   /api/v1/auth/login:
     post:
       description: Login
@@ -212,6 +200,83 @@ paths:
       summary: Refresh Token
       tags:
       - auth
+  /api/v1/auth/register:
+    post:
+      description: register
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.RegisterResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      summary: register
+      tags:
+      - auth
+  /api/v1/gallery:
+    post:
+      description: Create gallery by photographer
+      parameters:
+      - description: Gallery name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Price
+        in: formData
+        name: price
+        required: true
+        type: integer
+      - description: Gallery photos
+        in: formData
+        name: galleryPhotos
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/dto.GalleryResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create gallery
+      tags:
+      - gallery
   /api/v1/me:
     get:
       description: Get me
