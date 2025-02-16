@@ -58,14 +58,26 @@ func main() {
 	authHandler := auth.NewHandler(store, validate, jwtService, authMiddleware, config.GoogleClientID)
 	userHandler := user.NewHandler(store, validate, authMiddleware)
 	photographerHandler := photographer.NewHandler(store, validate, authMiddleware)
-	galleryHandler := gallery.NewHandler(store, validate)
+	galleryHandler := gallery.NewHandler(store, validate, authMiddleware)
 	reviewHandler := review.NewHandler(store, validate)
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
 
+	// routes
 	server.RegisterRoutes(
 		authMiddleware,
 		exampleHandler,
+		authHandler,
+		userHandler,
+		photographerHandler,
+		galleryHandler,
+		reviewHandler,
+		categoryHandler,
+		messageHandler,
+	)
+
+	server.PhotographerRoutes(
+		authMiddleware,
 		authHandler,
 		userHandler,
 		photographerHandler,
