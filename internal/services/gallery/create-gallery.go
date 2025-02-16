@@ -58,7 +58,7 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 	for _, file := range files {
 		fmt.Println("Processing file:", file.Filename)
 
-		signedURL, err := h.uploadGalleryPhoto(c.UserContext(), file, galleryFolder(userId))
+		signedURL, err := h.uploadGalleryPhoto(c.UserContext(), file, galleryFolder(createdGallery.ID))
 		if err != nil {
 			return errors.Wrap(err, "failed to upload photos")
 		}
@@ -66,8 +66,18 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		uploadedPhotoURLs = append(uploadedPhotoURLs, signedURL)
 	}
 
+	response := dto.GalleryResponse{
+		ID:               createdGallery.ID,
+		Name:             createdGallery.Name,
+		Description:      createdGallery.Description,
+		Price:            createdGallery.Price,
+		PhotographerID:   createdGallery.PhotographerID,
+		PhotographerName: createdGallery.Photographer.User.Name,
+		GalleryPhotos:    uploadedPhotoURLs,
+	}
+
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
-		Result: createdGallery,
+		Result: response,
 	})
 }
 
@@ -109,6 +119,6 @@ func (h *Handler) uploadGalleryPhoto(c context.Context, file *multipart.FileHead
 	return signedURL, nil
 }
 
-func galleryFolder(userId uint) string {
-	return "gallery_photos/" + strconv.FormatUint(uint64(userId), 10) + "/"
+func galleryFolder(galleryId uint) string {
+	return "gallery_photos/" + strconv.FormatUint(uint64(galleryId), 10) + "/"
 }
