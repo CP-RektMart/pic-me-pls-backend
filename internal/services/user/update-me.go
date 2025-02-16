@@ -20,6 +20,7 @@ import (
 // @Tags			user
 // @Router			/api/v1/me [PATCH]
 // @Security		ApiKeyAuth
+// @Accept			multipart/form-data
 // @Param 			profilePicture 	formData 	file		false	"Profile picture (optional)"
 // @Param 			name 			formData 	string		false	"Name"
 // @Param 			phoneNumber 	formData 	string		false	"Phone Number"
@@ -28,9 +29,9 @@ import (
 // @Param 			bank 			formData 	string		false	"Bank"
 // @Param 			accountNo 		formData 	string		false	"Account No"
 // @Param 			bankBranch 		formData 	string		false	"Bank Branch"
-// @Success			200	{object}	dto.HttpResponse{result=dto.UserResponse}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Success			200	{object}	dto.HttpResponse[dto.UserResponse]
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
@@ -94,7 +95,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		BankBranch:        updatedUser.BankBranch,
 	}
 
-	return c.JSON(dto.HttpResponse{
+	return c.JSON(dto.HttpResponse[dto.UserResponse]{
 		Result: response,
 	})
 }

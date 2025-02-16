@@ -1,152 +1,178 @@
-definitions:
-  dto.CitizenCardResponse:
-    properties:
-      citizenId:
-        type: string
-      expireDate:
-        type: string
-      laserId:
-        type: string
-      picture:
-        type: string
-    type: object
-  dto.GalleryResponse:
-    properties:
-      description:
-        type: string
-      galleryPhotos:
-        items:
+components:
+  schemas:
+    dto.CitizenCardResponse:
+      properties:
+        citizenId:
           type: string
-        type: array
-      id:
-        type: integer
-      name:
-        type: string
-      photographerId:
-        type: integer
-      photographerName:
-        type: string
-      price:
-        type: number
-    type: object
-  dto.HttpResponse:
-    properties:
-      error:
-        type: string
-      result: {}
-    type: object
-  dto.LoginRequest:
-    properties:
-      idToken:
-        type: string
-      provider:
-        description: GOOGLE
-        type: string
-    required:
-    - idToken
-    - provider
-    type: object
-  dto.RefreshTokenRequest:
-    properties:
-      refreshToken:
-        type: string
-    required:
-    - refreshToken
-    type: object
-  dto.RegisterRequest:
-    properties:
-      idToken:
-        type: string
-      provider:
-        description: GOOGLE
-        type: string
-      role:
-        description: CUSTOMER, PHOTOGRAPHER, ADMIN
-        type: string
-    required:
-    - idToken
-    - provider
-    - role
-    type: object
-  dto.RegisterResponse:
-    properties:
-      accessToken:
-        type: string
-      exp:
-        type: integer
-      refreshToken:
-        type: string
-      user:
-        $ref: '#/definitions/dto.UserResponse'
-    type: object
-  dto.TokenResponse:
-    properties:
-      accessToken:
-        type: string
-      exp:
-        type: integer
-      refreshToken:
-        type: string
-    type: object
-  dto.UserResponse:
-    properties:
-      accountNo:
-        type: string
-      bank:
-        type: string
-      bankBranch:
-        type: string
-      email:
-        type: string
-      facebook:
-        type: string
-      id:
-        type: integer
-      instagram:
-        type: string
-      name:
-        type: string
-      phoneNumber:
-        type: string
-      profilePictureUrl:
-        type: string
-      role:
-        type: string
-    type: object
+        expireDate:
+          type: string
+        laserId:
+          type: string
+        picture:
+          type: string
+      type: object
+    dto.HttpError:
+      properties:
+        error:
+          type: string
+      type: object
+    dto.HttpResponse-dto_CitizenCardResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.CitizenCardResponse'
+      type: object
+    dto.HttpResponse-dto_LoginResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.LoginResponse'
+      type: object
+    dto.HttpResponse-dto_RegisterResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.RegisterResponse'
+      type: object
+    dto.HttpResponse-dto_TokenResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.TokenResponse'
+      type: object
+    dto.HttpResponse-dto_UserResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.UserResponse'
+      type: object
+    dto.LoginRequest:
+      properties:
+        idToken:
+          type: string
+        provider:
+          description: GOOGLE
+          type: string
+      required:
+      - idToken
+      - provider
+      type: object
+    dto.LoginResponse:
+      properties:
+        accessToken:
+          type: string
+        exp:
+          type: integer
+        refreshToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/dto.UserResponse'
+      type: object
+    dto.RefreshTokenRequest:
+      properties:
+        refreshToken:
+          type: string
+      required:
+      - refreshToken
+      type: object
+    dto.RegisterRequest:
+      properties:
+        idToken:
+          type: string
+        provider:
+          description: GOOGLE
+          type: string
+        role:
+          description: CUSTOMER, PHOTOGRAPHER, ADMIN
+          type: string
+      required:
+      - idToken
+      - provider
+      - role
+      type: object
+    dto.RegisterResponse:
+      properties:
+        accessToken:
+          type: string
+        exp:
+          type: integer
+        refreshToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/dto.UserResponse'
+      type: object
+    dto.TokenResponse:
+      properties:
+        accessToken:
+          type: string
+        exp:
+          type: integer
+        refreshToken:
+          type: string
+      type: object
+    dto.UserResponse:
+      properties:
+        accountNo:
+          type: string
+        bank:
+          type: string
+        bankBranch:
+          type: string
+        email:
+          type: string
+        facebook:
+          type: string
+        id:
+          type: integer
+        instagram:
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
+        role:
+          type: string
+      type: object
+  securitySchemes:
+    "@securitydefinitions.apikey\tApiKeyAuth":
+      in: header
+      name: Authorization
+      type: apiKey
+externalDocs:
+  description: ""
+  url: ""
 info:
-  contact: {}
   description: Pic Me Pls API Documentation
   title: Pic Me Pls API
   version: "0.1"
+openapi: 3.1.0
 paths:
   /api/v1/auth/login:
     post:
       description: Login
-      parameters:
-      - description: request request
-        in: body
-        name: RequestBody
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.LoginRequest'
+        description: request request
         required: true
-        schema:
-          $ref: '#/definitions/dto.LoginRequest'
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_LoginResponse'
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.LoginRequest'
-              type: object
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       summary: Login
       tags:
       - auth
@@ -157,13 +183,17 @@ paths:
         "204":
           description: No Content
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       security:
       - ApiKeyAuth: []
       summary: Logout
@@ -172,132 +202,89 @@ paths:
   /api/v1/auth/refresh-token:
     post:
       description: Refresh Token
-      parameters:
-      - description: request request
-        in: body
-        name: RequestBody
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.RefreshTokenRequest'
+        description: request request
         required: true
-        schema:
-          $ref: '#/definitions/dto.RefreshTokenRequest'
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_TokenResponse'
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.TokenResponse'
-              type: object
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       summary: Refresh Token
       tags:
       - auth
   /api/v1/auth/register:
     post:
       description: register
-      parameters:
-      - description: request request
-        in: body
-        name: RequestBody
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.RegisterRequest'
+        description: request request
         required: true
-        schema:
-          $ref: '#/definitions/dto.RegisterRequest'
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_RegisterResponse'
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.RegisterResponse'
-              type: object
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       summary: register
       tags:
       - auth
-  /api/v1/gallery:
-    post:
-      description: Create gallery by photographer
-      parameters:
-      - description: Gallery name
-        in: formData
-        name: name
-        required: true
-        type: string
-      - description: Description
-        in: formData
-        name: description
-        required: true
-        type: string
-      - description: Price
-        in: formData
-        name: price
-        required: true
-        type: integer
-      - description: Gallery photos
-        in: formData
-        name: galleryPhotos
-        type: file
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.GalleryResponse'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Create gallery
-      tags:
-      - gallery
   /api/v1/me:
     get:
       description: Get me
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_UserResponse'
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.UserResponse'
-              type: object
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       security:
       - ApiKeyAuth: []
       summary: Get me
@@ -305,57 +292,31 @@ paths:
       - user
     patch:
       description: Update user's profile
-      parameters:
-      - description: Profile picture (optional)
-        in: formData
-        name: profilePicture
-        type: file
-      - description: Name
-        in: formData
-        name: name
-        type: string
-      - description: Phone Number
-        in: formData
-        name: phoneNumber
-        type: string
-      - description: Facebook
-        in: formData
-        name: facebook
-        type: string
-      - description: Instagram
-        in: formData
-        name: instagram
-        type: string
-      - description: Bank
-        in: formData
-        name: bank
-        type: string
-      - description: Account No
-        in: formData
-        name: accountNo
-        type: string
-      - description: Bank Branch
-        in: formData
-        name: bankBranch
-        type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+        description: Bank Branch
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_UserResponse'
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.UserResponse'
-              type: object
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       security:
       - ApiKeyAuth: []
       summary: Update me
@@ -366,22 +327,23 @@ paths:
       description: Get Photographer Citizen Card
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_CitizenCardResponse'
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.CitizenCardResponse'
-              type: object
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       security:
       - ApiKeyAuth: []
       summary: Get Citizen Card
@@ -390,44 +352,32 @@ paths:
   /api/v1/photographer/reverify:
     patch:
       description: Reverify Photographer Citizen Card
-      parameters:
-      - description: Card picture (optional)
-        in: formData
-        name: cardPicture
-        type: file
-      - description: Citizen ID
-        in: formData
-        name: citizenId
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+        description: Expire Date
         required: true
-        type: string
-      - description: Laser ID
-        in: formData
-        name: laserId
-        required: true
-        type: string
-      - description: Expire Date
-        in: formData
-        name: expireDate
-        required: true
-        type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_CitizenCardResponse'
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.CitizenCardResponse'
-              type: object
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       security:
       - ApiKeyAuth: []
       summary: Reverify Citizen Card
@@ -436,52 +386,34 @@ paths:
   /api/v1/photographer/verify:
     post:
       description: Verify Photographer Citizen Card
-      parameters:
-      - description: Card picture (optional)
-        in: formData
-        name: cardPicture
-        type: file
-      - description: Citizen ID
-        in: formData
-        name: citizenId
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+        description: Expire Date
         required: true
-        type: string
-      - description: Laser ID
-        in: formData
-        name: laserId
-        required: true
-        type: string
-      - description: Expire Date
-        in: formData
-        name: expireDate
-        required: true
-        type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_CitizenCardResponse'
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpResponse'
-            - properties:
-                result:
-                  $ref: '#/definitions/dto.CitizenCardResponse'
-              type: object
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpResponse'
       security:
       - ApiKeyAuth: []
       summary: Verify Citizen Card
       tags:
       - photographer
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
-swagger: "2.0"

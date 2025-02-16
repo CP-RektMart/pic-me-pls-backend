@@ -63,6 +63,8 @@ func main() {
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
 
+	server.RegisterDocs()
+
 	// routes
 	server.RegisterRoutes(
 		authMiddleware,

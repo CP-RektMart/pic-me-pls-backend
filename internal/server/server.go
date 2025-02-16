@@ -16,7 +16,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	"github.com/gofiber/swagger"
 )
 
 type Config struct {
@@ -58,8 +57,6 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 		Use(requestid.New()).
 		Use(requestlogger.New())
 
-	app.Get("/swagger/*", swagger.HandlerDefault)
-
 	return &Server{
 		config: config,
 		app:    app,
@@ -68,7 +65,7 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
 	s.app.Get("/health", func(c *fiber.Ctx) error {
-		return c.JSON(dto.HttpResponse{
+		return c.JSON(dto.HttpResponse[string]{
 			Result: "ok",
 		})
 	})

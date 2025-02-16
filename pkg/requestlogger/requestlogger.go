@@ -40,7 +40,7 @@ func handleError(c *fiber.Ctx, err error, requestId string) error {
 	}
 
 	logger.ErrorContext(c.UserContext(), "Request Error", slog.String("request_id", requestId), slog.String("method", c.Method()), slog.String("path", c.Path()), slog.Int("status", status), slog.Any("error", err))
-	return c.Status(status).JSON(dto.HttpResponse{
+	return c.Status(status).JSON(dto.HttpError{
 		Error: message,
 	})
 }
