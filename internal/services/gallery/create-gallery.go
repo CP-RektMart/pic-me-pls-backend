@@ -18,10 +18,11 @@ import (
 // @Tags			gallery
 // @Router			/api/v1/gallery [POST]
 // @Security		ApiKeyAuth
-// @Param 			name 			formData 	string		true	"Gallery name"
-// @Param 			description		formData 	string		true	"Description"
-// @Param 			price			formData 	int			true	"Price"
-// @Param 			galleryPhotos	formData 	file		true	"Gallery photos"
+// @Accept			multipart/form-data
+// @Param			name 			formData	string	true 	"Gallery name"
+// @Param			description 	formData 	string 	true 	"Gallery description"
+// @Param			price 			formData 	number 	true 	"Gallery price"
+// @Param			galleryPhotos 	formData 	file 	true 	"Gallery photos"
 // @Success			200	{object}	dto.HttpResponse[dto.GalleryResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
