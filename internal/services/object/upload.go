@@ -8,6 +8,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func (h *Handler) Upload(c *fiber.Ctx) error {
@@ -23,7 +24,8 @@ func (h *Handler) Upload(c *fiber.Ctx) error {
 	defer reader.Close()
 
 	folder := c.FormValue("path", "others")
-	path := fmt.Sprintf("%s/%s", folder, file.Filename)
+	fileName := fmt.Sprintf("%s-%s", uuid.NewString(), file.Filename)
+	path := fmt.Sprintf("%s/%s", folder, fileName)
 	contentType := file.Header.Get("Content-Type")
 
 	if strings.Contains(path, "..") || strings.HasPrefix(path, "/") {
