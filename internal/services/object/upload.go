@@ -11,6 +11,15 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary			Upload image
+// @Description			receive formData body, path (string, folder path, don't include ".." or prefix with "/") and file
+// @Tags			objects
+// @Router			/api/v1/objects [POST]
+// @Param 			file 	formData 	file		true	"picture (optional)"
+// @Param 			path 	formData 	string		false	"folder path"
+// @Success			200	{object}	dto.HttpResponse[dto.ObjectUploadResponse]
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) Upload(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")
 	if err != nil {
