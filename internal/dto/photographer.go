@@ -30,6 +30,7 @@ type PhotographerResponse struct {
 func ToPhotographerResponse(photographer model.Photographer) PhotographerResponse {
 	return PhotographerResponse{
 		ID:           photographer.ID,
+		Name:         photographer.User.Name,
 		IsVerified:   photographer.IsVerified,
 		ActiveStatus: photographer.ActiveStatus,
 	}
