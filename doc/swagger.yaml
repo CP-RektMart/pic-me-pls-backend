@@ -11,7 +11,7 @@ components:
         picture:
           type: string
       type: object
-    dto.GalleryResponse:
+    dto.CreateGalleryResponse:
       properties:
         description:
           type: string
@@ -41,10 +41,10 @@ components:
         result:
           $ref: '#/components/schemas/dto.CitizenCardResponse'
       type: object
-    dto.HttpResponse-dto_GalleryResponse:
+    dto.HttpResponse-dto_CreateGalleryResponse:
       properties:
         result:
-          $ref: '#/components/schemas/dto.GalleryResponse'
+          $ref: '#/components/schemas/dto.CreateGalleryResponse'
       type: object
     dto.HttpResponse-dto_LoginResponse:
       properties:
@@ -303,7 +303,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_GalleryResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_CreateGalleryResponse'
           description: OK
         "400":
           content:

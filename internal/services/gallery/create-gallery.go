@@ -23,7 +23,7 @@ import (
 // @Param			description 	formData 	string 	true 	"Gallery description"
 // @Param			price 			formData 	number 	true 	"Gallery price"
 // @Param			galleryPhotos 	formData 	file 	true 	"Gallery photos"
-// @Success			200	{object}	dto.HttpResponse[dto.GalleryResponse]
+// @Success			200	{object}	dto.HttpResponse[dto.CreateGalleryResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
@@ -32,7 +32,7 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.GalleryRequest)
+	req := new(dto.CreateGalleryRequest)
 	req.Name = c.FormValue("name")
 	req.Description = c.FormValue("description")
 	price, err := strconv.ParseFloat(c.FormValue("price"), 64)
@@ -77,8 +77,8 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		uploadedPhotoURLs = append(uploadedPhotoURLs, signedURL)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.GalleryResponse]{
-		Result: dto.GalleryResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.CreateGalleryResponse]{
+		Result: dto.CreateGalleryResponse{
 			ID:               createdGallery.ID,
 			Name:             createdGallery.Name,
 			Description:      createdGallery.Description,

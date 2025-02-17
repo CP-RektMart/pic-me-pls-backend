@@ -1,12 +1,12 @@
 package dto
 
-type GalleryRequest struct {
+type CreateGalleryRequest struct {
 	Name        string  `validate:"required"`
 	Description string  `validate:"required"`
 	Price       float64 `validate:"required"`
 }
 
-type GalleryResponse struct {
+type CreateGalleryResponse struct {
 	ID               uint     `json:"id"`
 	Name             string   `json:"name"`
 	Description      string   `json:"description"`

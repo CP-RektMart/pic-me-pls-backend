@@ -11,7 +11,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
 )
 
-func (s *Server) PhotographerRoutes(
+func (s *Server) GalleryRoutes(
 	authMiddleware authentication.AuthMiddleware,
 	authHandler *auth.Handler,
 	userHandler *user.Handler,

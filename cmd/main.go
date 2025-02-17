@@ -78,7 +78,7 @@ func main() {
 		messageHandler,
 	)
 
-	server.PhotographerRoutes(
+	server.GalleryRoutes(
 		authMiddleware,
 		authHandler,
 		userHandler,
