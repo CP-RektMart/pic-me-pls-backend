@@ -63,7 +63,7 @@ func main() {
 	reviewHandler := review.NewHandler(store, validate)
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
-	objectHandler := object.NewHandler(store)
+	objectHandler := object.NewHandler(store, config.Storage)
 
 	server.RegisterDocs()
 

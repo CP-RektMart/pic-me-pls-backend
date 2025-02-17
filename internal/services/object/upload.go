@@ -28,8 +28,8 @@ func (h *Handler) Upload(c *fiber.Ctx) error {
 	path := fmt.Sprintf("%s/%s", folder, fileName)
 	contentType := file.Header.Get("Content-Type")
 
-	if strings.Contains(path, "..") || strings.HasPrefix(path, "/") {
-		return apperror.BadRequest("invalid path", nil)
+	if err := h.validatePath(path); err != nil {
+		return err
 	}
 
 	URL, err := h.store.Storage.UploadFile(c.UserContext(), path, contentType, reader, true)
@@ -42,4 +42,11 @@ func (h *Handler) Upload(c *fiber.Ctx) error {
 			URL: URL,
 		},
 	})
+}
+
+func (h *Handler) validatePath(path string) error {
+	if strings.Contains(path, "..") || strings.HasPrefix(path, "/") {
+		return apperror.BadRequest("invalid path", nil)
+	}
+	return nil
 }
