@@ -9,15 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary		Get All Photographers
-// @Description	Retrieve a paginated list of photographers, optionally filtered by name.
+// @Summary			Get All Photographers
+// @Description		Retrieve a paginated list of photographers, optionally filtered by name.
 // @Tags			photographer
-// @Router		/api/v1/photographers [GET]
-// @Param		page	query		int	false	"Page number for pagination (default: 1)"
-// @Param		name	query		string	false	"Filter by photographer's name (case-insensitive)"
-// @Success		200	{object}	dto.HttpResponse[[]dto.PhotographerResponse]
-// @Failure		400	{object}	dto.HttpError
-// @Failure		500	{object}	dto.HttpError
+// @Router			/api/v1/photographers [GET]
+// @Param			page	query		int	false	"Page number for pagination (default: 1)"
+// @Param			name	query		string	false	"Filter by photographer's name (case-insensitive)"
+// @Success			200	{object}	dto.HttpResponse[[]dto.PhotographerResponse]
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetAllPhotographer(c *fiber.Ctx) error {
 	var photographers []model.Photographer
 

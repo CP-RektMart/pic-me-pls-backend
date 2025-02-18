@@ -21,17 +21,23 @@ type CitizenCardResponse struct {
 }
 
 type PhotographerResponse struct {
-	ID           uint   `json:"id"`
-	Name         string `json:"name"`
-	IsVerified   bool   `json:"is_verified"`
-	ActiveStatus bool   `json:"active_status"`
+	ID                uint   `json:"id"`
+	Name              string `json:"name"`
+	Email             string `json:"email"`
+	PhoneNumber       string `json:"phoneNumber"`
+	ProfilePictureURL string `json:"profilePictureUrl"`
+	IsVerified        bool   `json:"is_verified"`
+	ActiveStatus      bool   `json:"active_status"`
 }
 
 func ToPhotographerResponse(photographer model.Photographer) PhotographerResponse {
 	return PhotographerResponse{
-		ID:           photographer.ID,
-		Name:         photographer.User.Name,
-		IsVerified:   photographer.IsVerified,
-		ActiveStatus: photographer.ActiveStatus,
+		ID:                photographer.ID,
+		Name:              photographer.User.Name,
+		Email:             photographer.User.Email,
+		PhoneNumber:       photographer.User.PhoneNumber,
+		ProfilePictureURL: photographer.User.ProfilePictureURL,
+		IsVerified:        photographer.IsVerified,
+		ActiveStatus:      photographer.ActiveStatus,
 	}
 }
