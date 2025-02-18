@@ -1,5 +1,5 @@
 package dto
 
 type ObjectUploadResponse struct {
-	URL string `json:"URL"`
+	URL string `json:"url"`
 }
