@@ -16,10 +16,17 @@ func (e *AppError) Error() string {
 }
 
 func New(code int, msg string, err error) *AppError {
+	var Err error
+	if err == nil {
+		Err = fmt.Errorf("%s", msg)
+	} else {
+		Err = fmt.Errorf("%s: %v", msg, err)
+	}
+
 	return &AppError{
 		Code:    code,
 		Message: msg,
-		Err:     fmt.Errorf("%s: %v", msg, err),
+		Err:     Err,
 	}
 }
 
