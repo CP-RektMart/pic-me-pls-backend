@@ -15,6 +15,15 @@ type GalleryResponse struct {
 	Quotations   []QuotationResponse  `json:"quotations,omitempty"`
 }
 
+type PaginationResponse struct {
+	Page        int   `json:"page"`
+	Total       int64 `json:"total"`
+	Limit       int   `json:"limit"`
+	TotalPages  int   `json:"total_pages"`
+	HasNextPage bool  `json:"has_next_page"`
+	HasPrevPage bool  `json:"has_prev_page"`
+}
+
 func ToGalleryResponse(gallery model.Gallery) GalleryResponse {
 	return GalleryResponse{
 		ID:           gallery.ID,
