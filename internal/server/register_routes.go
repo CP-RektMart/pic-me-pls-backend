@@ -8,6 +8,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/gallery"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
 )
@@ -22,6 +23,7 @@ func (s *Server) RegisterRoutes(
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
 	messageHandler *message.Handler,
+	quotationHandler *quotation.Handler,
 ) {
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
@@ -47,4 +49,8 @@ func (s *Server) RegisterRoutes(
 	photographer.Patch("/reverify", authMiddleware.AuthPhotographer, photographerHandler.HandleReVerifyCard)
 
 	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+
+	// quotation
+	quotation := v1.Group("/quotation")
+	quotation.Get("/:id", quotationHandler.HandleGetQuotationByID)
 }
