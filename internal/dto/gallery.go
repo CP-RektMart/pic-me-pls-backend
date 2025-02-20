@@ -24,6 +24,11 @@ type PaginationResponse struct {
 	HasPrevPage bool  `json:"has_prev_page"`
 }
 
+type GalleryListResponse struct {
+	Pagination PaginationResponse `json:"pagination"`
+	Response   []GalleryResponse  `json:"response"`
+}
+
 func ToGalleryResponse(gallery model.Gallery) GalleryResponse {
 	return GalleryResponse{
 		ID:           gallery.ID,

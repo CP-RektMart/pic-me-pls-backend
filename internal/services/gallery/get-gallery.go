@@ -11,8 +11,15 @@ import (
 	"gorm.io/gorm"
 )
 
-// Question: Does it required to be shown to the customer?
-// or its for photograoher as well?
+// @Summary      Get all galleries
+// @Description  Show all avaliable galleries with pagination
+// @Tags         gallery
+// @Router       /api/v1/gallery [GET]
+// @Param        page   query   int  false  "Page number (default is 1)"
+// @Param        limit  query   int  false  "Number of items per page (default is 20)"
+// @Success      200    {object}  dto.HttpResponse{result=map[string]interface{response=[]dto.GalleryResponse, pagination=dto.PaginationResponse}}
+// @Failure      400    {object}  dto.HttpResponse
+// @Failure      500    {object}  dto.HttpResponse
 func (h *Handler) HandleGetAllGallery(c *fiber.Ctx) error {
 	var galleries []model.Gallery
 
@@ -71,9 +78,9 @@ func (h *Handler) HandleGetAllGallery(c *fiber.Ctx) error {
 		HasPrevPage: page > 1,
 	}
 
-	result := map[string]interface{}{
-		"response":   galleryResponses,
-		"pagination": pagination,
+	result := dto.GalleryListResponse{
+		Pagination: pagination,
+		Response:   galleryResponses,
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
