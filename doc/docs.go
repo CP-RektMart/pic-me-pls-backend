@@ -15,58 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/auth/Register": {
-            "post": {
-                "description": "Register",
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Register",
-                "parameters": [
-                    {
-                        "description": "request request",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.RegisterRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/dto.HttpResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/dto.RegisterResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/auth/login": {
             "post": {
                 "description": "Login",
@@ -181,6 +129,113 @@ const docTemplate = `{
                                     "properties": {
                                         "result": {
                                             "$ref": "#/definitions/dto.TokenResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "description": "register",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "register",
+                "parameters": [
+                    {
+                        "description": "request request",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.RegisterResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/gallery": {
+            "get": {
+                "description": "Show all avaliable galleries with pagination",
+                "tags": [
+                    "gallery"
+                ],
+                "summary": "Get all galleries",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number (default is 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items per page (default is 20)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.GalleryListResponse"
                                         }
                                     }
                                 }
@@ -540,6 +595,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.CategoryResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CitizenCardResponse": {
             "type": "object",
             "properties": {
@@ -554,6 +620,70 @@ const docTemplate = `{
                 },
                 "picture": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.GalleryListResponse": {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                },
+                "response": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GalleryResponse"
+                    }
+                }
+            }
+        },
+        "dto.GalleryResponse": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.CategoryResponse"
+                    }
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "media": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.MediaResponse"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "photographer": {
+                    "$ref": "#/definitions/dto.PhotographerResponse"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quotations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.QuotationResponse"
+                    }
+                },
+                "reviews": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ReviewResponse"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.TagResponse"
+                    }
                 }
             }
         },
@@ -578,6 +708,71 @@ const docTemplate = `{
                 },
                 "provider": {
                     "description": "GOOGLE",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.MediaResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "pictureUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PaginationResponse": {
+            "type": "object",
+            "properties": {
+                "has_next_page": {
+                    "type": "boolean"
+                },
+                "has_prev_page": {
+                    "type": "boolean"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "total_pages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.PhotographerResponse": {
+            "type": "object",
+            "properties": {
+                "active_status": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.QuotationResponse": {
+            "type": "object",
+            "properties": {
+                "customer": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -631,6 +826,34 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ReviewResponse": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "customer": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.TagResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.TokenResponse": {
             "type": "object",
             "properties": {
@@ -648,13 +871,13 @@ const docTemplate = `{
         "dto.UserResponse": {
             "type": "object",
             "properties": {
-                "account_no": {
+                "accountNo": {
                     "type": "string"
                 },
                 "bank": {
                     "type": "string"
                 },
-                "bank_branch": {
+                "bankBranch": {
                     "type": "string"
                 },
                 "email": {
@@ -672,10 +895,10 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "phone_number": {
+                "phoneNumber": {
                     "type": "string"
                 },
-                "profile_picture_url": {
+                "profilePictureUrl": {
                     "type": "string"
                 },
                 "role": {

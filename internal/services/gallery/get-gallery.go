@@ -17,7 +17,7 @@ import (
 // @Router       /api/v1/gallery [GET]
 // @Param        page   query   int  false  "Page number (default is 1)"
 // @Param        limit  query   int  false  "Number of items per page (default is 20)"
-// @Success      200    {object}  dto.HttpResponse{result=map[string]interface{response=[]dto.GalleryResponse, pagination=dto.PaginationResponse}}
+// @Success      200    {object}  dto.HttpResponse{result=dto.GalleryListResponse}
 // @Failure      400    {object}  dto.HttpResponse
 // @Failure      500    {object}  dto.HttpResponse
 func (h *Handler) HandleGetAllGallery(c *fiber.Ctx) error {
