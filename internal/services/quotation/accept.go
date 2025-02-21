@@ -14,7 +14,7 @@ import (
 // @Router			/api/v1/quotations/{id}/accept [PATCH]
 // @Security			ApiKeyAuth
 // @Param 			quotation id 	path 	uint 	true 	"quotaion id"
-// @Success			204	
+// @Success			204
 // @Failure			403	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) Accept(c *fiber.Ctx) error {
@@ -36,7 +36,7 @@ func (h *Handler) Accept(c *fiber.Ctx) error {
 		return apperror.Forbidden("user not have permission", nil)
 	}
 
-	quotation.Status = string(model.QuotationConfirm)
+	quotation.Status = model.QuotationConfirm
 	if err := h.store.DB.Save(&quotation).Error; err != nil {
 		return errors.Wrap(err, "failed confirm quotation")
 	}
