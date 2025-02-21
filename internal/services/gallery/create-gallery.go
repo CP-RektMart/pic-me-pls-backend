@@ -1,8 +1,6 @@
 package gallery
 
 import (
-	"context"
-	"mime/multipart"
 	"strconv"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -45,15 +43,6 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	form, err := c.MultipartForm()
-	if err != nil {
-		return apperror.BadRequest("failed to parse multipart form", err)
-	}
-	files := form.File["galleryPhotos"]
-	if len(files) == 0 {
-		return apperror.BadRequest("Gallery picture is required", errors.Errorf("field missing"))
-	}
-
 	gallery := &model.Gallery{
 		PhotographerID: userId,
 		Name:           req.Name,
@@ -66,17 +55,6 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to create gallery")
 	}
 
-	var uploadedPhotoURLs []string
-	for _, file := range files {
-
-		signedURL, err := h.uploadGalleryPhoto(c.UserContext(), file, galleryFolder(createdGallery.ID))
-		if err != nil {
-			return errors.Wrap(err, "failed to upload photos")
-		}
-
-		uploadedPhotoURLs = append(uploadedPhotoURLs, signedURL)
-	}
-
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.CreateGalleryResponse]{
 		Result: dto.CreateGalleryResponse{
 			ID:               createdGallery.ID,
@@ -85,7 +63,6 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 			Price:            createdGallery.Price,
 			PhotographerID:   createdGallery.PhotographerID,
 			PhotographerName: createdGallery.Photographer.User.Name,
-			GalleryPhotos:    uploadedPhotoURLs,
 		},
 	})
 }
@@ -109,25 +86,4 @@ func (h *Handler) CreateGallery(gallery *model.Gallery, userId uint) (*model.Gal
 	}
 
 	return gallery, nil
-}
-
-func (h *Handler) uploadGalleryPhoto(c context.Context, file *multipart.FileHeader, folder string) (string, error) {
-	contentType := file.Header.Get("Content-Type")
-
-	src, err := file.Open()
-	if err != nil {
-		return "", errors.Wrap(err, "failed to open file")
-	}
-	defer src.Close()
-
-	signedURL, err := h.store.Storage.UploadFile(c, folder+file.Filename, contentType, src, true)
-	if err != nil {
-		return "", errors.Wrap(err, "failed to upload file")
-	}
-
-	return signedURL, nil
-}
-
-func galleryFolder(galleryId uint) string {
-	return "gallery_photos/" + strconv.FormatUint(uint64(galleryId), 10) + "/"
 }

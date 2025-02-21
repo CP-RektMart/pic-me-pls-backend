@@ -7,11 +7,10 @@ type CreateGalleryRequest struct {
 }
 
 type CreateGalleryResponse struct {
-	ID               uint     `json:"id"`
-	Name             string   `json:"name"`
-	Description      string   `json:"description"`
-	Price            float64  `json:"price"`
-	PhotographerID   uint     `json:"photographerId"`
-	PhotographerName string   `json:"photographerName"`
-	GalleryPhotos    []string `json:"galleryPhotos"`
+	ID               uint    `json:"id"`
+	Name             string  `json:"name"`
+	Description      string  `json:"description"`
+	Price            float64 `json:"price"`
+	PhotographerID   uint    `json:"photographerId"`
+	PhotographerName string  `json:"photographerName"`
 }
