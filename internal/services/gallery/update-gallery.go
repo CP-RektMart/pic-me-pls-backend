@@ -58,7 +58,10 @@ func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId int, us
 	var gallery model.Gallery
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := h.store.DB.First(&gallery, "id = ?", galleryId).Error; err != nil {
-			return errors.Wrap(err, "Gallery not found")
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return apperror.NotFound("Gallery not found", err)
+			}
+			return errors.Wrap(err, "Failed to get gallery")
 		}
 
 		if gallery.PhotographerID != userId {
