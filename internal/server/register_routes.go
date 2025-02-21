@@ -7,6 +7,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/gallery"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
@@ -22,6 +23,7 @@ func (s *Server) RegisterRoutes(
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
 	messageHandler *message.Handler,
+	objectHandler *object.Handler,
 ) {
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
@@ -35,6 +37,7 @@ func (s *Server) RegisterRoutes(
 	auth.Post("/login", authHandler.HandleLogin)
 	auth.Post("/register", authHandler.HandleRegister)
 	auth.Post("/refresh-token", authHandler.HandleRefreshToken)
+	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
 	// user
 	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
@@ -49,5 +52,11 @@ func (s *Server) RegisterRoutes(
 	// get photographer
 	photographer.Get("/", photographerHandler.HandleGetAllPhotographer)
 
-	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+	// get photographer
+	photographer.Get("/", photographerHandler.HandleGetAllPhotographer)
+
+	// object
+	object := v1.Group("/objects")
+	object.Post("/", objectHandler.Upload)
+	object.Delete("/", objectHandler.Delete)
 }
