@@ -32,6 +32,11 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
+	for _, media := range req.Media {
+		if err := h.validate.Struct(media); err != nil {
+			return apperror.BadRequest("invalid request body", err)
+		}
+	}
 
 	if req.Price <= 0 {
 		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
