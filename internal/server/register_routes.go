@@ -57,4 +57,8 @@ func (s *Server) RegisterRoutes(
 	object := v1.Group("/objects")
 	object.Post("/", objectHandler.Upload)
 	object.Delete("/", objectHandler.Delete)
+
+	// gallery
+	gallery := v1.Group("/gallery")
+	gallery.Post("/", authMiddleware.AuthPhotographer, galleryHandler.HandleCreateGallery)
 }
