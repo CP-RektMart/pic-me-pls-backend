@@ -1,8 +1,6 @@
 package gallery
 
 import (
-	"strconv"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -10,6 +8,13 @@ import (
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
+
+// to be fixed:
+// media model ช่วยเพิ่ม description field เข้ามาด้วย
+// request body เพิ่ม field media ด้วย จะเป็น list ของข้อมูลที่ใช้สร้าง media
+// ช่วยใช้ transaction ด้วยนะ
+// ถ้า success แค่คืน status 204 ก็พอ (fiber.StatusNoContent)
+// update swagger too
 
 // @Summary			Create gallery
 // @Description		Create gallery by photographer
@@ -31,16 +36,16 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 	}
 
 	req := new(dto.CreateGalleryRequest)
-	req.Name = c.FormValue("name")
-	req.Description = c.FormValue("description")
-	price, err := strconv.ParseFloat(c.FormValue("price"), 64)
-	if err != nil {
-		return apperror.BadRequest("invalid price value", err)
+	if err := c.BodyParser(req); err != nil {
+		return apperror.BadRequest("invalid request body", err)
 	}
-	req.Price = price
 
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
+	}
+
+	if req.Price <= 0 {
+		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
 	}
 
 	gallery := &model.Gallery{
