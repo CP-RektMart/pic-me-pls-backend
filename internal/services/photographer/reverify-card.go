@@ -19,13 +19,14 @@ import (
 // @Tags			photographer
 // @Router			/api/v1/photographer/reverify [PATCH]
 // @Security		ApiKeyAuth
+// @Accept			multipart/form-data
 // @Param 			cardPicture 	formData 	file		false	"Card picture (optional)"
 // @Param 			citizenId 		formData 	string		true	"Citizen ID"
 // @Param 			laserId 		formData 	string		true	"Laser ID"
 // @Param 			expireDate 		formData 	string		true	"Expire Date"
-// @Success			200	{object}	dto.HttpResponse{result=dto.CitizenCardResponse}
-// @Failure			400	{object}	dto.HttpResponse
-// @Failure			500	{object}	dto.HttpResponse
+// @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
@@ -82,7 +83,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		ExpireDate: user.ExpireDate,
 	}
 
-	return c.JSON(dto.HttpResponse{
+	return c.JSON(dto.HttpResponse[dto.CitizenCardResponse]{
 		Result: response,
 	})
 }

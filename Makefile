@@ -1,11 +1,14 @@
 server:
-	go run cmd/main.go
+	go generate ./... && go run cmd/main.go
 
-swagger:
-	swag init -g cmd/main.go --output doc
+generate:
+	go generate ./...
 
 lint:
 	golangci-lint run
 
+start:
+	docker-compose up -d && air
+
 .PHONY:
-	server swagger
+	server swagger start

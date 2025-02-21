@@ -6,6 +6,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
@@ -22,6 +23,7 @@ func (s *Server) RegisterRoutes(
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
 	messageHandler *message.Handler,
+	objectHandler *object.Handler,
 ) {
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
@@ -35,6 +37,7 @@ func (s *Server) RegisterRoutes(
 	auth.Post("/login", authHandler.HandleLogin)
 	auth.Post("/register", authHandler.HandleRegister)
 	auth.Post("/refresh-token", authHandler.HandleRefreshToken)
+	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
 	// user
 	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)

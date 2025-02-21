@@ -83,7 +83,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		Response:   PackageResponses,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.PackageListResponse]{
 		Result: result,
 	})
 }
