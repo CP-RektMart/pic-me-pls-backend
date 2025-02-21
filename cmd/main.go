@@ -17,6 +17,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/gallery"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
@@ -62,6 +63,7 @@ func main() {
 	reviewHandler := review.NewHandler(store, validate)
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
+	objectHandler := object.NewHandler(store, config.Storage)
 
 	server.RegisterDocs()
 
@@ -75,6 +77,7 @@ func main() {
 		reviewHandler,
 		categoryHandler,
 		messageHandler,
+		objectHandler,
 	)
 
 	server.GalleryRoutes(
