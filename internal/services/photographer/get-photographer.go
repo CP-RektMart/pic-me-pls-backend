@@ -16,7 +16,7 @@ import (
 // @Param			page		query		int	false	"Page number for pagination (default: 1)"
 // @Param			pageSize	query		int	false	"Number of records per page (default: 5, max: 20)"
 // @Param			name		query		string	false	"Filter by photographer's name (case-insensitive)"
-// @Success			200	{object}	dto.PaginationResponse
+// @Success      	200 {object} 	dto.PaginationResponse[dto.PhotographerResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetAllPhotographer(c *fiber.Ctx) error {
@@ -31,13 +31,20 @@ func (h *Handler) HandleGetAllPhotographer(c *fiber.Ctx) error {
 		return apperror.BadRequest("Invalid page or pageSize parameter", nil)
 	}
 
-	query := h.store.DB.Preload("User").Where("is_verified = ? AND active_status = ?", true, true)
+	// Query photographers
+	query := h.store.DB.Preload("User").
+		Joins("User").
+		Where("\"User\".name ILIKE ?", "%"+nameFilter+"%").
+		Where("is_verified = ? AND active_status = ?", true, true)
 
-	if nameFilter != "" {
-		query = query.Joins("JOIN users ON users.id = photographers.user_id").
-			Where("users.name ILIKE ?", "%"+nameFilter+"%")
+	// Calculate total page
+	var totalCount int64
+	if err := query.Model(&model.Photographer{}).Count(&totalCount).Error; err != nil {
+		return errors.Wrap(err, "Error counting photographers")
 	}
+	totalPage := (int(totalCount) + pageSize - 1) / pageSize
 
+	// Retrieve photographers
 	if err := query.Limit(pageSize).Offset(offset).Find(&photographers).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("No photographers found", err)
@@ -45,17 +52,13 @@ func (h *Handler) HandleGetAllPhotographer(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error retrieving photographers")
 	}
 
+	// Convert to response
 	var photographerResponses []dto.PhotographerResponse
-
 	for _, photographer := range photographers {
 		photographerResponses = append(photographerResponses, dto.ToPhotographerResponse(photographer))
 	}
 
-	var totalCount int64
-	query.Model(&model.Photographer{}).Count(&totalCount)
-	totalPage := int((totalCount + int64(pageSize) - 1) / int64(pageSize))
-
-	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[dto.PhotographerResponse]{
 		Page:      page,
 		PageSize:  pageSize,
 		TotalPage: totalPage,

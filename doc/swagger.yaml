@@ -73,7 +73,7 @@ components:
         url:
           type: string
       type: object
-    dto.PaginationResponse:
+    dto.PaginationResponse-dto_PhotographerResponse:
       properties:
         data:
           items:
@@ -542,7 +542,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.PaginationResponse'
+                $ref: '#/components/schemas/dto.PaginationResponse-dto_PhotographerResponse'
           description: OK
         "400":
           content:
