@@ -67,6 +67,7 @@ func main() {
 
 	server.RegisterDocs()
 
+	// routes
 	server.RegisterRoutes(
 		authMiddleware,
 		exampleHandler,

@@ -10,11 +10,11 @@ import (
 )
 
 // @Summary			Delete image
-// @Description			Delete image
+// @Description		Delete image
 // @Tags			objects
 // @Router			/api/v1/objects [DELETE]
 // @Param 			URL 	query	 	string		true	"image url"
-// @Success			204	
+// @Success			204
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) Delete(c *fiber.Ctx) error {
