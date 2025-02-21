@@ -50,10 +50,8 @@ func (s *Server) RegisterRoutes(
 	photographer.Patch("/reverify", authMiddleware.AuthPhotographer, photographerHandler.HandleReVerifyCard)
 
 	// get photographer
-	photographer.Get("/", photographerHandler.HandleGetAllPhotographer)
-
-	// get photographer
-	photographer.Get("/", photographerHandler.HandleGetAllPhotographer)
+	photographers := v1.Group("/photographers")
+	photographers.Get("/", photographerHandler.HandleGetAllPhotographer)
 
 	// object
 	object := v1.Group("/objects")

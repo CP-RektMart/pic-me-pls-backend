@@ -70,7 +70,38 @@ components:
       type: object
     dto.ObjectUploadResponse:
       properties:
-        URL:
+        url:
+          type: string
+      type: object
+    dto.PaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.PhotographerResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
+      type: object
+    dto.PhotographerResponse:
+      properties:
+        active_status:
+          type: boolean
+        email:
+          type: string
+        id:
+          type: integer
+        is_verified:
+          type: boolean
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
           type: string
       type: object
     dto.RefreshTokenRequest:
@@ -368,7 +399,7 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               type: string
-        description: folder path
+        description: folder enum (GALLERY, VERIFY_CITIZENCARD, PROFILE_IMAGE)
       responses:
         "200":
           content:
@@ -484,5 +515,47 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Verify Citizen Card
+      tags:
+      - photographer
+  /api/v1/photographers:
+    get:
+      description: Retrieve a paginated list of photographers, optionally filtered
+        by name.
+      parameters:
+      - description: 'Page number for pagination (default: 1)'
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: 'Number of records per page (default: 5, max: 20)'
+        in: query
+        name: pageSize
+        schema:
+          type: integer
+      - description: Filter by photographer's name (case-insensitive)
+        in: query
+        name: name
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.PaginationResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: Get All Photographers
       tags:
       - photographer
