@@ -12,7 +12,6 @@ import (
 // to be fixed:
 // request body เพิ่ม field media ด้วย จะเป็น list ของข้อมูลที่ใช้สร้าง media
 // ช่วยใช้ transaction ด้วยนะ
-// ถ้า success แค่คืน status 204 ก็พอ (fiber.StatusNoContent)
 // update swagger too
 
 // @Summary			Create gallery
@@ -54,24 +53,15 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		Price:          req.Price,
 	}
 
-	createdGallery, err := h.CreateGallery(gallery, userId)
+	err = h.CreateGallery(gallery, userId)
 	if err != nil {
 		return errors.Wrap(err, "failed to create gallery")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.CreateGalleryResponse]{
-		Result: dto.CreateGalleryResponse{
-			ID:               createdGallery.ID,
-			Name:             createdGallery.Name,
-			Description:      createdGallery.Description,
-			Price:            createdGallery.Price,
-			PhotographerID:   createdGallery.PhotographerID,
-			PhotographerName: createdGallery.Photographer.User.Name,
-		},
-	})
+	return c.SendStatus(fiber.StatusCreated)
 }
 
-func (h *Handler) CreateGallery(gallery *model.Gallery, userId uint) (*model.Gallery, error) {
+func (h *Handler) CreateGallery(gallery *model.Gallery, userId uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var photographer model.Photographer
 		if err := h.store.DB.Preload("User").First(&photographer, "user_id = ?", userId).Error; err != nil {
@@ -86,8 +76,8 @@ func (h *Handler) CreateGallery(gallery *model.Gallery, userId uint) (*model.Gal
 
 		return nil
 	}); err != nil {
-		return nil, errors.Wrap(err, "failed to create gallery")
+		return errors.Wrap(err, "failed to create gallery")
 	}
 
-	return gallery, nil
+	return nil
 }
