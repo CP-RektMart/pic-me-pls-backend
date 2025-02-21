@@ -9,21 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// to be fixed:
-// request body เพิ่ม field media ด้วย จะเป็น list ของข้อมูลที่ใช้สร้าง media
-// update swagger too
-
 // @Summary			Create gallery
 // @Description		Create gallery by photographer
 // @Tags			gallery
 // @Router			/api/v1/gallery [POST]
 // @Security		ApiKeyAuth
-// @Accept			multipart/form-data
-// @Param			name 			formData	string	true 	"Gallery name"
-// @Param			description 	formData 	string 	true 	"Gallery description"
-// @Param			price 			formData 	number 	true 	"Gallery price"
-// @Param			galleryPhotos 	formData 	file 	true 	"Gallery photos"
-// @Success			200	{object}	dto.HttpResponse[dto.CreateGalleryResponse]
+// @Param        	RequestBody 	body  dto.CreateGalleryRequest  true  "Gallery details"
+// @Success			201
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {

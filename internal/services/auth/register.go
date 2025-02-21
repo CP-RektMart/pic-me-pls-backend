@@ -13,8 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary			register
-// @Description			register
+// @Summary			Register
+// @Description		Register
 // @Tags			auth
 // @Router			/api/v1/auth/register [POST]
 // @Param 			RequestBody 	body 	dto.RegisterRequest 	true 	"request request"
