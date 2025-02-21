@@ -33,7 +33,7 @@ func (h *Handler) Accept(c *fiber.Ctx) error {
 	}
 
 	if quotation.CustomerID != userID {
-		return apperror.Forbidden("user not have permission", err)
+		return apperror.Forbidden("user not have permission", nil)
 	}
 
 	quotation.Status = string(model.QuotationConfirm)
