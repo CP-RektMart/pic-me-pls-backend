@@ -11,7 +11,6 @@ import (
 
 // to be fixed:
 // request body เพิ่ม field media ด้วย จะเป็น list ของข้อมูลที่ใช้สร้าง media
-// ช่วยใช้ transaction ด้วยนะ
 // update swagger too
 
 // @Summary			Create gallery
@@ -46,31 +45,21 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
 	}
 
-	gallery := &model.Gallery{
-		PhotographerID: userId,
-		Name:           req.Name,
-		Description:    req.Description,
-		Price:          req.Price,
-	}
-
-	err = h.CreateGallery(gallery, userId)
-	if err != nil {
+	if err = h.CreateGallery(req, userId); err != nil {
 		return errors.Wrap(err, "failed to create gallery")
 	}
 
 	return c.SendStatus(fiber.StatusCreated)
 }
 
-func (h *Handler) CreateGallery(gallery *model.Gallery, userId uint) error {
+func (h *Handler) CreateGallery(req *dto.CreateGalleryRequest, userId uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		var photographer model.Photographer
-		if err := h.store.DB.Preload("User").First(&photographer, "user_id = ?", userId).Error; err != nil {
-			return errors.Wrap(err, "Photographer not found")
-		}
-
-		gallery.Photographer = photographer
-
-		if err := tx.Create(&gallery).Error; err != nil {
+		if err := tx.Create(&model.Gallery{
+			PhotographerID: userId,
+			Name:           req.Name,
+			Description:    req.Description,
+			Price:          req.Price,
+		}).Error; err != nil {
 			return errors.Wrap(err, "failed to create gallery")
 		}
 
