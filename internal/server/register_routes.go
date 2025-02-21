@@ -5,8 +5,8 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/gallery"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
@@ -18,7 +18,7 @@ func (s *Server) RegisterRoutes(
 	authHandler *auth.Handler,
 	userHandler *user.Handler,
 	photographerHandler *photographer.Handler,
-	galleryHandler *gallery.Handler,
+	packagesHandler *packages.Handler,
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
 	messageHandler *message.Handler,
@@ -48,7 +48,7 @@ func (s *Server) RegisterRoutes(
 
 	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
-	// gallery
-	gallery := v1.Group("/gallery")
-	gallery.Get("/", galleryHandler.HandleGetAllGallery)
+	// package
+	packages := v1.Group("/package")
+	packages.Get("/", packagesHandler.HandleGetAllPackages)
 }

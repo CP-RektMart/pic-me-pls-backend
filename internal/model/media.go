@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Media struct {
 	gorm.Model
-	GalleryID  uint    `gorm:"not null"`
-	Gallery    Gallery `gorm:"foreignKey:GalleryID"`
+	PackageID  uint    `gorm:"not null"`
+	Package    Package `gorm:"foreignKey:PackageID"`
 	PictureURL string  `gorm:"not null"`
 }

@@ -2,7 +2,7 @@ package dto
 
 import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 
-type GalleryResponse struct {
+type PackageResponse struct {
 	ID           uint                 `json:"id"`
 	Name         string               `json:"name"`
 	Description  string               `json:"description,omitempty"`
@@ -24,22 +24,22 @@ type PaginationResponse struct {
 	HasPrevPage bool  `json:"has_prev_page"`
 }
 
-type GalleryListResponse struct {
+type PackageListResponse struct {
 	Pagination PaginationResponse `json:"pagination"`
-	Response   []GalleryResponse  `json:"response"`
+	Response   []PackageResponse  `json:"response"`
 }
 
-func ToGalleryResponse(gallery model.Gallery) GalleryResponse {
-	return GalleryResponse{
-		ID:           gallery.ID,
-		Name:         gallery.Name,
-		Description:  gallery.Description,
-		Price:        gallery.Price,
-		Photographer: ToPhotographerResponse(gallery.Photographer),
-		Tags:         ToTagResponses(gallery.Tags),
-		Media:        ToMediaResponses(gallery.Media),
-		Reviews:      ToReviewResponses(gallery.Reviews),
-		Categories:   ToCategoryResponses(gallery.Categories),
-		Quotations:   ToQuotationResponses(gallery.Quotations),
+func ToPackageResponse(Package model.Package) PackageResponse {
+	return PackageResponse{
+		ID:           Package.ID,
+		Name:         Package.Name,
+		Description:  Package.Description,
+		Price:        Package.Price,
+		Photographer: ToPhotographerResponse(Package.Photographer),
+		Tags:         ToTagResponses(Package.Tags),
+		Media:        ToMediaResponses(Package.Media),
+		Reviews:      ToReviewResponses(Package.Reviews),
+		Categories:   ToCategoryResponses(Package.Categories),
+		Quotations:   ToQuotationResponses(Package.Quotations),
 	}
 }

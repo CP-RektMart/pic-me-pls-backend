@@ -3,14 +3,14 @@ DELETE FROM Quotations;
 DELETE FROM Reviews;
 DELETE FROM Media;
 DELETE FROM Tags;
-DELETE FROM Galleries_Categories;
-DELETE FROM Galleries;
+DELETE FROM Packages_Categories;
+DELETE FROM Packages;
 DELETE FROM Photographers;
 DELETE FROM Users;
 DELETE FROM Citizen_Cards;
 DELETE FROM Categories;
 
-ALTER SEQUENCE galleries_id_seq RESTART WITH 1;
+ALTER SEQUENCE Packages_id_seq RESTART WITH 1;
 ALTER SEQUENCE photographers_id_seq RESTART WITH 1;
 ALTER SEQUENCE users_id_seq RESTART WITH 1;
 ALTER SEQUENCE citizen_cards_id_seq RESTART WITH 1;
@@ -56,15 +56,15 @@ UPDATE Photographers
 SET Citizen_Card_ID = 3
 WHERE User_ID = 5;
 
--- 5. Insert Galleries
-INSERT INTO Galleries (Photographer_ID, Name, Description, Price)
+-- 5. Insert Packages
+INSERT INTO Packages (Photographer_ID, Name, Description, Price)
 VALUES
 (1, 'Sunset Photography', 'A collection of sunset images', 150.00),
 (2, 'Nature Wonders', 'Beautiful natural scenery', 200.00),
 (3, 'Urban Life', 'Capturing the essence of the city', 180.00);
 
 -- 6. Insert Tags
-INSERT INTO Tags (Gallery_ID, Name)
+INSERT INTO Tags (Package_ID, Name)
 VALUES
 (1, 'Sunset'),
 (1, 'Landscape'),
@@ -72,7 +72,7 @@ VALUES
 (3, 'City');
 
 -- 7. Insert Media
-INSERT INTO Media (Gallery_ID, Picture_URL)
+INSERT INTO Media (Package_ID, Picture_URL)
 VALUES
 (1, 'https://example.com/sunset1.jpg'),
 (1, 'https://example.com/sunset2.jpg'),
@@ -80,7 +80,7 @@ VALUES
 (3, 'https://example.com/city1.jpg');
 
 -- 8. Insert Reviews
-INSERT INTO Reviews (Gallery_ID, Customer_ID, Rating, Comment)
+INSERT INTO Reviews (Package_ID, Customer_ID, Rating, Comment)
 VALUES
 (1, 1, 4.5, 'Amazing!'),
 (2, 2, 5.0, 'Beautiful shots'),
@@ -89,18 +89,18 @@ VALUES
 -- 9. Insert Categories
 INSERT INTO Categories (Name, Description)
 VALUES
-('Nature', 'Galleries related to nature and landscapes'),
-('City Life', 'Galleries capturing city life');
+('Nature', 'Packages related to nature and landscapes'),
+('City Life', 'Packages capturing city life');
 
--- 10. Link Galleries to Categories
-INSERT INTO Galleries_Categories (Gallery_ID, Category_ID)
+-- 10. Link Packages to Categories
+INSERT INTO Packages_Categories (Package_ID, Category_ID)
 VALUES
 (1, 1),
 (2, 1),
 (3, 2);
 
 -- 11. Insert Quotations
-INSERT INTO Quotations (Gallery_ID, Customer_ID, Photographer_ID, Status, Price, Description)
+INSERT INTO Quotations (Package_ID, Customer_ID, Photographer_ID, Status, Price, Description)
 VALUES
 (1, 1, 1, 'pending', 200.00, 'Quotation for sunset photography'),
 (2, 2, 2, 'confirmed', 250.00, 'Nature photo session'),
@@ -110,10 +110,10 @@ VALUES
 SELECT * FROM Users;
 SELECT * FROM Photographers;
 SELECT * FROM Citizen_Cards;
-SELECT * FROM Galleries;
+SELECT * FROM Packages;
 SELECT * FROM Tags;
 SELECT * FROM Media;
 SELECT * FROM Reviews;
 SELECT * FROM Categories;
-SELECT * FROM Galleries_Categories;
+SELECT * FROM Packages_Categories;
 SELECT * FROM Quotations;

@@ -1,4 +1,4 @@
-package gallery
+package packages
 
 import (
 	"strconv"
@@ -11,17 +11,17 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary      Get all galleries
-// @Description  Show all avaliable galleries with pagination
-// @Tags         gallery
-// @Router       /api/v1/gallery [GET]
+// @Summary      Get all packages
+// @Description  Show all avaliable packages with pagination
+// @Tags         Package
+// @Router       /api/v1/Package [GET]
 // @Param        page   query   int  false  "Page number (default is 1)"
 // @Param        limit  query   int  false  "Number of items per page (default is 20)"
-// @Success      200    {object}  dto.HttpResponse{result=dto.GalleryListResponse}
+// @Success      200    {object}  dto.HttpResponse{result=dto.PackageListResponse}
 // @Failure      400    {object}  dto.HttpResponse
 // @Failure      500    {object}  dto.HttpResponse
-func (h *Handler) HandleGetAllGallery(c *fiber.Ctx) error {
-	var galleries []model.Gallery
+func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
+	var packages []model.Package
 
 	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil {
@@ -43,8 +43,8 @@ func (h *Handler) HandleGetAllGallery(c *fiber.Ctx) error {
 	offset := (page - 1) * limit
 
 	var total int64
-	if err := h.store.DB.Model(&model.Gallery{}).Count(&total).Error; err != nil {
-		return errors.Wrap(err, "Error counting galleries")
+	if err := h.store.DB.Model(&model.Package{}).Count(&total).Error; err != nil {
+		return errors.Wrap(err, "Error counting packages")
 	}
 
 	if err := h.store.DB.
@@ -56,16 +56,16 @@ func (h *Handler) HandleGetAllGallery(c *fiber.Ctx) error {
 		Preload("Quotations.Customer").
 		Limit(limit).
 		Offset(offset).
-		Find(&galleries).Error; err != nil {
+		Find(&packages).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return apperror.NotFound("No galleries found", err)
+			return apperror.NotFound("No packages found", err)
 		}
-		return errors.Wrap(err, "Error retrieving galleries")
+		return errors.Wrap(err, "Error retrieving packages")
 	}
 
-	var galleryResponses []dto.GalleryResponse
-	for _, gallery := range galleries {
-		galleryResponses = append(galleryResponses, dto.ToGalleryResponse(gallery))
+	var PackageResponses []dto.PackageResponse
+	for _, Package := range packages {
+		PackageResponses = append(PackageResponses, dto.ToPackageResponse(Package))
 	}
 
 	// Pagination response
@@ -78,9 +78,9 @@ func (h *Handler) HandleGetAllGallery(c *fiber.Ctx) error {
 		HasPrevPage: page > 1,
 	}
 
-	result := dto.GalleryListResponse{
+	result := dto.PackageListResponse{
 		Pagination: pagination,
-		Response:   galleryResponses,
+		Response:   PackageResponses,
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse{
