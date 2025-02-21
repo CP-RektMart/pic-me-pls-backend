@@ -12,6 +12,11 @@ import (
 )
 
 func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
+	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	if err != nil {
+		return errors.Wrap(err, "failed to get user id from context")
+	}
+
 	galleryId, err := strconv.Atoi(c.Params("galleryId"))
 	if err != nil {
 		return apperror.BadRequest("invalid gallery id", errors.Errorf("gallery id is required"))
@@ -26,7 +31,7 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
 	}
 
-	gallery, err := h.updateGallery(req, galleryId)
+	gallery, err := h.updateGallery(req, galleryId, userId)
 	if err != nil {
 		return errors.Wrap(err, "failed to update gallery")
 	}
@@ -41,11 +46,15 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId int) (*model.Gallery, error) {
+func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId int, userId uint) (*model.Gallery, error) {
 	var gallery model.Gallery
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := h.store.DB.First(&gallery, "id = ?", galleryId).Error; err != nil {
 			return errors.Wrap(err, "Gallery not found")
+		}
+
+		if gallery.PhotographerID != userId {
+			return apperror.Forbidden("You are not allowed to update this gallery", nil)
 		}
 
 		if req.Name != "" {
