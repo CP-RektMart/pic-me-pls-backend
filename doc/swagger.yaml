@@ -60,6 +60,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.TokenResponse'
       type: object
+    dto.HttpResponse-dto_UpdateGalleryResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.UpdateGalleryResponse'
+      type: object
     dto.HttpResponse-dto_UserResponse:
       properties:
         result:
@@ -142,6 +147,24 @@ components:
           type: integer
         refreshToken:
           type: string
+      type: object
+    dto.UpdateGalleryRequest:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+      type: object
+    dto.UpdateGalleryResponse:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
       type: object
     dto.UserResponse:
       properties:
@@ -302,6 +325,39 @@ paths:
       tags:
       - auth
   /api/v1/gallery:
+    patch:
+      description: Update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.UpdateGalleryRequest'
+        description: Gallery details
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_UpdateGalleryResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Update gallery
+      tags:
+      - gallery
     post:
       description: Create gallery by photographer
       requestBody:

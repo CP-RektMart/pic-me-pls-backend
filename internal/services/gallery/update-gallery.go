@@ -11,6 +11,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary			Update gallery
+// @Description		Update
+// @Tags			gallery
+// @Router			/api/v1/gallery [PATCH]
+// @Security		ApiKeyAuth
+// @Param        	RequestBody 	body  dto.UpdateGalleryRequest  true  "Gallery details"
+// @Success			200 {object}	dto.HttpResponse[dto.UpdateGalleryResponse]
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
@@ -38,7 +47,6 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.UpdateGalleryResponse]{
 		Result: dto.UpdateGalleryResponse{
-			ID:          galleryId,
 			Name:        gallery.Name,
 			Description: gallery.Description,
 			Price:       gallery.Price,
