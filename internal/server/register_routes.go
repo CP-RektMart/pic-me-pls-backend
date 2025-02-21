@@ -57,5 +57,5 @@ func (s *Server) RegisterRoutes(
 	// gallery
 	gallery := v1.Group("/gallery")
 	gallery.Post("/", authMiddleware.AuthPhotographer, galleryHandler.HandleCreateGallery)
-	gallery.Patch("/", authMiddleware.AuthPhotographer, galleryHandler.HandleUpdateGallery)
+	gallery.Patch("/:galleryId", authMiddleware.AuthPhotographer, galleryHandler.HandleUpdateGallery)
 }

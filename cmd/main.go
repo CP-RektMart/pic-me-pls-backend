@@ -81,16 +81,5 @@ func main() {
 		objectHandler,
 	)
 
-	server.GalleryRoutes(
-		authMiddleware,
-		authHandler,
-		userHandler,
-		photographerHandler,
-		galleryHandler,
-		reviewHandler,
-		categoryHandler,
-		messageHandler,
-	)
-
 	server.Start(ctx, stop)
 }
