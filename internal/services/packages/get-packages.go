@@ -14,7 +14,7 @@ import (
 // @Summary      Get all packages
 // @Description  Show all avaliable packages with pagination
 // @Tags         Package
-// @Router       /api/v1/Package [GET]
+// @Router       /api/v1/package [GET]
 // @Param        page   query   int  false  "Page number (default is 1)"
 // @Param        limit  query   int  false  "Number of items per page (default is 20)"
 // @Success      200    {object}  dto.HttpResponse{result=dto.PackageListResponse}

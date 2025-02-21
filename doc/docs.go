@@ -202,61 +202,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/gallery": {
-            "get": {
-                "description": "Show all avaliable galleries with pagination",
-                "tags": [
-                    "gallery"
-                ],
-                "summary": "Get all galleries",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Page number (default is 1)",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Number of items per page (default is 20)",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/dto.HttpResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/dto.GalleryListResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/me": {
             "get": {
                 "security": [
@@ -376,6 +321,61 @@ const docTemplate = `{
                                     "properties": {
                                         "result": {
                                             "$ref": "#/definitions/dto.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/package": {
+            "get": {
+                "description": "Show all avaliable packages with pagination",
+                "tags": [
+                    "Package"
+                ],
+                "summary": "Get all packages",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number (default is 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items per page (default is 20)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/dto.PackageListResponse"
                                         }
                                     }
                                 }
@@ -623,7 +623,43 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.GalleryListResponse": {
+        "dto.HttpResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "result": {}
+            }
+        },
+        "dto.LoginRequest": {
+            "type": "object",
+            "required": [
+                "idToken",
+                "provider"
+            ],
+            "properties": {
+                "idToken": {
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "GOOGLE",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.MediaResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "pictureUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PackageListResponse": {
             "type": "object",
             "properties": {
                 "pagination": {
@@ -632,12 +668,12 @@ const docTemplate = `{
                 "response": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.GalleryResponse"
+                        "$ref": "#/definitions/dto.PackageResponse"
                     }
                 }
             }
         },
-        "dto.GalleryResponse": {
+        "dto.PackageResponse": {
             "type": "object",
             "properties": {
                 "categories": {
@@ -684,42 +720,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/dto.TagResponse"
                     }
-                }
-            }
-        },
-        "dto.HttpResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                },
-                "result": {}
-            }
-        },
-        "dto.LoginRequest": {
-            "type": "object",
-            "required": [
-                "idToken",
-                "provider"
-            ],
-            "properties": {
-                "idToken": {
-                    "type": "string"
-                },
-                "provider": {
-                    "description": "GOOGLE",
-                    "type": "string"
-                }
-            }
-        },
-        "dto.MediaResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "pictureUrl": {
-                    "type": "string"
                 }
             }
         },
