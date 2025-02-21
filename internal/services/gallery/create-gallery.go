@@ -54,13 +54,25 @@ func (h *Handler) HandleCreateGallery(c *fiber.Ctx) error {
 
 func (h *Handler) CreateGallery(req *dto.CreateGalleryRequest, userId uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&model.Gallery{
+		gallery := &model.Gallery{
 			PhotographerID: userId,
 			Name:           req.Name,
 			Description:    req.Description,
 			Price:          req.Price,
-		}).Error; err != nil {
+		}
+
+		if err := tx.Create(&gallery).Error; err != nil {
 			return errors.Wrap(err, "failed to create gallery")
+		}
+
+		for _, media := range req.Media {
+			if err := tx.Create(&model.Media{
+				PictureURL:  media.PictureURL,
+				Description: media.Description,
+				GalleryID:   gallery.ID,
+			}).Error; err != nil {
+				return errors.Wrap(err, "failed to create media")
+			}
 		}
 
 		return nil
