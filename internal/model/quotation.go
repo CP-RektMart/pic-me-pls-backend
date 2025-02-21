@@ -4,6 +4,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type QuotationStatus string
+
+const QuotationPending QuotationStatus = "pending"
+const QuotationConfirm QuotationStatus = "confirmed"
+const QuotationCancelled QuotationStatus = "cancelled"
+const QuotationPaid QuotationStatus = "paid"
+
 type Quotation struct {
 	gorm.Model
 	GalleryID      uint         `gorm:"not null"`
