@@ -1,9 +1,9 @@
 package dto
 
-type GalleryRequest struct {
-	Name        string  `validate:"required"`
-	Description string  `validate:"required"`
-	Price       float64 `validate:"required"`
+type UpdateGalleryRequest struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
 }
 
 type UpdateGalleryResponse struct {

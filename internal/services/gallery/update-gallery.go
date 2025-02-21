@@ -17,17 +17,16 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid gallery id", errors.Errorf("gallery id is required"))
 	}
 
-	req := new(dto.GalleryRequest)
-	req.Name = c.FormValue("name")
-	req.Description = c.FormValue("description")
-	if price := c.FormValue("price"); price != "" {
-		req.Price, err = strconv.ParseFloat(c.FormValue("price"), 64)
-		if err != nil {
-			return apperror.BadRequest("invalid price value", err)
-		}
+	req := new(dto.UpdateGalleryRequest)
+	if err := c.BodyParser(req); err != nil {
+		return apperror.BadRequest("invalid request body", err)
 	}
 
-	gallery, err := h.updateGallery(*req, galleryId)
+	if req.Price < 0 {
+		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
+	}
+
+	gallery, err := h.updateGallery(req, galleryId)
 	if err != nil {
 		return errors.Wrap(err, "failed to update gallery")
 	}
@@ -42,10 +41,10 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) updateGallery(req dto.GalleryRequest, galleryId int) (*model.Gallery, error) {
+func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId int) (*model.Gallery, error) {
 	var gallery model.Gallery
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		if err := h.store.DB.First(&gallery, galleryId).Error; err != nil {
+		if err := h.store.DB.First(&gallery, "id = ?", galleryId).Error; err != nil {
 			return errors.Wrap(err, "Gallery not found")
 		}
 
