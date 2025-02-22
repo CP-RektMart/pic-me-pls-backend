@@ -59,7 +59,7 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId uint, userId uint) (*model.Gallery, error) {
 	var gallery model.Gallery
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		if err := h.store.DB.First(&gallery, "id = ?", galleryId).Error; err != nil {
+		if err := h.store.DB.Preload("Photographer").First(&gallery, "id = ?", galleryId).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return apperror.NotFound("Gallery not found", errors.New("Gallery not found"))
 			}
