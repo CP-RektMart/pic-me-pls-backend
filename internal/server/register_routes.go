@@ -54,7 +54,7 @@ func (s *Server) RegisterRoutes(
 	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
 	// package
-	packages := v1.Group("/package")
+	packages := v1.Group("/packages")
 	packages.Get("/", packagesHandler.HandleGetAllPackages)
 	packages.Post("/", authMiddleware.AuthPhotographer, packagesHandler.HandleCreatePackage)
 

@@ -11,8 +11,8 @@ import (
 
 // @Summary      Get all packages
 // @Description  Show all available packages with pagination
-// @Tags         Package
-// @Router       /api/v1/package [GET]
+// @Tags         Packages
+// @Router       /api/v1/packages [GET]
 // @Param        page      query    int    false  "Page number"
 // @Param        page_size query    int    false  "Page size"
 // @Success      200    {object}  dto.HttpResponse[dto.PackageListResponse]
