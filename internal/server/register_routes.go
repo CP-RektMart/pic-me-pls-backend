@@ -59,9 +59,9 @@ func (s *Server) RegisterRoutes(
 	// gallery
 	gallery := v1.Group("/gallery")
 	gallery.Post("/", authMiddleware.AuthPhotographer, galleryHandler.HandleCreateGallery)
+	gallery.Patch("/:galleryId", authMiddleware.AuthPhotographer, galleryHandler.HandleUpdateGallery)
 
 	// quotation
 	quotation := v1.Group("/quotations")
 	quotation.Patch("/:id/accept", authMiddleware.Auth, quotationHandler.Accept)
-	gallery.Patch("/:galleryId", authMiddleware.AuthPhotographer, galleryHandler.HandleUpdateGallery)
 }
