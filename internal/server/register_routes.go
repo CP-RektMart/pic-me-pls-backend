@@ -51,6 +51,10 @@ func (s *Server) RegisterRoutes(
 	photographer.Post("/verify", authMiddleware.AuthPhotographer, photographerHandler.HandleVerifyCard)
 	photographer.Patch("/reverify", authMiddleware.AuthPhotographer, photographerHandler.HandleReVerifyCard)
 
+	// get photographer
+	photographers := v1.Group("/photographers")
+	photographers.Get("/", photographerHandler.HandleGetAllPhotographers)
+
 	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
 	// package
