@@ -1,8 +1,6 @@
 package gallery
 
 import (
-	"strconv"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -31,8 +29,8 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid gallery id", err)
 	}
 
-	galleryId, err := strconv.Atoi(req.GalleryId)
-	if galleryId <= 0 || err != nil {
+	galleryId := req.GalleryId
+	if galleryId <= 0 {
 		return apperror.BadRequest("invalid gallery id", errors.Errorf("gallery id must be a number"))
 	}
 
@@ -44,7 +42,7 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
 	}
 
-	gallery, err := h.updateGallery(req, uint(galleryId), userId)
+	gallery, err := h.updateGallery(req, galleryId, userId)
 	if err != nil {
 		return errors.Wrap(err, "failed to update gallery")
 	}
