@@ -50,7 +50,7 @@ type PackageListResponse struct {
 	Response   []PackageResponse  `json:"response"`
 }
 
-type PackageListHttResponse struct {
+type PackageListHttpResponse struct {
 	Result PackageListResponse `json:"result"`
 }
 
