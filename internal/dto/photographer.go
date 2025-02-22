@@ -30,6 +30,11 @@ type PhotographerResponse struct {
 	ActiveStatus      bool   `json:"active_status"`
 }
 
+type PhotographerRequest struct {
+	PaginationRequest
+	Name string `query:"name" default:""`
+}
+
 func ToPhotographerResponse(photographer model.Photographer) PhotographerResponse {
 	return PhotographerResponse{
 		ID:                photographer.ID,

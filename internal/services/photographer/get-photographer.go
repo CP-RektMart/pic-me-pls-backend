@@ -21,20 +21,27 @@ import (
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 	var photographers []model.Photographer
+	var params dto.PhotographerRequest
 
-	page := c.QueryInt("page", 1)
-	pageSize := c.QueryInt("pageSize", 5)
-	nameFilter := c.Query("name", "")
-	offset := (page - 1) * pageSize
-
-	if page < 1 || pageSize <= 0 || pageSize > 20 {
-		return apperror.BadRequest("Invalid page or pageSize parameter", nil)
+	// Parse query parameters
+	if err := c.QueryParser(&params); err != nil {
+		return apperror.BadRequest("Invalid query parameters", err)
 	}
+
+	// Set default values
+	if params.Page <= 0 {
+		params.Page = 1
+	}
+	if params.PageSize <= 0 {
+		params.PageSize = 5
+	}
+
+	offset := (params.Page - 1) * params.PageSize
 
 	// Query photographers
 	query := h.store.DB.Preload("User").
 		Joins("User").
-		Where("\"User\".name ILIKE ?", "%"+nameFilter+"%").
+		Where("\"User\".name ILIKE ?", "%"+params.Name+"%").
 		Where("is_verified = ? AND active_status = ?", true, true)
 
 	// Calculate total page
@@ -42,10 +49,10 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 	if err := query.Model(&model.Photographer{}).Count(&totalCount).Error; err != nil {
 		return errors.Wrap(err, "Error counting photographers")
 	}
-	totalPage := (int(totalCount) + pageSize - 1) / pageSize
+	totalPage := (int(totalCount) + params.PageSize - 1) / params.PageSize
 
 	// Retrieve photographers
-	if err := query.Limit(pageSize).Offset(offset).Find(&photographers).Error; err != nil {
+	if err := query.Limit(params.PageSize).Offset(offset).Find(&photographers).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("No photographers found", err)
 		}
@@ -59,8 +66,8 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[dto.PhotographerResponse]{
-		Page:      page,
-		PageSize:  pageSize,
+		Page:      params.Page,
+		PageSize:  params.PageSize,
 		TotalPage: totalPage,
 		Data:      photographerResponses,
 	})
