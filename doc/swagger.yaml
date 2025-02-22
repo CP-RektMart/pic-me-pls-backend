@@ -1,5 +1,12 @@
 components:
   schemas:
+    dto.CategoryResponse:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      type: object
     dto.CitizenCardResponse:
       properties:
         citizenId:
@@ -11,13 +18,13 @@ components:
         picture:
           type: string
       type: object
-    dto.CreateGalleryRequest:
+    dto.CreatePackageRequest:
       properties:
         description:
           type: string
         media:
           items:
-            $ref: '#/components/schemas/dto.MediaGalleryRequest'
+            $ref: '#/components/schemas/dto.MediaPackageRequest'
           type: array
           uniqueItems: false
         name:
@@ -87,7 +94,7 @@ components:
         user:
           $ref: '#/components/schemas/dto.UserResponse'
       type: object
-    dto.MediaGalleryRequest:
+    dto.MediaPackageRequest:
       properties:
         description:
           type: string
@@ -96,10 +103,66 @@ components:
       required:
       - pictureUrl
       type: object
+    dto.MediaResponse:
+      properties:
+        id:
+          type: integer
+        pictureUrl:
+          type: string
+      type: object
     dto.ObjectUploadResponse:
       properties:
         url:
           type: string
+      type: object
+    dto.PackageResponse:
+      properties:
+        categories:
+          items:
+            $ref: '#/components/schemas/dto.CategoryResponse'
+          type: array
+          uniqueItems: false
+        description:
+          type: string
+        id:
+          type: integer
+        media:
+          items:
+            $ref: '#/components/schemas/dto.MediaResponse'
+          type: array
+          uniqueItems: false
+        name:
+          type: string
+        photographer:
+          $ref: '#/components/schemas/dto.PhotographerResponse'
+        price:
+          type: number
+        quotations:
+          items:
+            $ref: '#/components/schemas/dto.QuotationResponse'
+          type: array
+          uniqueItems: false
+        reviews:
+          items:
+            $ref: '#/components/schemas/dto.ReviewResponse'
+          type: array
+          uniqueItems: false
+        tags:
+          items:
+            $ref: '#/components/schemas/dto.TagResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    dto.PaginationResponse-dto_PackageResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/dto.PackageResponse'
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
       type: object
     dto.PaginationResponse-dto_PhotographerResponse:
       properties:
@@ -127,6 +190,17 @@ components:
         phoneNumber:
           type: string
         profilePictureUrl:
+          type: string
+      type: object
+    dto.QuotationResponse:
+      properties:
+        customer:
+          type: string
+        id:
+          type: integer
+        price:
+          type: number
+        status:
           type: string
       type: object
     dto.RefreshTokenRequest:
@@ -161,6 +235,24 @@ components:
           type: string
         user:
           $ref: '#/components/schemas/dto.UserResponse'
+      type: object
+    dto.ReviewResponse:
+      properties:
+        comment:
+          type: string
+        customer:
+          type: string
+        id:
+          type: integer
+        rating:
+          type: number
+      type: object
+    dto.TagResponse:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
       type: object
     dto.TokenResponse:
       properties:
@@ -210,6 +302,36 @@ info:
   version: "0.1"
 openapi: 3.1.0
 paths:
+  /api/v1/Package:
+    post:
+      description: Create Package by photographer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreatePackageRequest'
+        description: Package details
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create Package
+      tags:
+      - package
   /api/v1/auth/login:
     post:
       description: Login
@@ -329,36 +451,6 @@ paths:
       summary: Register
       tags:
       - auth
-  /api/v1/gallery:
-    post:
-      description: Create gallery by photographer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreateGalleryRequest'
-        description: Gallery details
-        required: true
-      responses:
-        "201":
-          description: Created
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Create gallery
-      tags:
-      - gallery
   /api/v1/me:
     get:
       description: Get me
@@ -454,7 +546,7 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               type: string
-        description: folder enum (GALLERY, VERIFY_CITIZENCARD, PROFILE_IMAGE)
+        description: folder enum (PACKAGE, VERIFY_CITIZENCARD, PROFILE_IMAGE)
       responses:
         "200":
           content:
@@ -477,6 +569,42 @@ paths:
       summary: Upload image
       tags:
       - objects
+  /api/v1/packages:
+    get:
+      description: Show all available packages with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.PaginationResponse-dto_PackageResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: Get all packages
+      tags:
+      - Packages
   /api/v1/photographer/citizen-card:
     get:
       description: Get Photographer Citizen Card
