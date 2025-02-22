@@ -1,8 +1,6 @@
 package packages
 
 import (
-	"strconv"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -21,15 +19,13 @@ import (
 // @Failure      400    {object}  dto.HttpError
 // @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
-	page, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil {
-		return apperror.BadRequest("Invalid page number", err)
+
+	req := new(dto.GetAllPackagesRequest)
+	if err := c.QueryParser(req); err != nil {
+		return apperror.BadRequest("Invalid query parameters", err)
 	}
 
-	limit, err := strconv.Atoi(c.Query("limit", "20"))
-	if err != nil {
-		return apperror.BadRequest("Invalid page limit number", err)
-	}
+	page, limit := req.Page, req.Limit
 
 	if page < 1 {
 		page = 1
