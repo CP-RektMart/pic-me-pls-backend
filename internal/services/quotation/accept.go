@@ -4,8 +4,8 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
+	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
