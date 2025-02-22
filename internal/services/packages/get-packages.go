@@ -15,7 +15,7 @@ import (
 // @Router       /api/v1/packages [GET]
 // @Param        page      query    int    false  "Page number"
 // @Param        page_size query    int    false  "Page size"
-// @Success      200    {object}  dto.HttpResponse[dto.PackageListResponse]
+// @Success      200    {object}  dto.PaginationResponse[dto.PackageResponse]
 // @Failure      400    {object}  dto.HttpError
 // @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
@@ -28,10 +28,12 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 	page, pageSize, offset := checkGetAllPackagesRequest(req)
 
 	var packages []model.Package
-	var total int64
-	if err := h.store.DB.Model(&model.Package{}).Count(&total).Error; err != nil {
+	var totalCount int64
+	if err := h.store.DB.Model(&model.Package{}).Count(&totalCount).Error; err != nil {
 		return errors.Wrap(err, "Error counting packages")
 	}
+
+	totalPage := (int(totalCount) + pageSize - 1) / pageSize
 
 	if err := h.store.DB.
 		Preload("Photographer.User").
@@ -54,23 +56,12 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		PackageResponses = append(PackageResponses, dto.ToPackageResponse(Package))
 	}
 
-	pagination := dto.PaginationResponse[dto.PackageResponse]{
-		Page:       page,
-		Total:      total,
-		PageSize:   pageSize,
-		TotalPages: int((total + int64(pageSize) - 1) / int64(pageSize)),
-		Response:   PackageResponses,
-	}
-
-	result := dto.PackageListResponse{
-		Pagination: pagination,
-		Packages:   PackageResponses,
-	}
-
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.PackageListResponse]{
-		Result: result,
+	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[dto.PackageResponse]{
+		Page:      page,
+		PageSize:  pageSize,
+		TotalPage: totalPage,
+		Data:      PackageResponses,
 	})
-
 }
 
 func checkGetAllPackagesRequest(req *dto.GetAllPackagesRequest) (int, int, int) {
@@ -79,7 +70,7 @@ func checkGetAllPackagesRequest(req *dto.GetAllPackagesRequest) (int, int, int) 
 		page = 1
 	}
 	if pageSize < 1 {
-		pageSize = 10
+		pageSize = 20
 	}
 
 	offset := (page - 1) * pageSize

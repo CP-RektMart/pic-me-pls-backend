@@ -55,11 +55,6 @@ definitions:
       result:
         $ref: '#/definitions/dto.ObjectUploadResponse'
     type: object
-  dto.HttpResponse-dto_PackageListResponse:
-    properties:
-      result:
-        $ref: '#/definitions/dto.PackageListResponse'
-    type: object
   dto.HttpResponse-dto_RegisterResponse:
     properties:
       result:
@@ -118,15 +113,6 @@ definitions:
       url:
         type: string
     type: object
-  dto.PackageListResponse:
-    properties:
-      packages:
-        items:
-          $ref: '#/definitions/dto.PackageResponse'
-        type: array
-      pagination:
-        $ref: '#/definitions/dto.PaginationResponse-dto_PackageResponse'
-    type: object
   dto.PackageResponse:
     properties:
       categories:
@@ -162,17 +148,15 @@ definitions:
     type: object
   dto.PaginationResponse-dto_PackageResponse:
     properties:
-      limit:
-        type: integer
-      page:
-        type: integer
-      response:
+      data:
         items:
           $ref: '#/definitions/dto.PackageResponse'
         type: array
-      total:
+      page:
         type: integer
-      total_pages:
+      pageSize:
+        type: integer
+      totalPage:
         type: integer
     type: object
   dto.PhotographerResponse:
@@ -537,23 +521,23 @@ paths:
       summary: Upload image
       tags:
       - objects
-  /api/v1/package:
+  /api/v1/packages:
     get:
       description: Show all available packages with pagination
       parameters:
-      - description: Page number (default is 1)
+      - description: Page number
         in: query
         name: page
         type: integer
-      - description: Number of items per page (default is 20)
+      - description: Page size
         in: query
-        name: limit
+        name: page_size
         type: integer
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.HttpResponse-dto_PackageListResponse'
+            $ref: '#/definitions/dto.PaginationResponse-dto_PackageResponse'
         "400":
           description: Bad Request
           schema:
@@ -564,7 +548,7 @@ paths:
             $ref: '#/definitions/dto.HttpError'
       summary: Get all packages
       tags:
-      - Package
+      - Packages
   /api/v1/photographer/citizen-card:
     get:
       description: Get Photographer Citizen Card

@@ -404,24 +404,24 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/package": {
+        "/api/v1/packages": {
             "get": {
                 "description": "Show all available packages with pagination",
                 "tags": [
-                    "Package"
+                    "Packages"
                 ],
                 "summary": "Get all packages",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Page number (default is 1)",
+                        "description": "Page number",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Number of items per page (default is 20)",
-                        "name": "limit",
+                        "description": "Page size",
+                        "name": "page_size",
                         "in": "query"
                     }
                 ],
@@ -429,7 +429,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse-dto_PackageListResponse"
+                            "$ref": "#/definitions/dto.PaginationResponse-dto_PackageResponse"
                         }
                     },
                     "400": {
@@ -741,14 +741,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.HttpResponse-dto_PackageListResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "$ref": "#/definitions/dto.PackageListResponse"
-                }
-            }
-        },
         "dto.HttpResponse-dto_RegisterResponse": {
             "type": "object",
             "properties": {
@@ -839,20 +831,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PackageListResponse": {
-            "type": "object",
-            "properties": {
-                "packages": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.PackageResponse"
-                    }
-                },
-                "pagination": {
-                    "$ref": "#/definitions/dto.PaginationResponse-dto_PackageResponse"
-                }
-            }
-        },
         "dto.PackageResponse": {
             "type": "object",
             "properties": {
@@ -906,22 +884,19 @@ const docTemplate = `{
         "dto.PaginationResponse-dto_PackageResponse": {
             "type": "object",
             "properties": {
-                "limit": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "response": {
+                "data": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.PackageResponse"
                     }
                 },
-                "total": {
+                "page": {
                     "type": "integer"
                 },
-                "total_pages": {
+                "pageSize": {
+                    "type": "integer"
+                },
+                "totalPage": {
                     "type": "integer"
                 }
             }
