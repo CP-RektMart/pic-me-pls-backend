@@ -672,14 +672,6 @@ paths:
       summary: Verify Citizen Card
       tags:
       - photographer
-<<<<<<< HEAD
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
-swagger: "2.0"
-=======
   /api/v1/quotations/{id}/accept:
     patch:
       description: Acceot quotaion
@@ -688,26 +680,26 @@ swagger: "2.0"
         in: path
         name: id
         required: true
-        schema:
-          type: integer
+        type: integer
       responses:
         "204":
           description: No Content
         "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Accept quotation
       tags:
       - quotation
->>>>>>> main
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
