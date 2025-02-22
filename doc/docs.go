@@ -406,7 +406,7 @@ const docTemplate = `{
         },
         "/api/v1/package": {
             "get": {
-                "description": "Show all avaliable packages with pagination",
+                "description": "Show all available packages with pagination",
                 "tags": [
                     "Package"
                 ],
@@ -429,7 +429,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PackageListHttResponse"
+                            "$ref": "#/definitions/dto.HttpResponse-dto_PackageListResponse"
                         }
                     },
                     "400": {
@@ -741,6 +741,14 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.HttpResponse-dto_PackageListResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/dto.PackageListResponse"
+                }
+            }
+        },
         "dto.HttpResponse-dto_RegisterResponse": {
             "type": "object",
             "properties": {
@@ -831,25 +839,17 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PackageListHttResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "$ref": "#/definitions/dto.PackageListResponse"
-                }
-            }
-        },
         "dto.PackageListResponse": {
             "type": "object",
             "properties": {
-                "pagination": {
-                    "$ref": "#/definitions/dto.PaginationResponse"
-                },
-                "response": {
+                "packages": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.PackageResponse"
                     }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse-dto_PackageResponse"
                 }
             }
         },
@@ -903,20 +903,20 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PaginationResponse": {
+        "dto.PaginationResponse-dto_PackageResponse": {
             "type": "object",
             "properties": {
-                "has_next_page": {
-                    "type": "boolean"
-                },
-                "has_prev_page": {
-                    "type": "boolean"
-                },
                 "limit": {
                     "type": "integer"
                 },
                 "page": {
                     "type": "integer"
+                },
+                "response": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PackageResponse"
+                    }
                 },
                 "total": {
                     "type": "integer"

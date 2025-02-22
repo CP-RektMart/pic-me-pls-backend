@@ -12,17 +12,15 @@ import (
 )
 
 // @Summary      Get all packages
-// @Description  Show all avaliable packages with pagination
+// @Description  Show all available packages with pagination
 // @Tags         Package
 // @Router       /api/v1/package [GET]
 // @Param        page   query   int  false  "Page number (default is 1)"
 // @Param        limit  query   int  false  "Number of items per page (default is 20)"
-// @Success      200    {object}  dto.PackageListHttpResponse
+// @Success      200    {object}  dto.HttpResponse[dto.PackageListResponse]
 // @Failure      400    {object}  dto.HttpError
 // @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
-	var packages []model.Package
-
 	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil {
 		return apperror.BadRequest("Invalid page number", err)
@@ -42,6 +40,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 
 	offset := (page - 1) * limit
 
+	var packages []model.Package
 	var total int64
 	if err := h.store.DB.Model(&model.Package{}).Count(&total).Error; err != nil {
 		return errors.Wrap(err, "Error counting packages")
@@ -68,19 +67,21 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		PackageResponses = append(PackageResponses, dto.ToPackageResponse(Package))
 	}
 
-	// Pagination response
 	pagination := dto.PaginationResponse[dto.PackageResponse]{
-		Page:        page,
-		Total:       total,
-		Limit:       limit,
-		TotalPages:  int((total + int64(limit) - 1) / int64(limit)),
-		HasNextPage: int64(offset+limit) < total,
-		HasPrevPage: page > 1,
-		Response:    PackageResponses,
+		Page:       page,
+		Total:      total,
+		Limit:      limit,
+		TotalPages: int((total + int64(limit) - 1) / int64(limit)),
+		Response:   PackageResponses,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.PaginationResponse[dto.PackageResponse]]{
-		Result: pagination,
+	result := dto.PackageListResponse{
+		Pagination: pagination,
+		Packages:   PackageResponses,
+	}
+
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.PackageListResponse]{
+		Result: result,
 	})
 
 }

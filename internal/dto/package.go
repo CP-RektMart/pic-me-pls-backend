@@ -27,6 +27,11 @@ type PackageResponse struct {
 	Quotations   []QuotationResponse  `json:"quotations,omitempty"`
 }
 
+type PackageListResponse struct {
+	Pagination PaginationResponse[PackageResponse] `json:"pagination"`
+	Packages   []PackageResponse                   `json:"packages"`
+}
+
 type CreatePackageResponse struct {
 	ID               uint    `json:"id"`
 	Name             string  `json:"name"`

@@ -55,6 +55,11 @@ definitions:
       result:
         $ref: '#/definitions/dto.ObjectUploadResponse'
     type: object
+  dto.HttpResponse-dto_PackageListResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.PackageListResponse'
+    type: object
   dto.HttpResponse-dto_RegisterResponse:
     properties:
       result:
@@ -113,19 +118,14 @@ definitions:
       url:
         type: string
     type: object
-  dto.PackageListHttResponse:
-    properties:
-      result:
-        $ref: '#/definitions/dto.PackageListResponse'
-    type: object
   dto.PackageListResponse:
     properties:
-      pagination:
-        $ref: '#/definitions/dto.PaginationResponse'
-      response:
+      packages:
         items:
           $ref: '#/definitions/dto.PackageResponse'
         type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse-dto_PackageResponse'
     type: object
   dto.PackageResponse:
     properties:
@@ -160,16 +160,16 @@ definitions:
           $ref: '#/definitions/dto.TagResponse'
         type: array
     type: object
-  dto.PaginationResponse:
+  dto.PaginationResponse-dto_PackageResponse:
     properties:
-      has_next_page:
-        type: boolean
-      has_prev_page:
-        type: boolean
       limit:
         type: integer
       page:
         type: integer
+      response:
+        items:
+          $ref: '#/definitions/dto.PackageResponse'
+        type: array
       total:
         type: integer
       total_pages:
@@ -539,7 +539,7 @@ paths:
       - objects
   /api/v1/package:
     get:
-      description: Show all avaliable packages with pagination
+      description: Show all available packages with pagination
       parameters:
       - description: Page number (default is 1)
         in: query
@@ -553,7 +553,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PackageListHttResponse'
+            $ref: '#/definitions/dto.HttpResponse-dto_PackageListResponse'
         "400":
           description: Bad Request
           schema:
