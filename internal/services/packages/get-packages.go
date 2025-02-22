@@ -25,16 +25,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		return apperror.BadRequest("Invalid query parameters", err)
 	}
 
-	page, limit := req.Page, req.Limit
-
-	if page < 1 {
-		page = 1
-	}
-	if limit < 1 {
-		limit = 10
-	}
-
-	offset := (page - 1) * limit
+	page, limit, offset := checkPageLimit(req)
 
 	var packages []model.Package
 	var total int64
@@ -80,4 +71,17 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		Result: result,
 	})
 
+}
+
+func checkPageLimit(req *dto.GetAllPackagesRequest) (int, int, int) {
+	page, limit := req.Page, req.Limit
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 10
+	}
+
+	offset := (page - 1) * limit
+	return page, limit, offset
 }
