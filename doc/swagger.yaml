@@ -104,10 +104,7 @@ components:
     dto.PaginationResponse-dto_PhotographerResponse:
       properties:
         data:
-          items:
-            $ref: '#/components/schemas/dto.PhotographerResponse'
-          type: array
-          uniqueItems: false
+          $ref: '#/components/schemas/dto.PhotographerResponse'
         page:
           type: integer
         pageSize:
@@ -117,13 +114,13 @@ components:
       type: object
     dto.PhotographerResponse:
       properties:
-        active_status:
+        activeStatus:
           type: boolean
         email:
           type: string
         id:
           type: integer
-        is_verified:
+        isVerified:
           type: boolean
         name:
           type: string
