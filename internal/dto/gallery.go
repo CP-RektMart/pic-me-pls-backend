@@ -22,10 +22,10 @@ type CreateGalleryResponse struct {
 }
 
 type UpdateGalleryRequest struct {
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Price       float64 `json:"price"`
-	GalleryId   uint    `params:"galleryId"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Price       *float64 `json:"price"`
+	GalleryId   uint     `params:"galleryId"`
 }
 
 type UpdateGalleryResponse struct {

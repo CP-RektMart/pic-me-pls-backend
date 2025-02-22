@@ -38,7 +38,7 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if req.Price < 0 {
+	if req.Price != nil && *req.Price <= 0 {
 		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
 	}
 
@@ -76,8 +76,8 @@ func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId uint, u
 		if req.Description != "" {
 			gallery.Description = req.Description
 		}
-		if req.Price != 0 {
-			gallery.Price = req.Price
+		if req.Price != nil {
+			gallery.Price = *req.Price
 		}
 
 		if err := tx.Save(&gallery).Error; err != nil {
