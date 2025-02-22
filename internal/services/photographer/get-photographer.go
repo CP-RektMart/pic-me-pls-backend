@@ -19,7 +19,7 @@ import (
 // @Success      	200 {object} 	dto.PaginationResponse[dto.PhotographerResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleGetAllPhotographer(c *fiber.Ctx) error {
+func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 	var photographers []model.Photographer
 
 	page := c.QueryInt("page", 1)
@@ -53,7 +53,7 @@ func (h *Handler) HandleGetAllPhotographer(c *fiber.Ctx) error {
 	}
 
 	// Convert to response
-	var photographerResponses []dto.PhotographerResponse
+	photographerResponses := make([]dto.PhotographerResponse, 0, len(photographers))
 	for _, photographer := range photographers {
 		photographerResponses = append(photographerResponses, dto.ToPhotographerResponse(photographer))
 	}

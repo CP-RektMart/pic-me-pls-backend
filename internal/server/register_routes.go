@@ -53,7 +53,7 @@ func (s *Server) RegisterRoutes(
 
 	// get photographer
 	photographers := v1.Group("/photographers")
-	photographers.Get("/", photographerHandler.HandleGetAllPhotographer)
+	photographers.Get("/", photographerHandler.HandleGetAllPhotographers)
 
 	// object
 	object := v1.Group("/objects")
