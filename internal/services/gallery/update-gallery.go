@@ -26,12 +26,16 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	galleryId, err := strconv.Atoi(c.Params("galleryId"))
-	if err != nil {
-		return apperror.BadRequest("invalid gallery id", errors.Errorf("gallery id is required"))
+	req := new(dto.UpdateGalleryRequest)
+	if err := c.ParamsParser(req); err != nil {
+		return apperror.BadRequest("invalid gallery id", err)
 	}
 
-	req := new(dto.UpdateGalleryRequest)
+	galleryId, err := strconv.Atoi(req.GalleryId)
+	if galleryId <= 0 || err != nil {
+		return apperror.BadRequest("invalid gallery id", errors.Errorf("gallery id must be a number"))
+	}
+
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -40,7 +44,7 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
 	}
 
-	gallery, err := h.updateGallery(req, galleryId, userId)
+	gallery, err := h.updateGallery(req, uint(galleryId), userId)
 	if err != nil {
 		return errors.Wrap(err, "failed to update gallery")
 	}
@@ -54,18 +58,18 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId int, userId uint) (*model.Gallery, error) {
+func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId uint, userId uint) (*model.Gallery, error) {
 	var gallery model.Gallery
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := h.store.DB.First(&gallery, "id = ?", galleryId).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return apperror.NotFound("Gallery not found", err)
+				return apperror.NotFound("Gallery not found", errors.New("Gsallery not found"))
 			}
 			return errors.Wrap(err, "Failed to get gallery")
 		}
 
 		if gallery.PhotographerID != userId {
-			return apperror.Forbidden("You are not allowed to update this gallery", nil)
+			return apperror.Forbidden("You are not allowed to update this gallery", errors.New("unauthorized"))
 		}
 
 		if req.Name != "" {
