@@ -39,7 +39,7 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 
 	gallery, err := h.updateGallery(req, req.GalleryId, userId)
 	if err != nil {
-		return errors.Wrap(err, "failed to update gallery")
+		return err
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.UpdateGalleryResponse]{
