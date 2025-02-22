@@ -7,11 +7,6 @@ type MediaPackageRequest struct {
 	Description string `json:"description"`
 }
 
-type GetAllPackagesRequest struct {
-	Page     int `json:"page"`
-	PageSize int `json:"page_size"`
-}
-
 type CreatePackageRequest struct {
 	Name        string                `json:"name" validate:"required"`
 	Description string                `json:"description" validate:"required"`

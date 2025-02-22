@@ -20,12 +20,16 @@ import (
 // @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 
-	req := new(dto.GetAllPackagesRequest)
+	req := new(dto.PaginationRequest)
 	if err := c.QueryParser(req); err != nil {
 		return apperror.BadRequest("Invalid query parameters", err)
 	}
 
-	page, pageSize, offset := checkGetAllPackagesRequest(req)
+	if err := h.validate.Struct(req); err != nil {
+		return apperror.BadRequest("invalid request body", err)
+	}
+
+	page, pageSize, offset := checkPaginationRequest(req)
 
 	var packages []model.Package
 	var totalCount int64
@@ -64,13 +68,13 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 	})
 }
 
-func checkGetAllPackagesRequest(req *dto.GetAllPackagesRequest) (int, int, int) {
+func checkPaginationRequest(req *dto.PaginationRequest) (int, int, int) {
 	page, pageSize := req.Page, req.PageSize
 	if page < 1 {
 		page = 1
 	}
 	if pageSize < 1 {
-		pageSize = 20
+		pageSize = 10
 	}
 
 	offset := (page - 1) * pageSize
