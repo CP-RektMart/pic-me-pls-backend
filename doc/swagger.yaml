@@ -152,6 +152,8 @@ components:
       properties:
         description:
           type: string
+        galleryId:
+          type: integer
         name:
           type: string
         price:
