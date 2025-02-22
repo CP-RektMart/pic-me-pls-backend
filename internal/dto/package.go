@@ -27,15 +27,6 @@ type PackageResponse struct {
 	Quotations   []QuotationResponse  `json:"quotations,omitempty"`
 }
 
-type PaginationResponse struct {
-	Page        int   `json:"page"`
-	Total       int64 `json:"total"`
-	Limit       int   `json:"limit"`
-	TotalPages  int   `json:"total_pages"`
-	HasNextPage bool  `json:"has_next_page"`
-	HasPrevPage bool  `json:"has_prev_page"`
-}
-
 type CreatePackageResponse struct {
 	ID               uint    `json:"id"`
 	Name             string  `json:"name"`
@@ -43,15 +34,6 @@ type CreatePackageResponse struct {
 	Price            float64 `json:"price"`
 	PhotographerID   uint    `json:"photographerId"`
 	PhotographerName string  `json:"photographerName"`
-}
-
-type PackageListResponse struct {
-	Pagination PaginationResponse `json:"pagination"`
-	Response   []PackageResponse  `json:"response"`
-}
-
-type PackageListHttpResponse struct {
-	Result PackageListResponse `json:"result"`
 }
 
 func ToPackageResponse(Package model.Package) PackageResponse {

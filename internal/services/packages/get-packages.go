@@ -69,21 +69,18 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 	}
 
 	// Pagination response
-	pagination := dto.PaginationResponse{
+	pagination := dto.PaginationResponse[dto.PackageResponse]{
 		Page:        page,
 		Total:       total,
 		Limit:       limit,
 		TotalPages:  int((total + int64(limit) - 1) / int64(limit)),
 		HasNextPage: int64(offset+limit) < total,
 		HasPrevPage: page > 1,
+		Response:    PackageResponses,
 	}
 
-	result := dto.PackageListResponse{
-		Pagination: pagination,
-		Response:   PackageResponses,
-	}
-
-	return c.Status(fiber.StatusOK).JSON(dto.PackageListHttpResponse{
-		Result: result,
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.PaginationResponse[dto.PackageResponse]]{
+		Result: pagination,
 	})
+
 }
