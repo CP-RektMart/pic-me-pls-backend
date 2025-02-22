@@ -61,12 +61,12 @@ func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId uint, u
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := h.store.DB.First(&gallery, "id = ?", galleryId).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return apperror.NotFound("Gallery not found", errors.New("Gsallery not found"))
+				return apperror.NotFound("Gallery not found", errors.New("Gallery not found"))
 			}
 			return errors.Wrap(err, "Failed to get gallery")
 		}
 
-		if gallery.PhotographerID != userId {
+		if gallery.Photographer.UserID != userId {
 			return apperror.Forbidden("You are not allowed to update this gallery", errors.New("unauthorized"))
 		}
 
