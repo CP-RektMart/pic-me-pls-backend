@@ -51,7 +51,7 @@ func (s *Store) migrate() {
 	if err := s.DB.AutoMigrate(
 		&model.User{},
 		&model.Photographer{},
-		&model.Gallery{},
+		&model.Package{},
 		&model.Tag{},
 		&model.Category{},
 		&model.Media{},

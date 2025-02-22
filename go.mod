@@ -16,7 +16,6 @@ require (
 	github.com/supabase-community/storage-go v0.7.0
 	github.com/supabase-community/supabase-go v0.0.4
 	github.com/swaggo/swag v1.16.4
-	github.com/swaggo/swag/v2 v2.0.0-rc4
 	github.com/valyala/fasthttp v1.58.0
 	google.golang.org/api v0.220.0
 	gorm.io/driver/postgres v1.5.11
@@ -70,6 +69,7 @@ require (
 	github.com/supabase-community/postgrest-go v0.0.11 // indirect
 	github.com/sv-tools/openapi v0.2.1 // indirect
 	github.com/swaggo/files/v2 v2.0.2 // indirect
+	github.com/swaggo/swag/v2 v2.0.0-rc4 // indirect
 	github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
