@@ -13,8 +13,8 @@ import (
 // @Description  Show all available packages with pagination
 // @Tags         Package
 // @Router       /api/v1/package [GET]
-// @Param        page   query   int  false  "Page number (default is 1)"
-// @Param        limit  query   int  false  "Number of items per page (default is 20)"
+// @Param        page      query    int    false  "Page number"
+// @Param        page_size query    int    false  "Page size"
 // @Success      200    {object}  dto.HttpResponse[dto.PackageListResponse]
 // @Failure      400    {object}  dto.HttpError
 // @Failure      500    {object}  dto.HttpError
@@ -25,7 +25,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		return apperror.BadRequest("Invalid query parameters", err)
 	}
 
-	page, limit, offset := checkPageLimit(req)
+	page, pageSize, offset := checkGetAllPackagesRequest(req)
 
 	var packages []model.Package
 	var total int64
@@ -40,7 +40,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		Preload("Reviews.Customer").
 		Preload("Categories").
 		Preload("Quotations.Customer").
-		Limit(limit).
+		Limit(pageSize).
 		Offset(offset).
 		Find(&packages).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -57,8 +57,8 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 	pagination := dto.PaginationResponse[dto.PackageResponse]{
 		Page:       page,
 		Total:      total,
-		Limit:      limit,
-		TotalPages: int((total + int64(limit) - 1) / int64(limit)),
+		PageSize:   pageSize,
+		TotalPages: int((total + int64(pageSize) - 1) / int64(pageSize)),
 		Response:   PackageResponses,
 	}
 
@@ -73,15 +73,15 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 
 }
 
-func checkPageLimit(req *dto.GetAllPackagesRequest) (int, int, int) {
-	page, limit := req.Page, req.Limit
+func checkGetAllPackagesRequest(req *dto.GetAllPackagesRequest) (int, int, int) {
+	page, pageSize := req.Page, req.PageSize
 	if page < 1 {
 		page = 1
 	}
-	if limit < 1 {
-		limit = 10
+	if pageSize < 1 {
+		pageSize = 10
 	}
 
-	offset := (page - 1) * limit
-	return page, limit, offset
+	offset := (page - 1) * pageSize
+	return page, pageSize, offset
 }

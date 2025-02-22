@@ -8,8 +8,8 @@ type MediaPackageRequest struct {
 }
 
 type GetAllPackagesRequest struct {
-	Page  int `json:"page"`
-	Limit int `json:"limit"`
+	Page     int `json:"page"`
+	PageSize int `json:"page_size"`
 }
 
 type CreatePackageRequest struct {
