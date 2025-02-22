@@ -26,8 +26,8 @@ type PhotographerResponse struct {
 	Email             string `json:"email"`
 	PhoneNumber       string `json:"phoneNumber"`
 	ProfilePictureURL string `json:"profilePictureUrl"`
-	IsVerified        bool   `json:"is_verified"`
-	ActiveStatus      bool   `json:"active_status"`
+	IsVerified        bool   `json:"isVerified"`
+	ActiveStatus      bool   `json:"activeStatus"`
 }
 
 type PhotographerRequest struct {

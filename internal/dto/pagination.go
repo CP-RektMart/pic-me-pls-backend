@@ -1,8 +1,8 @@
 package dto
 
 type PaginationRequest struct {
-	Page     int `query:"page"`
-	PageSize int `query:"pageSize" min:"1"`
+	Page     int `query:"page" validate:"omitempty,min=1"`
+	PageSize int `query:"pageSize" validate:"omitempty,min=1"`
 }
 
 type PaginationResponse[T any] struct {

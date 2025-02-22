@@ -28,6 +28,11 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 		return apperror.BadRequest("Invalid query parameters", err)
 	}
 
+	// Validate query parameters
+	if err := h.validate.Struct(params); err != nil {
+		return apperror.BadRequest("invalid request body", err)
+	}
+
 	// Set default values
 	if params.Page <= 0 {
 		params.Page = 1
@@ -39,7 +44,7 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 	offset := (params.Page - 1) * params.PageSize
 
 	// Query photographers
-	query := h.store.DB.Preload("User").
+	query := h.store.DB.
 		Joins("User").
 		Where("\"User\".name ILIKE ?", "%"+params.Name+"%").
 		Where("is_verified = ? AND active_status = ?", true, true)
