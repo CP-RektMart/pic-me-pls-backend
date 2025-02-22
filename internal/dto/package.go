@@ -2,6 +2,18 @@ package dto
 
 import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 
+type MediaPackageRequest struct {
+	PictureURL  string `json:"pictureUrl" validate:"required"`
+	Description string `json:"description"`
+}
+
+type CreatePackageRequest struct {
+	Name        string                `json:"name" validate:"required"`
+	Description string                `json:"description" validate:"required"`
+	Price       float64               `json:"price" validate:"required"`
+	Media       []MediaPackageRequest `json:"media" validate:"required"`
+}
+
 type PackageResponse struct {
 	ID           uint                 `json:"id"`
 	Name         string               `json:"name"`
@@ -13,18 +25,6 @@ type PackageResponse struct {
 	Reviews      []ReviewResponse     `json:"reviews,omitempty"`
 	Categories   []CategoryResponse   `json:"categories,omitempty"`
 	Quotations   []QuotationResponse  `json:"quotations,omitempty"`
-}
-
-type MediaPackageRequest struct {
-	PictureURL  string `json:"pictureUrl" validate:"required"`
-	Description string `json:"description"`
-}
-
-type CreatePackageRequest struct {
-	Name        string                `json:"name" validate:"required"`
-	Description string                `json:"description" validate:"required"`
-	Price       float64               `json:"price" validate:"required"`
-	Media       []MediaPackageRequest `json:"media" validate:"required"`
 }
 
 type PaginationResponse struct {
@@ -48,6 +48,10 @@ type CreatePackageResponse struct {
 type PackageListResponse struct {
 	Pagination PaginationResponse `json:"pagination"`
 	Response   []PackageResponse  `json:"response"`
+}
+
+type PackageListHttResponse struct {
+	Result PackageListResponse `json:"result"`
 }
 
 func ToPackageResponse(Package model.Package) PackageResponse {

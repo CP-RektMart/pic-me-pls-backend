@@ -17,9 +17,9 @@ import (
 // @Router       /api/v1/package [GET]
 // @Param        page   query   int  false  "Page number (default is 1)"
 // @Param        limit  query   int  false  "Number of items per page (default is 20)"
-// @Success      200    {object}  dto.HttpResponse{result=dto.PackageListResponse}
-// @Failure      400    {object}  dto.HttpResponse
-// @Failure      500    {object}  dto.HttpResponse
+// @Success      200    {object}  dto.PackageListHttResponse
+// @Failure      400    {object}  dto.HttpError
+// @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 	var packages []model.Package
 
@@ -83,7 +83,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		Response:   PackageResponses,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.PackageListResponse]{
+	return c.Status(fiber.StatusOK).JSON(dto.PackageListHttResponse{
 		Result: result,
 	})
 }
