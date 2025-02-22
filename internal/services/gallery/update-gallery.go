@@ -37,21 +37,14 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	gallery, err := h.updateGallery(req, req.GalleryId, userId)
-	if err != nil {
+	if err := h.updateGallery(req, req.GalleryId, userId); err != nil {
 		return err
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.UpdateGalleryResponse]{
-		Result: dto.UpdateGalleryResponse{
-			Name:        gallery.Name,
-			Description: gallery.Description,
-			Price:       gallery.Price,
-		},
-	})
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId uint, userId uint) (*model.Gallery, error) {
+func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId uint, userId uint) error {
 	var gallery model.Gallery
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := h.store.DB.Preload("Photographer").First(&gallery, "id = ?", galleryId).Error; err != nil {
@@ -81,8 +74,8 @@ func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId uint, u
 
 		return nil
 	}); err != nil {
-		return nil, errors.Wrap(err, "failed to update gallery")
+		return errors.Wrap(err, "failed to update gallery")
 	}
 
-	return &gallery, nil
+	return nil
 }
