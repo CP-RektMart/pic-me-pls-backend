@@ -131,7 +131,7 @@ func (s *Server) RegisterRoutes(
 				authMiddleware.AuthPhotographer(ctx, next, packages)
 			})
 		})
-		huma.Patch(packages, basePath+"/:packageId", packagesHandler.HandleUpdatePackage, func(o *huma.Operation) {
+		huma.Patch(packages, basePath+"/{packageId}", packagesHandler.HandleUpdatePackage, func(o *huma.Operation) {
 			o.DefaultStatus = 204
 			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
 				authMiddleware.AuthPhotographer(ctx, next, packages)
