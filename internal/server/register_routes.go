@@ -66,4 +66,8 @@ func (s *Server) RegisterRoutes(
 	// quotation
 	quotation := v1.Group("/quotations")
 	quotation.Patch("/:id/accept", authMiddleware.Auth, quotationHandler.Accept)
+
+	// category
+	category := v1.Group("/categories")
+	category.Post("/", authMiddleware.AuthAdmin, categoryHandler.HandleCreate)
 }
