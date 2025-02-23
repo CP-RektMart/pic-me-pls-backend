@@ -13,6 +13,8 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -64,10 +66,14 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 }
 
 func (s *Server) Start(ctx context.Context, stop context.CancelFunc) {
-	s.app.Get("/health", func(c *fiber.Ctx) error {
-		return c.JSON(dto.HttpResponse[string]{
-			Result: "ok",
-		})
+	api := humafiber.New(s.app, huma.DefaultConfig("Pic-Me-Pls Backend", "0.0.1"))
+
+	huma.Get(api, "/health", func(ctx context.Context, input *struct{}) (*dto.HumaHttpResponse[string], error) {
+		return &dto.HumaHttpResponse[string]{
+			Body: dto.HttpResponse[string]{
+				Result: "ok",
+			},
+		}, nil
 	})
 
 	go func() {

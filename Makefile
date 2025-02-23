@@ -1,5 +1,5 @@
 server:
-	go generate ./... && go run cmd/main.go
+	go run cmd/main.go
 
 generate:
 	go generate ./...
