@@ -1,7 +1,8 @@
-package photographer
+package verify
 
 import (
 	"context"
+	"net/http"
 	"path"
 	"strconv"
 
@@ -11,6 +12,21 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterReVerifyCard(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "re-verify-card",
+		Method:      http.MethodPatch,
+		Path:        "/api/v1/photographer/re-verify",
+		Summary:     "Re-verify citizen card",
+		Description: "Re-verify citizen card",
+		Tags:        []string{"verify"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleReVerifyCard)
+}
 
 func (h *Handler) HandleReVerifyCard(ctx context.Context, req *dto.HumaFormData[dto.CitizenCardRequest]) (*dto.HumaHttpResponse[dto.CitizenCardResponse], error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

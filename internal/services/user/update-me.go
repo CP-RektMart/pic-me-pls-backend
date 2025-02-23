@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"mime/multipart"
+	"net/http"
 	"path"
 	"strconv"
 
@@ -13,6 +14,21 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 )
+
+func (h *Handler) RegisterUpdateMe(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "update-me",
+		Method:      http.MethodPatch,
+		Path:        "/api/v1/me",
+		Summary:     "Update my profile",
+		Description: "Update my profile",
+		Tags:        []string{"user"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleUpdateMe)
+}
 
 func (h *Handler) HandleUpdateMe(ctx context.Context, req *dto.HumaFormData[dto.UserUpdateRequest]) (*dto.HumaHttpResponse[dto.UserResponse], error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

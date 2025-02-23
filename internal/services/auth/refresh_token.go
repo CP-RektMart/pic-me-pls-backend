@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -10,8 +11,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func (h *Handler) HandleRefreshToken(ctx context.Context, req *dto.HumaBody[dto.RefreshTokenRequest]) (*dto.HumaHttpResponse[dto.TokenResponse], error) {
+func (h *Handler) RegisterRefreshToken(api huma.API) {
+	huma.Register(api, huma.Operation{
+		OperationID: "refresh-token",
+		Method:      http.MethodPost,
+		Path:        "/api/v1/auth/refresh-token",
+		Summary:     "Refresh token",
+		Description: "Refresh token",
+		Tags:        []string{"auth"},
+	}, h.HandleRefreshToken)
+}
 
+func (h *Handler) HandleRefreshToken(ctx context.Context, req *dto.HumaBody[dto.RefreshTokenRequest]) (*dto.HumaHttpResponse[dto.TokenResponse], error) {
 	if err := h.validate.Struct(req); err != nil {
 		return nil, huma.Error400BadRequest("invalid request body", err)
 	}

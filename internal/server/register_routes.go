@@ -11,10 +11,11 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/verify"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
 )
@@ -23,7 +24,8 @@ func (s *Server) RegisterRoutes(
 	authMiddleware authentication.AuthMiddleware,
 	authHandler *auth.Handler,
 	userHandler *user.Handler,
-	photographerHandler *photographer.Handler,
+	verifyHandler *verify.Handler,
+	photographersHandler *photographers.Handler,
 	packagesHandler *packages.Handler,
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
@@ -40,9 +42,6 @@ func (s *Server) RegisterRoutes(
 			BearerFormat: "JWT",
 		},
 	}
-	config.Security = []map[string][]string{
-		{"bearer": nil},
-	}
 	api := humafiber.New(s.app, config)
 
 	// health check
@@ -56,64 +55,40 @@ func (s *Server) RegisterRoutes(
 		})
 	}
 
-	// auth
-	{
-		basePath := "/api/v1/auth"
-		auth := humafiber.New(s.app, config)
-
-		huma.Post(auth, basePath+"/login", authHandler.HandleLogin, func(o *huma.Operation) {
-			o.Security = []map[string][]string{}
-		})
-		huma.Post(auth, basePath+"/register", authHandler.HandleRegister, func(o *huma.Operation) {
-			o.Security = []map[string][]string{}
-		})
-		huma.Post(auth, basePath+"/refresh-token", authHandler.HandleRefreshToken, func(o *huma.Operation) {
-			o.Security = []map[string][]string{}
-		})
-		huma.Post(auth, basePath+"/logout", authHandler.HandleLogout, func(o *huma.Operation) {
-			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
-				authMiddleware.Auth(ctx, next, auth)
-			})
-		})
+	// Middlewares
+	authMiddlewares := huma.Middlewares{
+		func(ctx huma.Context, next func(huma.Context)) {
+			authMiddleware.Auth(ctx, next, api)
+		},
 	}
+	authPhotographerMiddlewares := huma.Middlewares{
+		func(ctx huma.Context, next func(huma.Context)) {
+			authMiddleware.AuthPhotographer(ctx, next, api)
+		},
+	}
+	// authAdminMiddlewares := huma.Middlewares{
+	// 	func(ctx huma.Context, next func(huma.Context)) {
+	// 		authMiddleware.AuthAdmin(ctx, next, api)
+	// 	},
+	// }
+
+	// auth
+	authHandler.RegisterLogin(api)
+	authHandler.RegisterRegister(api)
+	authHandler.RegisterRefreshToken(api)
+	authHandler.RegisterLogout(api, authMiddlewares)
 
 	// user
-	{
-		basePath := "/api/v1/me"
-		user := humafiber.New(s.app, config)
-		user.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
-			authMiddleware.Auth(ctx, next, user)
-		})
+	userHandler.RegisterMe(api, authMiddlewares)
+	userHandler.RegisterUpdateMe(api, authMiddlewares)
 
-		huma.Get(user, basePath, userHandler.HandleGetMe)
-		huma.Patch(user, basePath, userHandler.HandleUpdateMe)
-	}
+	// Photographer, verify
+	verifyHandler.RegisterGetCitizenCard(api, authPhotographerMiddlewares)
+	verifyHandler.RegisterVerifyCard(api, authPhotographerMiddlewares)
+	verifyHandler.RegisterReVerifyCard(api, authPhotographerMiddlewares)
 
-	// Citizen Card
-	{
-		basePath := "/api/v1/photographers"
-		photographers := humafiber.New(s.app, config)
-		photographers.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
-			authMiddleware.AuthPhotographer(ctx, next, photographers)
-		})
-
-		// Citizen Card
-		huma.Get(photographers, basePath+"/citizen-card", photographerHandler.HandleGetCitizenCard)
-		huma.Post(photographers, basePath+"/verify", photographerHandler.HandleVerifyCard)
-		huma.Patch(photographers, basePath+"/reverify", photographerHandler.HandleReVerifyCard)
-	}
-
-	// Photographer
-	{
-		basePath := "/api/v1/photographers"
-		photographers := humafiber.New(s.app, config)
-		photographers.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
-			authMiddleware.Auth(ctx, next, photographers)
-		})
-
-		// Photographers
-		huma.Get(photographers, basePath, photographerHandler.HandleGetAllPhotographers)
-	}
+	// Photographers
+	photographersHandler.RegisterGetAllPhotographers(api, authMiddlewares)
 
 	// package
 	{

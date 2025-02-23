@@ -2,12 +2,29 @@ package user
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/cockroachdb/errors"
+	"github.com/danielgtaylor/huma/v2"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 )
+
+func (h *Handler) RegisterMe(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "get-me",
+		Method:      http.MethodGet,
+		Path:        "/api/v1/me",
+		Summary:     "Get my profile",
+		Description: "Get my profile",
+		Tags:        []string{"user"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleGetMe)
+}
 
 func (h *Handler) HandleGetMe(ctx context.Context, req *struct{}) (*dto.HumaHttpResponse[dto.UserResponse], error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

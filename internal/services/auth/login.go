@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -9,6 +10,17 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterLogin(api huma.API) {
+	huma.Register(api, huma.Operation{
+		OperationID: "login",
+		Method:      http.MethodPost,
+		Path:        "/api/v1/auth/login",
+		Summary:     "Login",
+		Description: "Login",
+		Tags:        []string{"auth"},
+	}, h.HandleLogin)
+}
 
 func (h *Handler) HandleLogin(ctx context.Context, req *dto.HumaBody[dto.LoginRequest]) (*dto.HumaHttpResponse[dto.LoginResponse], error) {
 	if err := h.validate.Struct(req); err != nil {

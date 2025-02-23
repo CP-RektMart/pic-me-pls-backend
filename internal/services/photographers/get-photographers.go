@@ -1,7 +1,8 @@
-package photographer
+package photographers
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -9,6 +10,21 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterGetAllPhotographers(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "get-all-photographers",
+		Method:      http.MethodGet,
+		Path:        "/api/v1/photographers",
+		Summary:     "Get all photographers",
+		Description: "Get all photographers",
+		Tags:        []string{"photographers"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleGetAllPhotographers)
+}
 
 func (h *Handler) HandleGetAllPhotographers(ctx context.Context, req *dto.HumaBody[dto.PhotographerRequest]) (*dto.HumaHttpResponse[dto.PaginationResponse[[]dto.PhotographerResponse]], error) {
 	var photographers []model.Photographer

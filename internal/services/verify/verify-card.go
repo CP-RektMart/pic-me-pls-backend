@@ -1,8 +1,9 @@
-package photographer
+package verify
 
 import (
 	"context"
 	"mime/multipart"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -14,6 +15,21 @@ import (
 var (
 	ErrAlreadyVerified = errors.New("ALREADY_VERIFIED")
 )
+
+func (h *Handler) RegisterVerifyCard(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "verify-card",
+		Method:      http.MethodPost,
+		Path:        "/api/v1/photographer/verify",
+		Summary:     "Verify citizen card",
+		Description: "Verify citizen card",
+		Tags:        []string{"verify"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleVerifyCard)
+}
 
 func (h *Handler) HandleVerifyCard(ctx context.Context, req *dto.HumaFormData[dto.CitizenCardRequest]) (*dto.HumaHttpResponse[dto.CitizenCardResponse], error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

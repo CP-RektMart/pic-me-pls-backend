@@ -1,14 +1,31 @@
-package photographer
+package verify
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
+	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterGetCitizenCard(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "get-citizen-card",
+		Method:      http.MethodGet,
+		Path:        "/api/v1/photographer/citizen-card",
+		Summary:     "Get citizen card",
+		Description: "Get citizen card",
+		Tags:        []string{"verify"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleGetCitizenCard)
+}
 
 func (h *Handler) HandleGetCitizenCard(ctx context.Context, req *struct{}) (*dto.HumaHttpResponse[dto.CitizenCardResponse], error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

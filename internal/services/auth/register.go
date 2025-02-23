@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"net/http"
 	"strings"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -11,6 +12,17 @@ import (
 	"google.golang.org/api/idtoken"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterRegister(api huma.API) {
+	huma.Register(api, huma.Operation{
+		OperationID: "register",
+		Method:      http.MethodPost,
+		Path:        "/api/v1/auth/register",
+		Summary:     "Register",
+		Description: "Register",
+		Tags:        []string{"auth"},
+	}, h.HandleRegister)
+}
 
 func (h *Handler) HandleRegister(ctx context.Context, req *dto.HumaBody[dto.RegisterRequest]) (*dto.HumaHttpResponse[dto.RegisterResponse], error) {
 	if err := h.validate.Struct(req); err != nil {
