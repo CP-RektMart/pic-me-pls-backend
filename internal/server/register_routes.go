@@ -5,6 +5,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
@@ -26,6 +27,7 @@ func (s *Server) RegisterRoutes(
 	messageHandler *message.Handler,
 	objectHandler *object.Handler,
 	quotationHandler *quotation.Handler,
+	mediaHandler *media.Handler,
 ) {
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
@@ -66,4 +68,10 @@ func (s *Server) RegisterRoutes(
 	// quotation
 	quotation := v1.Group("/quotations")
 	quotation.Patch("/:id/accept", authMiddleware.Auth, quotationHandler.Accept)
+
+	// media
+	media := v1.Group("/media")
+	media.Post("/", authMiddleware.AuthPhotographer, mediaHandler.HandleCreateMedia)
+	media.Patch("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleUpdateMedia)
+	media.Delete("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleDeleteMedia)
 }
