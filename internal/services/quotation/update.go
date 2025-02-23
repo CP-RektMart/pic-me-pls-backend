@@ -16,7 +16,7 @@ import (
 // @Security    ApiKeyAuth
 // @Param       id    path      uint                 		true  "Quotation ID"
 // @Param       body  body      dto.UpdateQuotationRequest true  "Quotation update details"
-// @Success     200   {object}  dto.HttpResponse
+// @Success     200
 // @Failure     400   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
 func (h *Handler) HandleUpdate(c *fiber.Ctx) error {

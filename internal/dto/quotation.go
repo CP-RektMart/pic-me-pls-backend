@@ -12,11 +12,11 @@ type CreateQuotationRequest struct {
 	ToDate   time.Time     `json:"to_date" validate:"required"`
 }
 
+type CreateQuotationResponse struct {
+	QuotationID uint `json:"quotation_id"`
+}
+
 type UpdateQuotationRequest struct {
 	CreateQuotationRequest
 	Status string `json:"status" validate:"required"`
-}
-
-type QuotationResponse struct {
-	QuotationID uint `json:"quotation_id"`
 }

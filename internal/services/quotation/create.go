@@ -38,8 +38,8 @@ func (h *Handler) HandleCreate(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to create quotation")
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(dto.HttpResponse[dto.QuotationResponse]{
-		Result: dto.QuotationResponse{
+	return c.Status(fiber.StatusCreated).JSON(dto.HttpResponse[dto.CreateQuotationResponse]{
+		Result: dto.CreateQuotationResponse{
 			QuotationID: QuotationID,
 		},
 	})
