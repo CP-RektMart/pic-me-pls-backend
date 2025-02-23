@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
-	"github.com/pkg/errors"
+	"github.com/cockroachdb/errors"
 )
 
 func (h *Handler) HandleLogout(ctx context.Context, req *struct{}) (*dto.HumaHttpResponse[dto.TokenResponse], error) {
