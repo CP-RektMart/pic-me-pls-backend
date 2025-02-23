@@ -9,6 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary			Create Media
+// @Description		Create media by photographer
+// @Tags			media
+// @Router			/api/v1/media [POST]
+// @Security		ApiKeyAuth
+// @Param        	RequestBody 	body  dto.CreateMediaRequest  true  "Media details"
+// @Success			201
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreateMedia(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
