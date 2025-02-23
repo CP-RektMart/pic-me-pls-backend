@@ -9,6 +9,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary			Get Quotation By ID
+// @Description		Get Quotation By ID
+// @Tags			quotation
+// @Router			/api/v1/quotations/{id} [GET]
+// @Security		ApiKeyAuth
+// @Success			200	{object}	dto.HttpResponse[dto.QuotationResponse]
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {

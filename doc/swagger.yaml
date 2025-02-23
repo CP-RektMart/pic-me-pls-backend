@@ -75,6 +75,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.ObjectUploadResponse'
       type: object
+    dto.HttpResponse-dto_QuotationResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.QuotationResponse'
+      type: object
     dto.HttpResponse-dto_RegisterResponse:
       properties:
         result:
@@ -903,9 +908,36 @@ paths:
       summary: Get All Photographers
       tags:
       - photographer
+  /api/v1/quotations/{id}:
+    get:
+      description: Get Quotation By ID
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_QuotationResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get Quotation By ID
+      tags:
+      - quotation
   /api/v1/quotations/{id}/accept:
     patch:
-      description: Acceot quotaion
+      description: Accept quotaion
       parameters:
       - description: quotaion id
         in: path
