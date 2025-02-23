@@ -1,8 +1,6 @@
 package packages
 
 import (
-	"fmt"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -15,8 +13,11 @@ import (
 // @Description  Show all available packages with pagination
 // @Tags         packages
 // @Router       /api/v1/packages [GET]
-// @Param        page      query    int    false  "Page number"
-// @Param        page_size query    int    false  "Page size"
+// @Param        page      query    int    	    false  "Page number"
+// @Param        pageSize  query    int    		false  "Page size"
+// @Param        minPrice  query    float64    	false  "Minimum price"
+// @Param        maxPrice  query    float64    	false  "Maximum price"
+// @Param        photographerId  query    uint    false  "Photographer ID"
 // @Success      200    {object}  dto.PaginationResponse[dto.PackageResponse]
 // @Failure      400    {object}  dto.HttpError
 // @Failure      500    {object}  dto.HttpError
@@ -30,9 +31,6 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
-
-	fmt.Println(req.Pagination.Page, req.Pagination.PageSize)
-	fmt.Println(req.MinPrice, req.MaxPrice, req.PhotographerID)
 
 	page, pageSize, offset := checkPaginationRequest(req)
 	query, totalCount, err := filterPrice(h, req)
@@ -72,7 +70,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 }
 
 func checkPaginationRequest(req *dto.GetAllPackagesRequest) (int, int, int) {
-	page, pageSize := req.Pagination.Page, req.Pagination.PageSize
+	page, pageSize := req.Page, req.PageSize
 	if page < 1 {
 		page = 1
 	}

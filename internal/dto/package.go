@@ -8,10 +8,11 @@ type MediaPackageRequest struct {
 }
 
 type GetAllPackagesRequest struct {
-	Pagination     PaginationRequest `query:"pagination"`
-	MinPrice       float64           `query:"minPrice" validate:"omitempty,min=0"`
-	MaxPrice       float64           `query:"maxPrice" validate:"omitempty,min=0"`
-	PhotographerID *uint             `query:"photographerId" validate:"omitempty"`
+	Page           int     `query:"page" validate:"omitempty,min=1"`
+	PageSize       int     `query:"pageSize" validate:"omitempty,min=1"`
+	MinPrice       float64 `query:"minPrice" validate:"omitempty,min=0"`
+	MaxPrice       float64 `query:"maxPrice" validate:"omitempty,min=0"`
+	PhotographerID *uint   `query:"photographerId" validate:"omitempty"`
 }
 
 type CreatePackageRequest struct {
