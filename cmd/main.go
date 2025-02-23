@@ -15,8 +15,10 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/gallery"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
@@ -59,25 +61,30 @@ func main() {
 	authHandler := auth.NewHandler(store, validate, jwtService, authMiddleware, config.GoogleClientID)
 	userHandler := user.NewHandler(store, validate, authMiddleware)
 	photographerHandler := photographer.NewHandler(store, validate, authMiddleware)
-	galleryHandler := gallery.NewHandler(store, validate)
+	packageHandler := packages.NewHandler(store, validate, authMiddleware)
 	reviewHandler := review.NewHandler(store, validate)
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
-	quotationHandler := quotation.NewHandler(store, validate)
+	objectHandler := object.NewHandler(store, config.Storage)
+	quotationHandler := quotation.NewHandler(store, authMiddleware)
+	mediaHandler := media.NewHandler(store, validate, authMiddleware)
 
 	server.RegisterDocs()
 
+	// routes
 	server.RegisterRoutes(
 		authMiddleware,
 		exampleHandler,
 		authHandler,
 		userHandler,
 		photographerHandler,
-		galleryHandler,
+		packageHandler,
 		reviewHandler,
 		categoryHandler,
 		messageHandler,
+		objectHandler,
 		quotationHandler,
+		mediaHandler,
 	)
 
 	server.Start(ctx, stop)

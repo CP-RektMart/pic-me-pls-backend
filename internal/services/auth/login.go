@@ -10,7 +10,7 @@ import (
 )
 
 // @Summary			Login
-// @Description			Login
+// @Description		Login
 // @Tags			auth
 // @Router			/api/v1/auth/login [POST]
 // @Param 			RequestBody 	body 	dto.LoginRequest 	true 	"request request"

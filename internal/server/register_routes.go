@@ -5,8 +5,10 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/gallery"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
@@ -19,11 +21,13 @@ func (s *Server) RegisterRoutes(
 	authHandler *auth.Handler,
 	userHandler *user.Handler,
 	photographerHandler *photographer.Handler,
-	galleryHandler *gallery.Handler,
+	packagesHandler *packages.Handler,
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
 	messageHandler *message.Handler,
+	objectHandler *object.Handler,
 	quotationHandler *quotation.Handler,
+	mediaHandler *media.Handler,
 ) {
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
@@ -37,6 +41,7 @@ func (s *Server) RegisterRoutes(
 	auth.Post("/login", authHandler.HandleLogin)
 	auth.Post("/register", authHandler.HandleRegister)
 	auth.Post("/refresh-token", authHandler.HandleRefreshToken)
+	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
 	// user
 	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
@@ -48,9 +53,25 @@ func (s *Server) RegisterRoutes(
 	photographer.Post("/verify", authMiddleware.AuthPhotographer, photographerHandler.HandleVerifyCard)
 	photographer.Patch("/reverify", authMiddleware.AuthPhotographer, photographerHandler.HandleReVerifyCard)
 
+	// get photographer
+	photographers := v1.Group("/photographers")
+	photographers.Get("/", photographerHandler.HandleGetAllPhotographers)
+
 	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
+	// package
+	packages := v1.Group("/packages")
+	packages.Get("/", packagesHandler.HandleGetAllPackages)
+	packages.Post("/", authMiddleware.AuthPhotographer, packagesHandler.HandleCreatePackage)
+	packages.Patch("/:packageId", authMiddleware.AuthPhotographer, packagesHandler.HandleUpdatePackage)
+
 	// quotation
-	quotation := v1.Group("/quotation")
-	quotation.Get("/:id", quotationHandler.HandleGetQuotationByID)
+	quotation := v1.Group("/quotations")
+	quotation.Patch("/:id/accept", authMiddleware.Auth, quotationHandler.Accept)
+
+	// media
+	media := v1.Group("/media")
+	media.Post("/", authMiddleware.AuthPhotographer, mediaHandler.HandleCreateMedia)
+	media.Patch("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleUpdateMedia)
+	media.Delete("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleDeleteMedia)
 }
