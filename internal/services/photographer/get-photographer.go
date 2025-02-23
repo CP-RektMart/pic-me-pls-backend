@@ -1,37 +1,24 @@
 package photographer
 
 import (
+	"context"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
-	"github.com/gofiber/fiber/v2"
+	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
 
-// @Summary			Get All Photographers
-// @Description		Retrieve a paginated list of photographers, optionally filtered by name.
-// @Tags			photographer
-// @Router			/api/v1/photographers [GET]
-// @Param			page		query		int	false	"Page number for pagination (default: 1)"
-// @Param			pageSize	query		int	false	"Number of records per page (default: 5, max: 20)"
-// @Param			name		query		string	false	"Filter by photographer's name (case-insensitive)"
-// @Success      	200 {object} 	dto.PaginationResponse[dto.PhotographerResponse]
-// @Failure			400	{object}	dto.HttpError
-// @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
+func (h *Handler) HandleGetAllPhotographers(ctx context.Context, req *dto.HumaBody[dto.PhotographerRequest]) (*dto.HumaHttpResponse[dto.PaginationResponse[[]dto.PhotographerResponse]], error) {
 	var photographers []model.Photographer
-	var params dto.PhotographerRequest
-
-	// Parse query parameters
-	if err := c.QueryParser(&params); err != nil {
-		return apperror.BadRequest("Invalid query parameters", err)
-	}
 
 	// Validate query parameters
-	if err := h.validate.Struct(params); err != nil {
-		return apperror.BadRequest("invalid request body", err)
+	if err := h.validate.Struct(req); err != nil {
+		return nil, huma.Error400BadRequest("invalid request", err)
 	}
+
+	params := req.Body
 
 	// Set default values
 	if params.Page <= 0 {
@@ -52,16 +39,16 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 	// Calculate total page
 	var totalCount int64
 	if err := query.Model(&model.Photographer{}).Count(&totalCount).Error; err != nil {
-		return errors.Wrap(err, "Error counting photographers")
+		return nil, errors.Wrap(err, "Error counting photographers")
 	}
 	totalPage := (int(totalCount) + params.PageSize - 1) / params.PageSize
 
 	// Retrieve photographers
 	if err := query.Limit(params.PageSize).Offset(offset).Find(&photographers).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return apperror.NotFound("No photographers found", err)
+			return nil, huma.Error404NotFound("Photographers not found", err)
 		}
-		return errors.Wrap(err, "Error retrieving photographers")
+		return nil, errors.Wrap(err, "Error retrieving photographers")
 	}
 
 	// Convert to response
@@ -70,10 +57,16 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 		photographerResponses = append(photographerResponses, dto.ToPhotographerResponse(photographer))
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[[]dto.PhotographerResponse]{
+	result := dto.PaginationResponse[[]dto.PhotographerResponse]{
 		Page:      params.Page,
 		PageSize:  params.PageSize,
 		TotalPage: totalPage,
 		Data:      photographerResponses,
-	})
+	}
+
+	return &dto.HumaHttpResponse[dto.PaginationResponse[[]dto.PhotographerResponse]]{
+		Body: dto.HttpResponse[dto.PaginationResponse[[]dto.PhotographerResponse]]{
+			Result: result,
+		},
+	}, nil
 }

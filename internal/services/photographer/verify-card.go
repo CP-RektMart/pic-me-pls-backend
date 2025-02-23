@@ -3,61 +3,45 @@ package photographer
 import (
 	"context"
 	"mime/multipart"
-	"time"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
-	"github.com/gofiber/fiber/v2"
+	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
 
-// @Summary			Verify Citizen Card
-// @Description		Verify Photographer Citizen Card
-// @Tags			photographer
-// @Router			/api/v1/photographer/verify [POST]
-// @Security		ApiKeyAuth
-// @Accept			multipart/form-data
-// @Param 			cardPicture 	formData 	file		false	"Card picture (optional)"
-// @Param 			citizenId 		formData 	string		true	"Citizen ID"
-// @Param 			laserId 		formData 	string		true	"Laser ID"
-// @Param 			expireDate 		formData 	string		true	"Expire Date"
-// @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
-// @Failure			400	{object}	dto.HttpError
-// @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
-	if err != nil {
-		return errors.Wrap(err, "failed to get user id from context")
-	}
+var (
+	ErrAlreadyVerified = errors.New("ALREADY_VERIFIED")
+)
 
-	req := new(dto.CitizenCardRequest)
-	req.CitizenID = c.FormValue("citizenId")
-	req.LaserID = c.FormValue("laserId")
-	req.ExpireDate, err = time.Parse(time.RFC3339, c.FormValue("expireDate"))
+func (h *Handler) HandleVerifyCard(ctx context.Context, req *dto.HumaFormData[dto.CitizenCardRequest]) (*dto.HumaHttpResponse[dto.CitizenCardResponse], error) {
+	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)
 	if err != nil {
-		return apperror.BadRequest("invalid request body", err)
+		return nil, errors.Wrap(err, "failed to get user id from context")
 	}
 
 	if err := h.validate.Struct(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
+		return nil, huma.Error400BadRequest("invalid request", err)
 	}
 
-	file, err := c.FormFile("cardPicture")
-	if err != nil {
-		return apperror.BadRequest("card Picture is require", errors.Errorf("Field Missing"))
+	file, ok := req.RawBody.Form.File["cardPicture"]
+	if !ok {
+		return nil, huma.Error400BadRequest("invalid request", errors.New("cardPicture is required"))
 	}
 
 	var signedURL string
-	signedURL, err = h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
-	if err != nil {
-		return errors.Wrap(err, "File upload failed")
+	if len(file) > 0 {
+		signedURL, err = h.uploadCardFile(ctx, file[0], citizenCardFolder(userId))
+		if err != nil {
+			return nil, errors.Wrap(err, "File upload failed")
+		}
 	}
 
-	user, err := h.createCitizenCard(req, signedURL, userId)
+	data := req.RawBody.Data()
+	user, err := h.createCitizenCard(data, signedURL, userId)
 	if err != nil {
-		return errors.Wrap(err, "Fail to create citizen card")
+		return nil, errors.Wrap(err, "Fail to create citizen card")
 	}
 
 	response := dto.CitizenCardResponse{
@@ -67,9 +51,11 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		ExpireDate: user.ExpireDate,
 	}
 
-	return c.JSON(dto.HttpResponse[dto.CitizenCardResponse]{
-		Result: response,
-	})
+	return &dto.HumaHttpResponse[dto.CitizenCardResponse]{
+		Body: dto.HttpResponse[dto.CitizenCardResponse]{
+			Result: response,
+		},
+	}, nil
 }
 
 func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, folder string) (string, error) {
@@ -101,7 +87,7 @@ func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, signedURL strin
 
 		// Check if the photographer already has a CitizenCard
 		if photographer.CitizenCardID != nil {
-			return apperror.BadRequest("photographer already has a citizen card", errors.Errorf("Already verified"))
+			return errors.WithStack(ErrAlreadyVerified)
 		}
 
 		// Create the CitizenCard using the request data
@@ -123,6 +109,9 @@ func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, signedURL strin
 
 		return nil
 	}); err != nil {
+		if errors.Is(err, ErrAlreadyVerified) {
+			return nil, huma.Error400BadRequest("already verified", err)
+		}
 		return nil, errors.Wrap(err, "failed to create citizen card")
 	}
 

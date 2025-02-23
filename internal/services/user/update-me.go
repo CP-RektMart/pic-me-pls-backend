@@ -29,9 +29,12 @@ func (h *Handler) HandleUpdateMe(ctx context.Context, req *dto.HumaFormData[dto.
 		return nil, huma.Error400BadRequest("invalid request", errors.New("profilePicture is required"))
 	}
 
-	signedURL, err := h.uploadProfileFile(ctx, file[0], profileFolder(userId))
-	if err != nil {
-		return nil, errors.Wrap(err, "File upload failed")
+	var signedURL string
+	if len(file) > 0 {
+		signedURL, err = h.uploadProfileFile(ctx, file[0], profileFolder(userId))
+		if err != nil {
+			return nil, errors.Wrap(err, "File upload failed")
+		}
 	}
 
 	data := req.RawBody.Data()

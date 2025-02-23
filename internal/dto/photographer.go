@@ -4,13 +4,15 @@ import (
 	"time"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/danielgtaylor/huma/v2"
 )
 
 // Form data
 type CitizenCardRequest struct {
-	CitizenID  string    `validate:"required"`
-	LaserID    string    `validate:"required"`
-	ExpireDate time.Time `validate:"required"`
+	CardPicture huma.FormFile `form:"cardPicture"`
+	CitizenID   string        `form:"citizenId" require:"true"`
+	LaserID     string        `form:"laserId" require:"true"`
+	ExpireDate  time.Time     `form:"expireDate" require:"true"`
 }
 
 type CitizenCardResponse struct {
