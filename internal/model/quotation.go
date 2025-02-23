@@ -11,6 +11,7 @@ type QuotationStatus string
 func (q QuotationStatus) String() string {
 	return string(q)
 }
+
 func (q QuotationStatus) IsValid() bool {
 	switch q {
 	case QuotationPending, QuotationConfirm, QuotationCancelled, QuotationPaid:

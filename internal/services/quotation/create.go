@@ -45,12 +45,11 @@ func (h *Handler) HandleCreate(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userId uint) (uint, error) {
+func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) (uint, error) {
 	var quotationID uint
 	
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		quotation := &model.Quotation{
-			PhotographerID: userId,
 			CustomerID: req.CustomerID,
 			GalleryID: req.GalleryID,
 			Description:    req.Description,
@@ -69,6 +68,14 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userId uint) 
 		if err := tx.First(&gallery, req.GalleryID).Error; err != nil {
 			return errors.Wrap(err, "gallery not found")
 		}
+
+		// Find the photographer associated with the user
+		var photographer model.Photographer
+		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
+			return errors.Wrap(err, "Photographer not found for user")
+		}
+
+		quotation.PhotographerID = photographer.ID;
 
 		// Create Quotation  
 		if err := tx.Create(&quotation).Error; err != nil {

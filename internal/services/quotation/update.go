@@ -14,8 +14,8 @@ import (
 // @Tags        quotation
 // @Router      /api/v1/quotations/{id} [PATCH]
 // @Security    ApiKeyAuth
-// @Param       id    path      uint                 true  "Quotation ID"
-// @Param       body  body      dto.QuotationRequest true  "Quotation update details"
+// @Param       id    path      uint                 		true  "Quotation ID"
+// @Param       body  body      dto.UpdateQuotationRequest true  "Quotation update details"
 // @Success     200   {object}  dto.HttpResponse
 // @Failure     400   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
@@ -44,37 +44,41 @@ func (h *Handler) HandleUpdate(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to create quotation")
 	}
 
-	return c.SendStatus(fiber.StatusNoContent)
+	return c.SendStatus(fiber.StatusOK)
 }
 
 func (h *Handler) UpdateQuotation(req *dto.UpdateQuotationRequest, userID uint, quotationID uint) (error) {
 
 	var status model.QuotationStatus = model.QuotationStatus(req.Status)
-	if (status.IsValid()) {
+	if (!status.IsValid()) {
 		return errors.Wrap(errors.Errorf("Invalid"), "Status is invalid")
 	}
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		quotation := &model.Quotation{
-			PhotographerID: userID,
-			CustomerID: req.CustomerID,
-			GalleryID: req.GalleryID,
-			Description:    req.Description,
-			Price:          req.Price,
-			FromDate: req.FromDate,
-			ToDate:  req.ToDate,
-			Status: status,
-		}
-
-		// Find the quotation
-		if err := tx.First(&quotation, quotationID).Error; err != nil {
+		var quotation  model.Quotation
+		if  err := tx.First(&quotation, quotationID).Error; err != nil {
 			return errors.Wrap(err, "quotation not found")
 		}
 
+		// Find the photographer associated with the user
+		var photographer model.Photographer
+		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
+			return errors.Wrap(err, "Photographer not found for user")
+		}
+
 		// Check the Photographer is owner 
-		if quotation.PhotographerID != userID {
+		if quotation.PhotographerID != photographer.ID {
 			return apperror.Forbidden("you do not have permission to update this quotation", errors.Errorf("Not Permission"))
 		}
+
+		quotation.CustomerID = req.CustomerID
+		quotation.GalleryID = req.GalleryID
+		quotation.Description = req.Description
+		quotation.Price = req.Price
+		quotation.FromDate = req.FromDate
+		quotation.ToDate = req.ToDate
+		quotation.Status = status
+		
 
 		// Check CustomerID and GalleryID existed in database
 		var customer model.User
