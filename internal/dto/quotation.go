@@ -9,7 +9,11 @@ type QuotationResponse struct {
 	Price    float64 `json:"price"`
 }
 
-type AcceptQuotationRequest struct {
+type ConfirmQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
+type CancelQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 

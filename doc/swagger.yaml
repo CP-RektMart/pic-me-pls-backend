@@ -916,12 +916,24 @@ paths:
       responses:
         "204":
           description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
         "403":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
         "500":
           content:
             application/json:
@@ -931,5 +943,47 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Accept quotation
+      tags:
+      - quotation
+  /api/v1/quotations/{id}/cancel:
+    patch:
+      description: cancelled quotaion
+      parameters:
+      - description: quotaion id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: cancelled quotation
       tags:
       - quotation
