@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -26,4 +28,7 @@ type Quotation struct {
 	Status         QuotationStatus `gorm:"not null"` // pending, confirm, cancelled, paid
 	Price          float64         `gorm:"not null"`
 	Description    string          `gorm:"not null"`
+
+	FromDate time.Time 				`gorm:"not null"`
+	ToDate   time.Time 				`gorm:"not null"`
 }

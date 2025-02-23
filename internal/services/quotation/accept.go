@@ -1,7 +1,6 @@
 package quotation
 
 import (
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
@@ -24,13 +23,14 @@ func (h *Handler) Accept(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed get user id from context")
 	}
 
-	var req dto.AcceptQuotationRequest
-	if err := c.ParamsParser(&req); err != nil {
-		return apperror.BadRequest("invalid params", err)
+	// Use param to query
+	quotationID, err := c.ParamsInt("id")
+	if err != nil {
+		return apperror.BadRequest("invalid quotation ID", err)
 	}
 
 	var quotation *model.Quotation
-	if err := h.store.DB.First(&quotation, req.QuotationID).Error; err != nil {
+	if err := h.store.DB.First(&quotation, quotationID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("quotation not found", err)
 		}
@@ -48,3 +48,4 @@ func (h *Handler) Accept(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
