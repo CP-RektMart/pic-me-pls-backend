@@ -2,6 +2,10 @@ package dto
 
 import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 
+type AcceptQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
 type QuotationResponse struct {
 	ID       uint    `json:"id"`
 	Status   string  `json:"status"`
@@ -9,19 +13,19 @@ type QuotationResponse struct {
 	Price    float64 `json:"price"`
 }
 
-type AcceptQuotationRequest struct {
-	QuotationID string `params:"id"`
+func ToQuotationResponse(quotation model.Quotation) QuotationResponse {
+	return QuotationResponse{
+		ID:       quotation.ID,
+		Status:   quotation.Status.String(),
+		Customer: quotation.Customer.Name,
+		Price:    quotation.Price,
+	}
 }
 
 func ToQuotationResponses(quotations []model.Quotation) []QuotationResponse {
 	var responses []QuotationResponse
 	for _, quotation := range quotations {
-		responses = append(responses, QuotationResponse{
-			ID:       quotation.ID,
-			Status:   quotation.Status.String(),
-			Price:    quotation.Price,
-			Customer: quotation.Customer.Name,
-		})
+		responses = append(responses, ToQuotationResponse(quotation))
 	}
 	return responses
 }

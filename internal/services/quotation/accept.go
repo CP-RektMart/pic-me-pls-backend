@@ -10,7 +10,7 @@ import (
 )
 
 // @Summary			Accept quotation
-// @Description			Acceot quotaion
+// @Description		Accept quotaion
 // @Tags			quotation
 // @Router			/api/v1/quotations/{id}/accept [PATCH]
 // @Security			ApiKeyAuth
