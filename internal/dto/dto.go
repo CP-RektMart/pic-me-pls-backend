@@ -12,8 +12,6 @@ type HttpError struct {
 	Error string `json:"error"`
 }
 
-func Response[T any](data T) *HumaHttpResponse[T] {
-	return &HumaHttpResponse[T]{
-		Body: HttpResponse[T]{Result: data},
-	}
+type HumaBody[T any] struct {
+	Body T
 }

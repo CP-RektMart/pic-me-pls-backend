@@ -1,10 +1,12 @@
 package server
 
 import (
+	"context"
+
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
@@ -12,11 +14,20 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
 )
+
+type ReviewInput struct {
+	Body struct {
+		Author  string `json:"author" maxLength:"10" doc:"Author of the review"`
+		Rating  int    `json:"rating" minimum:"1" maximum:"5" doc:"Rating from 1 to 5"`
+		Message string `json:"message,omitempty" maxLength:"100" doc:"Review message"`
+	}
+}
 
 func (s *Server) RegisterRoutes(
 	authMiddleware authentication.AuthMiddleware,
-	exampleHandler *example.Handler,
 	authHandler *auth.Handler,
 	userHandler *user.Handler,
 	photographerHandler *photographer.Handler,
@@ -27,19 +38,31 @@ func (s *Server) RegisterRoutes(
 	objectHandler *object.Handler,
 	quotationHandler *quotation.Handler,
 ) {
-	api := s.app.Group("/api")
-	v1 := api.Group("/v1")
+	config := huma.DefaultConfig("Pic-Me-Pls Backend", "0.0.1")
+	api := humafiber.New(s.app, config)
 
-	// example
-	example := v1.Group("/example")
-	example.Post("/upload", exampleHandler.HandlerUploadExample)
+	// health check
+	{
+		huma.Get(api, "/health", func(ctx context.Context, input *struct{}) (*dto.HumaHttpResponse[string], error) {
+			return &dto.HumaHttpResponse[string]{
+				Body: dto.HttpResponse[string]{
+					Result: "ok",
+				},
+			}, nil
+		})
+	}
 
 	// auth
-	auth := v1.Group("/auth")
-	auth.Post("/login", authHandler.HandleLogin)
-	auth.Post("/register", authHandler.HandleRegister)
-	auth.Post("/refresh-token", authHandler.HandleRefreshToken)
-	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+	{
+		basePath := "/api/v1/auth"
+		huma.Post(api, basePath+"/login", authHandler.HandleLogin)
+		// auth.Post("/login", authHandler.HandleLogin)
+		// auth.Post("/register", authHandler.HandleRegister)
+		// auth.Post("/refresh-token", authHandler.HandleRefreshToken)
+		// auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+	}
+
+	v1 := s.app.Group("/api/v1")
 
 	// user
 	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
@@ -54,8 +77,6 @@ func (s *Server) RegisterRoutes(
 	// get photographer
 	photographers := v1.Group("/photographers")
 	photographers.Get("/", photographerHandler.HandleGetAllPhotographers)
-
-	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
 	// package
 	packages := v1.Group("/packages")

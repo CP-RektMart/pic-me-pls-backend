@@ -1,37 +1,23 @@
 package auth
 
 import (
+	"context"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
-	"github.com/cockroachdb/errors"
-	"github.com/gofiber/fiber/v2"
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
-// @Summary			Login
-// @Description		Login
-// @Tags			auth
-// @Router			/api/v1/auth/login [POST]
-// @Param 			RequestBody 	body 	dto.LoginRequest 	true 	"request request"
-// @Success			200	{object}	dto.HttpResponse[dto.LoginResponse]
-// @Failure			400	{object}	dto.HttpError
-// @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleLogin(c *fiber.Ctx) error {
-	ctx := c.UserContext()
-
-	req := new(dto.LoginRequest)
-	if err := c.BodyParser(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
-	}
-
+func (h *Handler) HandleLogin(ctx context.Context, req *dto.HumaBody[dto.LoginRequest]) (*dto.HumaHttpResponse[dto.LoginResponse], error) {
 	if err := h.validate.Struct(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
+		return nil, huma.Error400BadRequest("invalid request", err)
 	}
 
-	OAuthUser, err := h.validateIDToken(ctx, req.IDToken)
+	OAuthUser, err := h.validateIDToken(ctx, req.Body.IDToken)
 	if err != nil {
-		return errors.Wrap(err, "failed to validate id token")
+		return nil, errors.Wrap(err, "failed to validate id token")
 	}
 
 	var user *model.User
@@ -39,9 +25,6 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Where("email = ?", OAuthUser.Email).First(&user).Error; err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return apperror.NotFound("account not found", err)
-			}
 			return errors.Wrap(err, "failed getting user")
 		}
 
@@ -52,7 +35,10 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "failed to get user and token")
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, huma.Error404NotFound("user not found")
+		}
+		return nil, errors.Wrap(err, "failed to get user and token")
 	}
 
 	result := dto.LoginResponse{
@@ -64,7 +50,9 @@ func (h *Handler) HandleLogin(c *fiber.Ctx) error {
 		User: dto.ToUserResponse(*user),
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.LoginResponse]{
-		Result: result,
-	})
+	return &dto.HumaHttpResponse[dto.LoginResponse]{
+		Body: dto.HttpResponse[dto.LoginResponse]{
+			Result: result,
+		},
+	}, nil
 }
