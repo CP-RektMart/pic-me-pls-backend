@@ -9,6 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary			Update Media
+// @Description		Update media
+// @Tags			media
+// @Router			/api/v1/media/{mediaId} [PATCH]
+// @Security		ApiKeyAuth
+// @Param        	RequestBody 	body  dto.UpdateMediaRequest  true  "Media details"
+// @Success			204
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateMedia(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {

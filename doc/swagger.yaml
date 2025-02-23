@@ -18,6 +18,19 @@ components:
         picture:
           type: string
       type: object
+    dto.CreateMediaRequest:
+      properties:
+        description:
+          type: string
+        packageId:
+          minimum: 1
+          type: integer
+        pictureUrl:
+          type: string
+      required:
+      - packageId
+      - pictureUrl
+      type: object
     dto.CreatePackageRequest:
       properties:
         description:
@@ -36,6 +49,11 @@ components:
       - media
       - name
       - price
+      type: object
+    dto.DeleteMediaRequest:
+      properties:
+        mediaId:
+          type: integer
       type: object
     dto.HttpError:
       properties:
@@ -262,6 +280,18 @@ components:
           type: integer
         refreshToken:
           type: string
+      type: object
+    dto.UpdateMediaRequest:
+      properties:
+        description:
+          type: string
+        mediaId:
+          minimum: 1
+          type: integer
+        pictureUrl:
+          type: string
+      required:
+      - mediaId
       type: object
     dto.UpdatePackageRequest:
       properties:
@@ -493,6 +523,95 @@ paths:
       summary: Update me
       tags:
       - user
+  /api/v1/media:
+    post:
+      description: Create media by photographer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreateMediaRequest'
+        description: Media details
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create Media
+      tags:
+      - media
+  /api/v1/media/{mediaId}:
+    delete:
+      description: Delete media
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.DeleteMediaRequest'
+        description: Media details
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Media
+      tags:
+      - media
+    patch:
+      description: Update media
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.UpdateMediaRequest'
+        description: Media details
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Update Media
+      tags:
+      - media
   /api/v1/objects:
     delete:
       description: Delete image
