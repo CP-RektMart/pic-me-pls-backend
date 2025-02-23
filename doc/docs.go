@@ -845,7 +845,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateQuotationRequest"
+                            "$ref": "#/definitions/dto.QuotationRequest"
                         }
                     }
                 ],
@@ -853,7 +853,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse-dto_CreateQuotationResponse"
+                            "$ref": "#/definitions/dto.HttpResponse-dto_QuotationResponse"
                         }
                     },
                     "400": {
@@ -897,7 +897,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UpdateQuotationRequest"
+                            "$ref": "#/definitions/dto.QuotationRequest"
                         }
                     }
                 ],
@@ -1035,44 +1035,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CreateQuotationRequest": {
-            "type": "object",
-            "required": [
-                "customerId",
-                "fromDate",
-                "packageId",
-                "price",
-                "toDate"
-            ],
-            "properties": {
-                "customerId": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "fromDate": {
-                    "type": "string"
-                },
-                "packageId": {
-                    "type": "integer"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "toDate": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.CreateQuotationResponse": {
-            "type": "object",
-            "properties": {
-                "quotationId": {
-                    "type": "integer"
-                }
-            }
-        },
         "dto.DeleteMediaRequest": {
             "type": "object",
             "properties": {
@@ -1097,14 +1059,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.HttpResponse-dto_CreateQuotationResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "$ref": "#/definitions/dto.CreateQuotationResponse"
-                }
-            }
-        },
         "dto.HttpResponse-dto_LoginResponse": {
             "type": "object",
             "properties": {
@@ -1118,6 +1072,14 @@ const docTemplate = `{
             "properties": {
                 "result": {
                     "$ref": "#/definitions/dto.ObjectUploadResponse"
+                }
+            }
+        },
+        "dto.HttpResponse-dto_QuotationResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/dto.QuotationResponse"
                 }
             }
         },
@@ -1321,6 +1283,36 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.QuotationRequest": {
+            "type": "object",
+            "required": [
+                "customerId",
+                "fromDate",
+                "packageId",
+                "price",
+                "toDate"
+            ],
+            "properties": {
+                "customerId": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "fromDate": {
+                    "type": "string"
+                },
+                "packageId": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "toDate": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.QuotationResponse": {
             "type": "object",
             "properties": {
@@ -1463,40 +1455,6 @@ const docTemplate = `{
                 "price": {
                     "type": "number",
                     "minimum": 0
-                }
-            }
-        },
-        "dto.UpdateQuotationRequest": {
-            "type": "object",
-            "required": [
-                "customerId",
-                "fromDate",
-                "packageId",
-                "price",
-                "status",
-                "toDate"
-            ],
-            "properties": {
-                "customerId": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "fromDate": {
-                    "type": "string"
-                },
-                "packageId": {
-                    "type": "integer"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "toDate": {
-                    "type": "string"
                 }
             }
         },

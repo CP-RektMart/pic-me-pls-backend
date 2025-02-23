@@ -14,8 +14,8 @@ import (
 // @Tags        quotation
 // @Router      /api/v1/quotations [POST]
 // @Security    ApiKeyAuth
-// @Param       body  body  dto.CreateQuotationRequest  true  "Quotation details"
-// @Success     201   {object}  dto.HttpResponse[dto.CreateQuotationResponse]
+// @Param       body  body  dto.QuotationRequest  true  "Quotation details"
+// @Success     201   {object}  dto.HttpResponse[dto.QuotationResponse]
 // @Failure     400   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
 func (h *Handler) HandleCreate(c *fiber.Ctx) error {
@@ -24,7 +24,7 @@ func (h *Handler) HandleCreate(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.CreateQuotationRequest)
+	req := new(dto.QuotationRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -33,23 +33,26 @@ func (h *Handler) HandleCreate(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	QuotationID, err := h.CreateQuotation(req,userID)
+	newQuotation, err := h.CreateQuotation(req,userID)
 	if (err != nil) {
 		return errors.Wrap(err, "failed to create quotation")
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(dto.HttpResponse[dto.CreateQuotationResponse]{
-		Result: dto.CreateQuotationResponse{
-			QuotationID: QuotationID,
+	return c.Status(fiber.StatusCreated).JSON(dto.HttpResponse[dto.QuotationResponse]{
+		Result: dto.QuotationResponse{
+			ID: newQuotation.ID,
+			Customer: newQuotation.Customer.Name,
+			Status: newQuotation.Status.String(),
+			Price: newQuotation.Price,
 		},
 	})
 }
 
-func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) (uint, error) {
-	var quotationID uint
-	
+func (h *Handler) CreateQuotation(req *dto.QuotationRequest, userID uint) (*model.Quotation, error) {
+	var newQuotation model.Quotation
+
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		quotation := &model.Quotation{
+		newQuotation = model.Quotation{
 			CustomerID: req.CustomerID,
 			PackageID: req.PackageID,
 			Description:    req.Description,
@@ -62,29 +65,31 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) 
 		// Check CustomerID and PackageID existed in database
 		var customer model.User
 		if err := tx.First(&customer, req.CustomerID).Error; err != nil {
-			return errors.Wrap(err, "customer not found")
+			return apperror.NotFound("customer not found", err)
 		}
+		newQuotation.Customer = customer
+
 		var targetPackage model.Package
 		if err := tx.First(&targetPackage, req.PackageID).Error; err != nil {
-			return errors.Wrap(err, "package not found")
+			return apperror.NotFound("package not found", err)
 		}
+		newQuotation.Package = targetPackage
 
 		// Find the photographer associated with the user
 		var photographer model.Photographer
 		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
-			return errors.Wrap(err, "Photographer not found for user")
+			return apperror.NotFound("Photographer not found for user", err)
 		}
-
-		quotation.PhotographerID = photographer.ID;
+		newQuotation.PhotographerID = photographer.ID
+		newQuotation.Photographer = photographer
 
 		// Create Quotation  
-		if err := tx.Create(&quotation).Error; err != nil {
+		if err := tx.Create(&newQuotation).Error; err != nil {
 			return errors.Wrap(err, "failed to create quotation")
 		}
-		quotationID = quotation.ID
 		return nil
 	}); err != nil {
-		return 0, errors.Wrap(err, "failed to create quotation")
+		return nil, err
 	}
-	return quotationID, nil
+	return &newQuotation, nil
 } 

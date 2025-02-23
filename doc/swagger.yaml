@@ -48,32 +48,6 @@ definitions:
     - name
     - price
     type: object
-  dto.CreateQuotationRequest:
-    properties:
-      customerId:
-        type: integer
-      description:
-        type: string
-      fromDate:
-        type: string
-      packageId:
-        type: integer
-      price:
-        type: number
-      toDate:
-        type: string
-    required:
-    - customerId
-    - fromDate
-    - packageId
-    - price
-    - toDate
-    type: object
-  dto.CreateQuotationResponse:
-    properties:
-      quotationId:
-        type: integer
-    type: object
   dto.DeleteMediaRequest:
     properties:
       mediaId:
@@ -89,11 +63,6 @@ definitions:
       result:
         $ref: '#/definitions/dto.CitizenCardResponse'
     type: object
-  dto.HttpResponse-dto_CreateQuotationResponse:
-    properties:
-      result:
-        $ref: '#/definitions/dto.CreateQuotationResponse'
-    type: object
   dto.HttpResponse-dto_LoginResponse:
     properties:
       result:
@@ -103,6 +72,11 @@ definitions:
     properties:
       result:
         $ref: '#/definitions/dto.ObjectUploadResponse'
+    type: object
+  dto.HttpResponse-dto_QuotationResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.QuotationResponse'
     type: object
   dto.HttpResponse-dto_RegisterResponse:
     properties:
@@ -234,6 +208,27 @@ definitions:
       profilePictureUrl:
         type: string
     type: object
+  dto.QuotationRequest:
+    properties:
+      customerId:
+        type: integer
+      description:
+        type: string
+      fromDate:
+        type: string
+      packageId:
+        type: integer
+      price:
+        type: number
+      toDate:
+        type: string
+    required:
+    - customerId
+    - fromDate
+    - packageId
+    - price
+    - toDate
+    type: object
   dto.QuotationResponse:
     properties:
       customer:
@@ -329,30 +324,6 @@ definitions:
       price:
         minimum: 0
         type: number
-    type: object
-  dto.UpdateQuotationRequest:
-    properties:
-      customerId:
-        type: integer
-      description:
-        type: string
-      fromDate:
-        type: string
-      packageId:
-        type: integer
-      price:
-        type: number
-      status:
-        type: string
-      toDate:
-        type: string
-    required:
-    - customerId
-    - fromDate
-    - packageId
-    - price
-    - status
-    - toDate
     type: object
   dto.UserResponse:
     properties:
@@ -915,12 +886,12 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateQuotationRequest'
+          $ref: '#/definitions/dto.QuotationRequest'
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.HttpResponse-dto_CreateQuotationResponse'
+            $ref: '#/definitions/dto.HttpResponse-dto_QuotationResponse'
         "400":
           description: Bad Request
           schema:
@@ -948,7 +919,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/dto.UpdateQuotationRequest'
+          $ref: '#/definitions/dto.QuotationRequest'
       responses:
         "200":
           description: OK

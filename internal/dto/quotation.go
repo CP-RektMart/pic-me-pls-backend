@@ -6,7 +6,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 )
 
-type CreateQuotationRequest struct {
+type QuotationRequest struct {
 	PackageID   uint    `json:"packageId" validate:"required"`
 	CustomerID  uint    `json:"customerId" validate:"required"`
 	Price       float64 `json:"price" validate:"required"`
@@ -14,15 +14,6 @@ type CreateQuotationRequest struct {
 
 	FromDate time.Time `json:"fromDate" validate:"required"`
 	ToDate   time.Time     `json:"toDate" validate:"required"`
-}
-
-type CreateQuotationResponse struct {
-	QuotationID uint `json:"quotationId"`
-}
-
-type UpdateQuotationRequest struct {
-	CreateQuotationRequest
-	Status string `json:"status" validate:"required"`
 }
 
 type QuotationResponse struct {
