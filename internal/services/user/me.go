@@ -1,32 +1,24 @@
 package user
 
 import (
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
+	"context"
+
 	"github.com/cockroachdb/errors"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/gofiber/fiber/v2"
 )
 
-// @Summary			Get me
-// @Description		Get me
-// @Tags			user
-// @Router			/api/v1/me [GET]
-// @Security		ApiKeyAuth
-// @Success			200	{object}	dto.HttpResponse[dto.UserResponse]
-// @Failure			400	{object}	dto.HttpError
-// @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+func (h *Handler) HandleGetMe(ctx context.Context, req *struct{}) (*dto.HumaHttpResponse[dto.UserResponse], error) {
+	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)
 	if err != nil {
-		return errors.Wrap(err, "failed to get user id from context")
+		return nil, errors.Wrap(err, "failed to get user id from context")
 	}
 
 	var user model.User
 	result := h.store.DB.First(&user, userId)
 	if result.Error != nil {
-		return apperror.Internal("failed to get user", nil)
+		return nil, errors.Wrap(result.Error, "failed to get user")
 	}
 
 	response := dto.UserResponse{
@@ -43,7 +35,9 @@ func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 		BankBranch:        user.BankBranch,
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.UserResponse]{
-		Result: response,
-	})
+	return &dto.HumaHttpResponse[dto.UserResponse]{
+		Body: dto.HttpResponse[dto.UserResponse]{
+			Result: response,
+		},
+	}, nil
 }

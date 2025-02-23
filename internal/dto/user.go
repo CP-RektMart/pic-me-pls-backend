@@ -1,15 +1,19 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/danielgtaylor/huma/v2"
+)
 
 type UserUpdateRequest struct {
-	Name        string
-	PhoneNumber string
-	Facebook    string
-	Instagram   string
-	Bank        string
-	AccountNo   string
-	BankBranch  string
+	File        huma.FormFile `form:"profilePicture"`
+	Name        string        `form:"name"`
+	PhoneNumber string        `form:"phoneNumber"`
+	Facebook    string        `form:"facebook"`
+	Instagram   string        `form:"instagram"`
+	Bank        string        `form:"bank"`
+	AccountNo   string        `form:"accountNo"`
+	BankBranch  string        `form:"bankBranch"`
 }
 
 type UserResponse struct {

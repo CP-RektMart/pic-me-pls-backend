@@ -62,9 +62,17 @@ func (s *Server) RegisterRoutes(
 
 	// v1 := s.app.Group("/api/v1")
 
-	// // user
-	// v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
-	// v1.Patch("/me", authMiddleware.Auth, userHandler.HandleUpdateMe)
+	// user
+	{
+		basePath := "/api/v1/me"
+		user := humafiber.New(s.app, config)
+		user.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
+			authMiddleware.Auth(ctx, next, user)
+		})
+
+		huma.Get(user, basePath, userHandler.HandleGetMe)
+		huma.Patch(user, basePath, userHandler.HandleUpdateMe)
+	}
 
 	// // verify citizen card
 	// photographer := v1.Group("/photographer")
