@@ -1,52 +1,39 @@
 package packages
 
 import (
+	"context"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
-	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
-// @Summary			Create Package
-// @Description		Create Package by photographer
-// @Tags			packages
-// @Router			/api/v1/packages [POST]
-// @Security		ApiKeyAuth
-// @Param        	RequestBody 	body  dto.CreatePackageRequest  true  "Package details"
-// @Success			201
-// @Failure			400	{object}	dto.HttpError
-// @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleCreatePackage(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+func (h *Handler) HandleCreatePackage(ctx context.Context, req *dto.HumaBody[dto.CreatePackageRequest]) (*struct{}, error) {
+	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)
 	if err != nil {
-		return errors.Wrap(err, "failed to get user id from context")
-	}
-
-	req := new(dto.CreatePackageRequest)
-	if err := c.BodyParser(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
+		return nil, errors.Wrap(err, "failed to get user id from context")
 	}
 
 	if err := h.validate.Struct(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
+		return nil, apperror.BadRequest("invalid request body", err)
 	}
-	for _, media := range req.Media {
+	for _, media := range req.Body.Media {
 		if err := h.validate.Struct(media); err != nil {
-			return apperror.BadRequest("invalid request body", err)
+			return nil, apperror.BadRequest("invalid request body", err)
 		}
 	}
 
-	if req.Price <= 0 {
-		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
+	if req.Body.Price <= 0 {
+		return nil, apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
 	}
 
-	if err = h.CreatePackage(req, userId); err != nil {
-		return errors.Wrap(err, "failed to create Package")
+	if err = h.CreatePackage(&req.Body, userId); err != nil {
+		return nil, errors.Wrap(err, "failed to create Package")
 	}
 
-	return c.SendStatus(fiber.StatusCreated)
+	return nil, nil
 }
 
 func (h *Handler) CreatePackage(req *dto.CreatePackageRequest, userId uint) error {

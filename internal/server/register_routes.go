@@ -91,34 +91,53 @@ func (s *Server) RegisterRoutes(
 	// Citizen Card
 	{
 		basePath := "/api/v1/photographers"
-		photographer := humafiber.New(s.app, config)
-		photographer.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
-			authMiddleware.AuthPhotographer(ctx, next, photographer)
+		photographers := humafiber.New(s.app, config)
+		photographers.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
+			authMiddleware.AuthPhotographer(ctx, next, photographers)
 		})
 
 		// Citizen Card
-		huma.Get(photographer, basePath+"/citizen-card", photographerHandler.HandleGetCitizenCard)
-		huma.Post(photographer, basePath+"/verify", photographerHandler.HandleVerifyCard)
-		huma.Patch(photographer, basePath+"/reverify", photographerHandler.HandleReVerifyCard)
+		huma.Get(photographers, basePath+"/citizen-card", photographerHandler.HandleGetCitizenCard)
+		huma.Post(photographers, basePath+"/verify", photographerHandler.HandleVerifyCard)
+		huma.Patch(photographers, basePath+"/reverify", photographerHandler.HandleReVerifyCard)
 	}
 
 	// Photographer
 	{
 		basePath := "/api/v1/photographers"
-		photographer := humafiber.New(s.app, config)
-		photographer.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
-			authMiddleware.Auth(ctx, next, photographer)
+		photographers := humafiber.New(s.app, config)
+		photographers.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
+			authMiddleware.Auth(ctx, next, photographers)
 		})
 
 		// Photographers
-		huma.Get(photographer, basePath, photographerHandler.HandleGetAllPhotographers)
+		huma.Get(photographers, basePath, photographerHandler.HandleGetAllPhotographers)
 	}
 
-	// // package
-	// packages := v1.Group("/packages")
-	// packages.Get("/", packagesHandler.HandleGetAllPackages)
-	// packages.Post("/", authMiddleware.AuthPhotographer, packagesHandler.HandleCreatePackage)
-	// packages.Patch("/:packageId", authMiddleware.AuthPhotographer, packagesHandler.HandleUpdatePackage)
+	// package
+	{
+
+		basePath := "/api/v1/packages"
+		packages := humafiber.New(s.app, config)
+
+		huma.Get(packages, basePath, packagesHandler.HandleGetAllPackages, func(o *huma.Operation) {
+			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
+				authMiddleware.Auth(ctx, next, packages)
+			})
+		})
+		huma.Post(packages, basePath, packagesHandler.HandleCreatePackage, func(o *huma.Operation) {
+			o.DefaultStatus = 201
+			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
+				authMiddleware.AuthPhotographer(ctx, next, packages)
+			})
+		})
+		huma.Patch(packages, basePath+"/:packageId", packagesHandler.HandleUpdatePackage, func(o *huma.Operation) {
+			o.DefaultStatus = 204
+			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
+				authMiddleware.AuthPhotographer(ctx, next, packages)
+			})
+		})
+	}
 
 	// // quotation
 	// quotation := v1.Group("/quotations")
