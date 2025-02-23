@@ -13,17 +13,17 @@ type UserUpdateRequest struct {
 }
 
 type UserResponse struct {
-	ID                uint   `json:"id"`
-	Name              string `json:"name"`
-	Email             string `json:"email"`
-	PhoneNumber       string `json:"phoneNumber"`
-	ProfilePictureURL string `json:"profilePictureUrl"`
-	Role              string `json:"role"`
-	Facebook          string `json:"facebook,omitempty"`
-	Instagram         string `json:"instagram,omitempty"`
-	Bank              string `json:"bank,omitempty"`
-	AccountNo         string `json:"accountNo,omitempty"`
-	BankBranch        string `json:"bankBranch,omitempty"`
+	ID                uint           `json:"id"`
+	Name              string         `json:"name"`
+	Email             string         `json:"email"`
+	PhoneNumber       string         `json:"phoneNumber"`
+	ProfilePictureURL string         `json:"profilePictureUrl"`
+	Role              model.UserRole `json:"role"`
+	Facebook          string         `json:"facebook,omitempty"`
+	Instagram         string         `json:"instagram,omitempty"`
+	Bank              string         `json:"bank,omitempty"`
+	AccountNo         string         `json:"accountNo,omitempty"`
+	BankBranch        string         `json:"bankBranch,omitempty"`
 }
 
 func ToUserResponse(user model.User) UserResponse {
@@ -33,7 +33,7 @@ func ToUserResponse(user model.User) UserResponse {
 		Email:             user.Email,
 		PhoneNumber:       user.PhoneNumber,
 		ProfilePictureURL: user.ProfilePictureURL,
-		Role:              user.Role.String(),
+		Role:              user.Role,
 		Facebook:          user.Facebook,
 		Instagram:         user.Instagram,
 		Bank:              user.Bank,

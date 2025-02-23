@@ -70,7 +70,7 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 		photographerResponses = append(photographerResponses, dto.ToPhotographerResponse(photographer))
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[[]dto.PhotographerResponse]{
+	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[dto.PhotographerResponse]{
 		Page:      params.Page,
 		PageSize:  params.PageSize,
 		TotalPage: totalPage,

@@ -35,7 +35,7 @@ func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
 		Email:             user.Email,
 		PhoneNumber:       user.PhoneNumber,
 		ProfilePictureURL: user.ProfilePictureURL,
-		Role:              user.Role.String(),
+		Role:              user.Role,
 		Facebook:          user.Facebook,
 		Instagram:         user.Instagram,
 		Bank:              user.Bank,
