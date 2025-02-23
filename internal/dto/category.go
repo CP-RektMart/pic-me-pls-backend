@@ -9,7 +9,7 @@ type CategoryResponse struct {
 }
 
 func ToCategoryResponses(categories []model.Category) []CategoryResponse {
-	var responses []CategoryResponse
+	responses := make([]CategoryResponse, 0)
 	for _, category := range categories {
 		responses = append(responses, CategoryResponse{
 			ID:          category.ID,

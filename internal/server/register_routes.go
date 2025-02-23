@@ -71,4 +71,5 @@ func (s *Server) RegisterRoutes(
 	category := v1.Group("/categories")
 	category.Post("/", authMiddleware.AuthAdmin, categoryHandler.HandleCreateCategory)
 	category.Patch("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleUpdateCategory)
+	category.Get("/", categoryHandler.HandleListCategory)
 }
