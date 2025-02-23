@@ -741,7 +741,7 @@ paths:
       summary: Create Package
       tags:
       - packages
-  /api/v1/packages/{galleryId}:
+  /api/v1/packages/{packageId}:
     patch:
       description: Update
       requestBody:
