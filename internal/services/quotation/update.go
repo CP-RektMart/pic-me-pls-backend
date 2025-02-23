@@ -72,7 +72,7 @@ func (h *Handler) UpdateQuotation(req *dto.UpdateQuotationRequest, userID uint, 
 		}
 
 		quotation.CustomerID = req.CustomerID
-		quotation.GalleryID = req.GalleryID
+		quotation.PackageID = req.PackageID
 		quotation.Description = req.Description
 		quotation.Price = req.Price
 		quotation.FromDate = req.FromDate
@@ -80,14 +80,14 @@ func (h *Handler) UpdateQuotation(req *dto.UpdateQuotationRequest, userID uint, 
 		quotation.Status = status
 		
 
-		// Check CustomerID and GalleryID existed in database
+		// Check CustomerID and PackageID existed in database
 		var customer model.User
 		if err := tx.First(&customer, req.CustomerID).Error; err != nil {
 			return errors.Wrap(err, "customer not found")
 		}
-		var gallery model.Gallery
-		if err := tx.First(&gallery, req.GalleryID).Error; err != nil {
-			return errors.Wrap(err, "gallery not found")
+		var targetPackage model.Package
+		if err := tx.First(&targetPackage, req.PackageID).Error; err != nil {
+			return errors.Wrap(err, "package not found")
 		}
 
 		// Save changes

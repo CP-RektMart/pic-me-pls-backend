@@ -10,7 +10,7 @@ import (
 )
 
 // @Summary     Create a quotation
-// @Description Creates a new quotation for a customer and gallery
+// @Description Creates a new quotation for a customer and package
 // @Tags        quotation
 // @Router      /api/v1/quotations [POST]
 // @Security    ApiKeyAuth
@@ -51,7 +51,7 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		quotation := &model.Quotation{
 			CustomerID: req.CustomerID,
-			GalleryID: req.GalleryID,
+			PackageID: req.PackageID,
 			Description:    req.Description,
 			Price:          req.Price,
 			FromDate: req.FromDate,
@@ -59,14 +59,14 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) 
 			Status: model.QuotationPending,
 		}
 
-		// Check CustomerID and GalleryID existed in database
+		// Check CustomerID and PackageID existed in database
 		var customer model.User
 		if err := tx.First(&customer, req.CustomerID).Error; err != nil {
 			return errors.Wrap(err, "customer not found")
 		}
-		var gallery model.Gallery
-		if err := tx.First(&gallery, req.GalleryID).Error; err != nil {
-			return errors.Wrap(err, "gallery not found")
+		var targetPackage model.Package
+		if err := tx.First(&targetPackage, req.PackageID).Error; err != nil {
+			return errors.Wrap(err, "package not found")
 		}
 
 		// Find the photographer associated with the user

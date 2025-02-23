@@ -158,48 +158,6 @@
                 }
             }
         },
-        "/api/v1/gallery": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create gallery by photographer",
-                "tags": [
-                    "gallery"
-                ],
-                "summary": "Create gallery",
-                "parameters": [
-                    {
-                        "description": "Gallery details",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateGalleryRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/me": {
             "get": {
                 "security": [
@@ -319,6 +277,130 @@
                 }
             }
         },
+        "/api/v1/media": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create media by photographer",
+                "tags": [
+                    "media"
+                ],
+                "summary": "Create Media",
+                "parameters": [
+                    {
+                        "description": "Media details",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateMediaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/media/{mediaId}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete media",
+                "tags": [
+                    "media"
+                ],
+                "summary": "Delete Media",
+                "parameters": [
+                    {
+                        "description": "Media details",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeleteMediaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update media",
+                "tags": [
+                    "media"
+                ],
+                "summary": "Update Media",
+                "parameters": [
+                    {
+                        "description": "Media details",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateMediaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/objects": {
             "post": {
                 "description": "receive formData body, path (string, folder path, don't include \"..\" or prefix with \"/\") and file",
@@ -336,7 +418,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "folder enum (GALLERY, VERIFY_CITIZENCARD, PROFILE_IMAGE)",
+                        "description": "folder enum (PACKAGE, VERIFY_CITIZENCARD, PROFILE_IMAGE)",
                         "name": "folder",
                         "in": "formData"
                     }
@@ -375,6 +457,131 @@
                         "name": "URL",
                         "in": "query",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/packages": {
+            "get": {
+                "description": "Show all available packages with pagination",
+                "tags": [
+                    "packages"
+                ],
+                "summary": "Get all packages",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PaginationResponse-dto_PackageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create Package by photographer",
+                "tags": [
+                    "packages"
+                ],
+                "summary": "Create Package",
+                "parameters": [
+                    {
+                        "description": "Package details",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreatePackageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/packages/{galleryId}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update",
+                "tags": [
+                    "packages"
+                ],
+                "summary": "Update package",
+                "parameters": [
+                    {
+                        "description": "Package details",
+                        "name": "RequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdatePackageRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -562,6 +769,55 @@
                 }
             }
         },
+        "/api/v1/photographers": {
+            "get": {
+                "description": "Retrieve a paginated list of photographers, optionally filtered by name.",
+                "tags": [
+                    "photographer"
+                ],
+                "summary": "Get All Photographers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number for pagination (default: 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of records per page (default: 5, max: 20)",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by photographer's name (case-insensitive)",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PaginationResponse-dto_PhotographerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/quotations": {
             "post": {
                 "security": [
@@ -569,7 +825,7 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Creates a new quotation for a customer and gallery",
+                "description": "Creates a new quotation for a customer and package",
                 "tags": [
                     "quotation"
                 ],
@@ -698,6 +954,17 @@
         }
     },
     "definitions": {
+        "dto.CategoryResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CitizenCardResponse": {
             "type": "object",
             "properties": {
@@ -715,7 +982,26 @@
                 }
             }
         },
-        "dto.CreateGalleryRequest": {
+        "dto.CreateMediaRequest": {
+            "type": "object",
+            "required": [
+                "packageId",
+                "pictureUrl"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "packageId": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "pictureUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreatePackageRequest": {
             "type": "object",
             "required": [
                 "description",
@@ -730,7 +1016,7 @@
                 "media": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.MediaGalleryRequest"
+                        "$ref": "#/definitions/dto.MediaPackageRequest"
                     }
                 },
                 "name": {
@@ -744,29 +1030,29 @@
         "dto.CreateQuotationRequest": {
             "type": "object",
             "required": [
-                "customer_id",
-                "from_date",
-                "gallery_id",
+                "customerId",
+                "fromDate",
+                "packageId",
                 "price",
-                "to_date"
+                "toDate"
             ],
             "properties": {
-                "customer_id": {
+                "customerId": {
                     "type": "integer"
                 },
                 "description": {
                     "type": "string"
                 },
-                "from_date": {
+                "fromDate": {
                     "type": "string"
                 },
-                "gallery_id": {
+                "packageId": {
                     "type": "integer"
                 },
                 "price": {
                     "type": "number"
                 },
-                "to_date": {
+                "toDate": {
                     "type": "string"
                 }
             }
@@ -774,7 +1060,15 @@
         "dto.CreateQuotationResponse": {
             "type": "object",
             "properties": {
-                "quotation_id": {
+                "quotationId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.DeleteMediaRequest": {
+            "type": "object",
+            "properties": {
+                "mediaId": {
                     "type": "integer"
                 }
             }
@@ -876,7 +1170,7 @@
                 }
             }
         },
-        "dto.MediaGalleryRequest": {
+        "dto.MediaPackageRequest": {
             "type": "object",
             "required": [
                 "pictureUrl"
@@ -890,10 +1184,148 @@
                 }
             }
         },
+        "dto.MediaResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "pictureUrl": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ObjectUploadResponse": {
             "type": "object",
             "properties": {
                 "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PackageResponse": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.CategoryResponse"
+                    }
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "media": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.MediaResponse"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "photographer": {
+                    "$ref": "#/definitions/dto.PhotographerResponse"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quotations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.QuotationResponse"
+                    }
+                },
+                "reviews": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ReviewResponse"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.TagResponse"
+                    }
+                }
+            }
+        },
+        "dto.PaginationResponse-dto_PackageResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.PackageResponse"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.PaginationResponse-dto_PhotographerResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.PhotographerResponse"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.PhotographerResponse": {
+            "type": "object",
+            "properties": {
+                "activeStatus": {
+                    "type": "boolean"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isVerified": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "profilePictureUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.QuotationResponse": {
+            "type": "object",
+            "properties": {
+                "customer": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -947,6 +1379,34 @@
                 }
             }
         },
+        "dto.ReviewResponse": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "customer": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.TagResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.TokenResponse": {
             "type": "object",
             "properties": {
@@ -961,27 +1421,64 @@
                 }
             }
         },
+        "dto.UpdateMediaRequest": {
+            "type": "object",
+            "required": [
+                "mediaId"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "mediaId": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "pictureUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdatePackageRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "minLength": 0
+                },
+                "name": {
+                    "type": "string"
+                },
+                "packageId": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number",
+                    "minimum": 0
+                }
+            }
+        },
         "dto.UpdateQuotationRequest": {
             "type": "object",
             "required": [
-                "customer_id",
-                "from_date",
-                "gallery_id",
+                "customerId",
+                "fromDate",
+                "packageId",
                 "price",
                 "status",
-                "to_date"
+                "toDate"
             ],
             "properties": {
-                "customer_id": {
+                "customerId": {
                     "type": "integer"
                 },
                 "description": {
                     "type": "string"
                 },
-                "from_date": {
+                "fromDate": {
                     "type": "string"
                 },
-                "gallery_id": {
+                "packageId": {
                     "type": "integer"
                 },
                 "price": {
@@ -990,7 +1487,7 @@
                 "status": {
                     "type": "string"
                 },
-                "to_date": {
+                "toDate": {
                     "type": "string"
                 }
             }
