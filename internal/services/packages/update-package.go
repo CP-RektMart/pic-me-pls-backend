@@ -9,24 +9,24 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary			Update gallery
+// @Summary			Update package
 // @Description		Update
-// @Tags			gallery
-// @Router			/api/v1/gallery [PATCH]
+// @Tags			package
+// @Router			/api/v1/package [PATCH]
 // @Security		ApiKeyAuth
-// @Param        	RequestBody 	body  dto.UpdateGalleryRequest  true  "Gallery details"
-// @Success			200 {object}	dto.HttpResponse[dto.UpdateGalleryResponse]
+// @Param        	RequestBody 	body  dto.UpdatePackageRequest  true  "Package details"
+// @Success			200 {object}	dto.HttpResponse[dto.UpdatePackageResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
+func (h *Handler) HandleUpdatePackage(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.UpdateGalleryRequest)
+	req := new(dto.UpdatePackageRequest)
 	if err := c.ParamsParser(req); err != nil {
-		return apperror.BadRequest("invalid gallery id", err)
+		return apperror.BadRequest("invalid package id", err)
 	}
 
 	if err := c.BodyParser(req); err != nil {
@@ -37,44 +37,44 @@ func (h *Handler) HandleUpdateGallery(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err := h.updateGallery(req, req.GalleryId, userId); err != nil {
+	if err := h.updatePackage(req, req.PackageId, userId); err != nil {
 		return err
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) updateGallery(req *dto.UpdateGalleryRequest, galleryId uint, userId uint) error {
-	var gallery model.Gallery
+func (h *Handler) updatePackage(req *dto.UpdatePackageRequest, packageId uint, userId uint) error {
+	var pkg model.Package
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		if err := h.store.DB.Preload("Photographer").First(&gallery, "id = ?", galleryId).Error; err != nil {
+		if err := h.store.DB.Preload("Photographer").First(&pkg, "id = ?", packageId).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return apperror.NotFound("Gallery not found", errors.New("Gallery not found"))
+				return apperror.NotFound("Package not found", errors.New("Pallery not found"))
 			}
-			return errors.Wrap(err, "Failed to get gallery")
+			return errors.Wrap(err, "Failed to get package")
 		}
 
-		if gallery.Photographer.UserID != userId {
-			return apperror.Forbidden("You are not allowed to update this gallery", errors.New("unauthorized"))
+		if pkg.Photographer.UserID != userId {
+			return apperror.Forbidden("You are not allowed to update this package", errors.New("unauthorized"))
 		}
 
 		if req.Name != "" {
-			gallery.Name = req.Name
+			pkg.Name = req.Name
 		}
 		if req.Description != "" {
-			gallery.Description = req.Description
+			pkg.Description = req.Description
 		}
 		if req.Price != 0 {
-			gallery.Price = req.Price
+			pkg.Price = req.Price
 		}
 
-		if err := tx.Save(&gallery).Error; err != nil {
-			return errors.Wrap(err, "Failed to update gallery")
+		if err := tx.Save(&pkg).Error; err != nil {
+			return errors.Wrap(err, "Failed to update package")
 		}
 
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "failed to update gallery")
+		return errors.Wrap(err, "failed to update package")
 	}
 
 	return nil
