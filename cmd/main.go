@@ -26,14 +26,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 )
 
-// @title						Pic Me Pls API
-// @version						0.1
-// @description					Pic Me Pls API Documentation
-// @securitydefinitions.apikey	ApiKeyAuth
-// @in							header
-// @name						Authorization
-// @externalDocs.description	OpenAPI
-// @externalDocs.url			https://swagger.io/resources/open-api/
 func main() {
 	// hello
 	config := config.Load()
