@@ -1,6 +1,8 @@
 package packages
 
 import (
+	"fmt"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -20,7 +22,7 @@ import (
 // @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 
-	req := new(dto.PaginationRequest)
+	req := new(dto.GetAllPackagesRequest)
 	if err := c.QueryParser(req); err != nil {
 		return apperror.BadRequest("Invalid query parameters", err)
 	}
@@ -29,17 +31,18 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	page, pageSize, offset := checkPaginationRequest(req)
+	fmt.Println(req.Pagination.Page, req.Pagination.PageSize)
+	fmt.Println(req.MinPrice, req.MaxPrice, req.PhotographerID)
 
-	var packages []model.Package
-	var totalCount int64
-	if err := h.store.DB.Model(&model.Package{}).Count(&totalCount).Error; err != nil {
-		return errors.Wrap(err, "Error counting packages")
+	page, pageSize, offset := checkPaginationRequest(req)
+	query, totalCount, err := filterPrice(h, req)
+	if err != nil {
+		return errors.Wrap(err, "Error filtering packages")
 	}
 
 	totalPage := (int(totalCount) + pageSize - 1) / pageSize
-
-	if err := h.store.DB.
+	var packages []model.Package
+	if err := query.
 		Preload("Photographer.User").
 		Preload("Tags").
 		Preload("Media").
@@ -68,8 +71,8 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 	})
 }
 
-func checkPaginationRequest(req *dto.PaginationRequest) (int, int, int) {
-	page, pageSize := req.Page, req.PageSize
+func checkPaginationRequest(req *dto.GetAllPackagesRequest) (int, int, int) {
+	page, pageSize := req.Pagination.Page, req.Pagination.PageSize
 	if page < 1 {
 		page = 1
 	}
@@ -79,4 +82,30 @@ func checkPaginationRequest(req *dto.PaginationRequest) (int, int, int) {
 
 	offset := (page - 1) * pageSize
 	return page, pageSize, offset
+}
+
+func filterPrice(h *Handler, req *dto.GetAllPackagesRequest) (*gorm.DB, int64, error) {
+	query := h.store.DB.Model(&model.Package{})
+	var totalCount int64
+	if req.MinPrice > 0 {
+		query = query.Where("price >= ?", req.MinPrice)
+	}
+
+	if req.MaxPrice > 0 {
+		query = query.Where("price <= ?", req.MaxPrice)
+	}
+
+	if req.PhotographerID != nil {
+		query = query.Where("photographer_id = ?", *req.PhotographerID)
+	}
+
+	if err := query.Count(&totalCount).Error; err != nil {
+		return nil, 0, errors.Wrap(err, "Error counting packages")
+	}
+
+	if err := h.store.DB.Model(&model.Package{}).Count(&totalCount).Error; err != nil {
+		return nil, 0, errors.Wrap(err, "Error counting packages")
+	}
+
+	return query, totalCount, nil
 }

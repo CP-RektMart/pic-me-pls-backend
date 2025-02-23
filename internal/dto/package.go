@@ -7,6 +7,13 @@ type MediaPackageRequest struct {
 	Description string `json:"description"`
 }
 
+type GetAllPackagesRequest struct {
+	Pagination     PaginationRequest `query:"pagination"`
+	MinPrice       float64           `query:"minPrice" validate:"omitempty,min=0"`
+	MaxPrice       float64           `query:"maxPrice" validate:"omitempty,min=0"`
+	PhotographerID *uint             `query:"photographerId" validate:"omitempty"`
+}
+
 type CreatePackageRequest struct {
 	Name        string                `json:"name" validate:"required"`
 	Description string                `json:"description" validate:"required"`
