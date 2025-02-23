@@ -153,12 +153,29 @@ func (s *Server) RegisterRoutes(
 			})
 		})
 	}
-	quotation := v1.Group("/quotations")
-	quotation.Patch("/:id/accept", authMiddleware.Auth, quotationHandler.Accept)
 
 	// media
-	media := v1.Group("/media")
-	media.Post("/", authMiddleware.AuthPhotographer, mediaHandler.HandleCreateMedia)
-	media.Patch("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleUpdateMedia)
-	media.Delete("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleDeleteMedia)
+	{
+		basePath := "/api/v1/media"
+		media := humafiber.New(s.app, config)
+
+		huma.Post(media, basePath, mediaHandler.HandleCreateMedia, func(o *huma.Operation) {
+			o.DefaultStatus = 201
+			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
+				authMiddleware.AuthPhotographer(ctx, next, media)
+			})
+		})
+		huma.Patch(media, basePath+"/{mediaId}", mediaHandler.HandleUpdateMedia, func(o *huma.Operation) {
+			o.DefaultStatus = 204
+			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
+				authMiddleware.AuthPhotographer(ctx, next, media)
+			})
+		})
+		huma.Delete(media, basePath+"/{mediaId}", mediaHandler.HandleDeleteMedia, func(o *huma.Operation) {
+			o.DefaultStatus = 204
+			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
+				authMiddleware.AuthPhotographer(ctx, next, media)
+			})
+		})
+	}
 }
