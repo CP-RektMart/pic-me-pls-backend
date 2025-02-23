@@ -9,6 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary			Delete Media
+// @Description		Delete media
+// @Tags			media
+// @Router			/api/v1/media/{mediaId} [DELETE]
+// @Security		ApiKeyAuth
+// @Param        	RequestBody 	body  dto.DeleteMediaRequest  true  "Media details"
+// @Success			204
+// @Failure			400	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleDeleteMedia(c *fiber.Ctx) error {
 	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
