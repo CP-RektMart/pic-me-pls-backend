@@ -7,6 +7,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
@@ -29,6 +30,7 @@ func (s *Server) RegisterRoutes(
 	messageHandler *message.Handler,
 	objectHandler *object.Handler,
 	quotationHandler *quotation.Handler,
+	mediaHandler *media.Handler,
 ) {
 	config := huma.DefaultConfig("Pic-Me-Pls Backend", "0.0.1")
 	config.Components.SecuritySchemes = map[string]*huma.SecurityScheme{
@@ -151,4 +153,12 @@ func (s *Server) RegisterRoutes(
 			})
 		})
 	}
+	quotation := v1.Group("/quotations")
+	quotation.Patch("/:id/accept", authMiddleware.Auth, quotationHandler.Accept)
+
+	// media
+	media := v1.Group("/media")
+	media.Post("/", authMiddleware.AuthPhotographer, mediaHandler.HandleCreateMedia)
+	media.Patch("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleUpdateMedia)
+	media.Delete("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleDeleteMedia)
 }

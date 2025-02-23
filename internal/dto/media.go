@@ -14,3 +14,24 @@ func ToMediaResponses(media []model.Media) []MediaResponse {
 	}
 	return responses
 }
+
+type CreateMediaRequest struct {
+	PictureURL  string `json:"pictureUrl" validate:"required"`
+	Description string `json:"description"`
+	PackageID   uint   `json:"packageId" validate:"required,min=1"`
+}
+
+type UpdateMediaRequest struct {
+	PictureURL  string `json:"pictureUrl"`
+	Description string `json:"description"`
+	MediaId     uint   `params:"mediaId" validate:"required,min=1"`
+}
+
+type UpdateMediaResponse struct {
+	PictureURL  string `json:"pictureUrl"`
+	Description string `json:"description"`
+}
+
+type DeleteMediaRequest struct {
+	MediaId uint `params:"mediaId"`
+}
