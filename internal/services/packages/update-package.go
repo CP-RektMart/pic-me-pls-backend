@@ -38,7 +38,7 @@ func (h *Handler) HandleUpdatePackage(c *fiber.Ctx) error {
 	}
 
 	if err := h.updatePackage(req, req.PackageId, userId); err != nil {
-		return err
+		return errors.Wrap(err, "failed to update gallery")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
@@ -49,7 +49,7 @@ func (h *Handler) updatePackage(req *dto.UpdatePackageRequest, packageId uint, u
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := h.store.DB.Preload("Photographer").First(&pkg, "id = ?", packageId).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return apperror.NotFound("Package not found", errors.New("Pallery not found"))
+				return apperror.NotFound("Package not found", err)
 			}
 			return errors.Wrap(err, "Failed to get package")
 		}
