@@ -80,6 +80,9 @@ func (s *Server) RegisterRoutes(
 	// Customer, Photographers
 	photographersHandler.RegisterGetAllPhotographers(api, authMiddlewares)
 
+	// Customer, quotation
+	quotationHandler.RegisterAcceptQuotation(api, authMiddlewares)
+
 	// Photographer, verify
 	verifyHandler.RegisterGetCitizenCard(api, authPhotographerMiddlewares)
 	verifyHandler.RegisterVerifyCard(api, authPhotographerMiddlewares)
@@ -90,10 +93,7 @@ func (s *Server) RegisterRoutes(
 	packagesHandler.RegisterCreatePackage(api, authPhotographerMiddlewares)
 	packagesHandler.RegisterUpdatePackage(api, authPhotographerMiddlewares)
 
-	// Customer, quotation
-	quotationHandler.RegisterAcceptQuotation(api, authMiddlewares)
-
-	// media
+	// Photographer, media
 	mediaHandler.RegisterCreateMedia(api, authPhotographerMiddlewares)
 	mediaHandler.RegisterUpdateMedia(api, authPhotographerMiddlewares)
 	mediaHandler.RegisterDeleteMedia(api, authPhotographerMiddlewares)
