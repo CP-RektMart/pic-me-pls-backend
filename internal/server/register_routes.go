@@ -71,7 +71,6 @@ func (s *Server) RegisterRoutes(
 			o.Security = []map[string][]string{}
 		})
 		huma.Post(auth, basePath+"/logout", authHandler.HandleLogout, func(o *huma.Operation) {
-			o.DefaultStatus = 204
 			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
 				authMiddleware.Auth(ctx, next, auth)
 			})
@@ -128,13 +127,11 @@ func (s *Server) RegisterRoutes(
 			})
 		})
 		huma.Post(packages, basePath, packagesHandler.HandleCreatePackage, func(o *huma.Operation) {
-			o.DefaultStatus = 201
 			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
 				authMiddleware.AuthPhotographer(ctx, next, packages)
 			})
 		})
 		huma.Patch(packages, basePath+"/{packageId}", packagesHandler.HandleUpdatePackage, func(o *huma.Operation) {
-			o.DefaultStatus = 204
 			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
 				authMiddleware.AuthPhotographer(ctx, next, packages)
 			})
@@ -147,7 +144,6 @@ func (s *Server) RegisterRoutes(
 		quotations := humafiber.New(s.app, config)
 
 		huma.Patch(quotations, basePath+"/{id}/accept", quotationHandler.Accept, func(o *huma.Operation) {
-			o.DefaultStatus = 204
 			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
 				authMiddleware.Auth(ctx, next, quotations)
 			})
@@ -160,19 +156,16 @@ func (s *Server) RegisterRoutes(
 		media := humafiber.New(s.app, config)
 
 		huma.Post(media, basePath, mediaHandler.HandleCreateMedia, func(o *huma.Operation) {
-			o.DefaultStatus = 201
 			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
 				authMiddleware.AuthPhotographer(ctx, next, media)
 			})
 		})
 		huma.Patch(media, basePath+"/{mediaId}", mediaHandler.HandleUpdateMedia, func(o *huma.Operation) {
-			o.DefaultStatus = 204
 			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
 				authMiddleware.AuthPhotographer(ctx, next, media)
 			})
 		})
 		huma.Delete(media, basePath+"/{mediaId}", mediaHandler.HandleDeleteMedia, func(o *huma.Operation) {
-			o.DefaultStatus = 204
 			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
 				authMiddleware.AuthPhotographer(ctx, next, media)
 			})
