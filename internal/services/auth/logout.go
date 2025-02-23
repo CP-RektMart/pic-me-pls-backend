@@ -1,29 +1,21 @@
 package auth
 
 import (
-	"github.com/cockroachdb/errors"
-	"github.com/gofiber/fiber/v2"
+	"context"
+
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
+	"github.com/pkg/errors"
 )
 
-// @Summary			Logout
-// @Description		Logout
-// @Tags			auth
-// @Router			/api/v1/auth/logout [POST]
-// @Security		ApiKeyAuth
-// @Success			204
-// @Failure			400	{object}	dto.HttpError
-// @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleLogout(c *fiber.Ctx) error {
-	ctx := c.UserContext()
-
+func (h *Handler) HandleLogout(ctx context.Context, req *struct{}) (*dto.HumaHttpResponse[dto.TokenResponse], error) {
 	userID, err := h.authmiddleware.GetUserIDFromContext(ctx)
 	if err != nil {
-		return errors.Wrap(err, "failed to get user")
+		return nil, errors.Wrap(err, "failed to get user")
 	}
 
 	if err := h.jwtService.RemoveToken(ctx, userID); err != nil {
-		return errors.Wrap(err, "failed to remove token")
+		return nil, errors.Wrap(err, "failed to remove token")
 	}
 
-	return c.SendStatus(fiber.StatusNoContent)
+	return nil, nil
 }

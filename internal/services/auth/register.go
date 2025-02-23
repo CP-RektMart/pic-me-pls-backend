@@ -6,38 +6,22 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
-	"github.com/gofiber/fiber/v2"
+	"github.com/danielgtaylor/huma/v2"
 	"google.golang.org/api/idtoken"
 	"gorm.io/gorm"
 )
 
-// @Summary			Register
-// @Description		Register
-// @Tags			auth
-// @Router			/api/v1/auth/register [POST]
-// @Param 			RequestBody 	body 	dto.RegisterRequest 	true 	"request request"
-// @Success			200	{object}	dto.HttpResponse[dto.RegisterResponse]
-// @Failure			400	{object}	dto.HttpError
-// @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleRegister(c *fiber.Ctx) error {
-	ctx := c.UserContext()
-
-	req := new(dto.RegisterRequest)
-	if err := c.BodyParser(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
-	}
-
+func (h *Handler) HandleRegister(ctx context.Context, req *dto.HumaBody[dto.RegisterRequest]) (*dto.HumaHttpResponse[dto.RegisterResponse], error) {
 	if err := h.validate.Struct(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
+		return nil, huma.Error400BadRequest("invalid request body", err)
 	}
 
-	OAuthUser, err := h.validateIDToken(ctx, req.IDToken)
+	OAuthUser, err := h.validateIDToken(ctx, req.Body.IDToken)
 	if err != nil {
-		return errors.Wrap(err, "failed to validate id token")
+		return nil, errors.Wrap(err, "failed to validate id token")
 	}
-	OAuthUser.Role = model.UserRole(req.Role)
+	OAuthUser.Role = model.UserRole(req.Body.Role)
 
 	var user *model.User
 	var token *model.Token
@@ -55,7 +39,7 @@ func (h *Handler) HandleRegister(c *fiber.Ctx) error {
 
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "failed to create user and token")
+		return nil, errors.Wrap(err, "failed to create user and token")
 	}
 
 	result := dto.RegisterResponse{
@@ -67,9 +51,11 @@ func (h *Handler) HandleRegister(c *fiber.Ctx) error {
 		User: dto.ToUserResponse(*user),
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.RegisterResponse]{
-		Result: result,
-	})
+	return &dto.HumaHttpResponse[dto.RegisterResponse]{
+		Body: dto.HttpResponse[dto.RegisterResponse]{
+			Result: result,
+		},
+	}, nil
 }
 
 func (h *Handler) validateIDToken(c context.Context, idToken string) (*model.User, error) {
@@ -103,7 +89,7 @@ func (h *Handler) validateIDToken(c context.Context, idToken string) (*model.Use
 func (h *Handler) createUser(tx *gorm.DB, user *model.User) (*model.User, error) {
 	if err := tx.Save(user).Error; err != nil {
 		if strings.Contains(err.Error(), "duplicate") {
-			return nil, apperror.BadRequest("this account already register", err)
+			return nil, huma.Error400BadRequest("this account already register", err)
 		}
 
 		return nil, errors.Wrap(err, "failed to create user")

@@ -1,46 +1,33 @@
 package auth
 
 import (
+	"context"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
-	"github.com/gofiber/fiber/v2"
+	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
 
-// @Summary			Refresh Token
-// @Description		Refresh Token
-// @Tags			auth
-// @Router			/api/v1/auth/refresh-token [POST]
-// @Param 			RequestBody 	body 	dto.RefreshTokenRequest 	true 	"request request"
-// @Success			200 {object}	dto.HttpResponse[dto.TokenResponse]
-// @Failure			400	{object}	dto.HttpError
-// @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleRefreshToken(c *fiber.Ctx) error {
-	ctx := c.UserContext()
-
-	req := new(dto.RefreshTokenRequest)
-	if err := c.BodyParser(&req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
-	}
+func (h *Handler) HandleRefreshToken(ctx context.Context, req *dto.HumaBody[dto.RefreshTokenRequest]) (*dto.HumaHttpResponse[dto.TokenResponse], error) {
 
 	if err := h.validate.Struct(req); err != nil {
-		return apperror.BadRequest("invalid request body", err)
+		return nil, huma.Error400BadRequest("invalid request body", err)
 	}
 
-	jwtEntity, err := h.jwtService.ParseToken(req.RefreshToken, true)
+	jwtEntity, err := h.jwtService.ParseToken(req.Body.RefreshToken, true)
 	if err != nil {
-		return apperror.UnAuthorized("invalid token", err)
+		return nil, huma.Error401Unauthorized("invalid token", err)
 	}
 
 	cachedToken, err := h.jwtService.GetCachedTokens(ctx, jwtEntity.ID)
 	if err != nil {
-		return apperror.UnAuthorized("invalid token", err)
+		return nil, huma.Error401Unauthorized("invalid token", err)
 	}
 
 	if err := h.jwtService.ValidateToken(*cachedToken, jwtEntity, true); err != nil {
-		return apperror.UnAuthorized("invalid token", err)
+		return nil, huma.Error401Unauthorized("invalid token", err)
 	}
 
 	tokens, err := h.jwtService.GenerateAndStoreTokenPair(ctx, &model.User{
@@ -48,14 +35,18 @@ func (h *Handler) HandleRefreshToken(c *fiber.Ctx) error {
 		Role:  jwtEntity.Role,
 	})
 	if err != nil {
-		return errors.Wrap(err, "failed to generate token pair")
+		return nil, errors.Wrap(err, "failed to generate token pair")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.TokenResponse]{
-		Result: dto.TokenResponse{
-			AccessToken:  tokens.AccessToken,
-			RefreshToken: tokens.RefreshToken,
-			Exp:          tokens.Exp,
+	result := dto.TokenResponse{
+		AccessToken:  tokens.AccessToken,
+		RefreshToken: tokens.RefreshToken,
+		Exp:          tokens.Exp,
+	}
+
+	return &dto.HumaHttpResponse[dto.TokenResponse]{
+		Body: dto.HttpResponse[dto.TokenResponse]{
+			Result: result,
 		},
-	})
+	}, nil
 }

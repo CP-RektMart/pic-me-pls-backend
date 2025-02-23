@@ -2,23 +2,23 @@ package authentication
 
 import (
 	"context"
-	"fmt"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
-	"github.com/gofiber/fiber/v2"
+	"github.com/danielgtaylor/huma/v2"
 )
 
 var (
 	ErrInvalidToken = errors.New("INVALID_TOKEN")
+	ErrNoPermission = errors.New("NO_PERMISSION")
 )
 
 type AuthMiddleware interface {
-	Auth(ctx *fiber.Ctx) error
-	AuthAdmin(ctx *fiber.Ctx) error
-	AuthPhotographer(ctx *fiber.Ctx) error
+	Auth(ctx huma.Context, next func(huma.Context), api huma.API)
+	AuthAdmin(ctx huma.Context, next func(huma.Context), api huma.API)
+	AuthPhotographer(ctx huma.Context, next func(huma.Context), api huma.API)
 	GetUserIDFromContext(ctx context.Context) (uint, error)
 	GetJWTEntityFromContext(ctx context.Context) (jwt.JWTentity, error)
 }
@@ -33,91 +33,86 @@ func NewAuthMiddleware(jwtService *jwt.JWT) AuthMiddleware {
 	}
 }
 
-func (r *authMiddleware) Auth(ctx *fiber.Ctx) error {
-	tokenByte := ctx.GetReqHeaders()["Authorization"]
+func (r *authMiddleware) Auth(ctx huma.Context, next func(huma.Context), api huma.API) {
+	tokenByte := ctx.Header("Authorization")
 
-	if len(tokenByte) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
+	if len(tokenByte) < 7 {
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
 
-	if len(tokenByte[0]) < 7 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
-	}
-
-	bearerToken := tokenByte[0][7:]
+	bearerToken := tokenByte[7:]
 	if len(bearerToken) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
 
-	claims, err := r.validateToken(ctx.UserContext(), bearerToken)
+	claims, err := r.validateToken(ctx.Context(), bearerToken)
 	if err != nil {
-		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
 
-	userContext := r.withJWTEntity(ctx.UserContext(), claims)
-	ctx.SetUserContext(userContext)
-
-	return ctx.Next()
+	userContext := r.withJWTEntity(ctx, claims)
+	next(userContext)
 }
 
-func (r *authMiddleware) AuthAdmin(ctx *fiber.Ctx) error {
-	tokenByte := ctx.GetReqHeaders()["Authorization"]
-	if len(tokenByte) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
+func (r *authMiddleware) AuthAdmin(ctx huma.Context, next func(huma.Context), api huma.API) {
+	tokenByte := ctx.Header("Authorization")
+
+	if len(tokenByte) < 7 {
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
 
-	if len(tokenByte[0]) < 7 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
-	}
-
-	bearerToken := tokenByte[0][7:]
+	bearerToken := tokenByte[7:]
 	if len(bearerToken) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
 
-	claims, err := r.validateToken(ctx.UserContext(), bearerToken)
+	claims, err := r.validateToken(ctx.Context(), bearerToken)
 	if err != nil {
-		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
-
-	userContext := r.withJWTEntity(ctx.UserContext(), claims)
-	ctx.SetUserContext(userContext)
 
 	if claims.Role != model.UserRoleAdmin {
-		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not admin"))
+		huma.WriteErr(api, ctx, http.StatusForbidden, "no permission", ErrNoPermission)
+		return
 	}
 
-	return ctx.Next()
+	userContext := r.withJWTEntity(ctx, claims)
+	next(userContext)
 }
 
-func (r *authMiddleware) AuthPhotographer(ctx *fiber.Ctx) error {
-	tokenByte := ctx.GetReqHeaders()["Authorization"]
-	if len(tokenByte) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
+func (r *authMiddleware) AuthPhotographer(ctx huma.Context, next func(huma.Context), api huma.API) {
+	tokenByte := ctx.Header("Authorization")
+
+	if len(tokenByte) < 7 {
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
 
-	if len(tokenByte[0]) < 7 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
-	}
-
-	bearerToken := tokenByte[0][7:]
+	bearerToken := tokenByte[7:]
 	if len(bearerToken) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
 
-	claims, err := r.validateToken(ctx.UserContext(), bearerToken)
+	claims, err := r.validateToken(ctx.Context(), bearerToken)
 	if err != nil {
-		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
+		huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken)
+		return
 	}
-
-	userContext := r.withJWTEntity(ctx.UserContext(), claims)
-	ctx.SetUserContext(userContext)
 
 	if claims.Role != model.UserRolePhotographer {
-		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not photographer"))
+		huma.WriteErr(api, ctx, http.StatusForbidden, "no permission", ErrNoPermission)
+		return
 	}
 
-	return ctx.Next()
+	userContext := r.withJWTEntity(ctx, claims)
+	next(userContext)
 }
 
 func (r *authMiddleware) validateToken(ctx context.Context, bearerToken string) (jwt.JWTentity, error) {
@@ -142,8 +137,8 @@ func (r *authMiddleware) validateToken(ctx context.Context, bearerToken string) 
 
 type jwtEntityContext struct{}
 
-func (r *authMiddleware) withJWTEntity(ctx context.Context, jwtEntity jwt.JWTentity) context.Context {
-	return context.WithValue(ctx, jwtEntityContext{}, jwtEntity)
+func (r *authMiddleware) withJWTEntity(ctx huma.Context, jwtEntity jwt.JWTentity) huma.Context {
+	return huma.WithValue(ctx, jwtEntityContext{}, jwtEntity)
 }
 
 func (r *authMiddleware) GetJWTEntityFromContext(ctx context.Context) (jwt.JWTentity, error) {
