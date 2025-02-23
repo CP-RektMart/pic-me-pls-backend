@@ -2,6 +2,7 @@ package media
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -9,6 +10,21 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterDeleteMedia(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "delete-media",
+		Method:      http.MethodDelete,
+		Path:        "/api/v1/photographer/media/{mediaId}",
+		Summary:     "Delete media",
+		Description: "Delete media",
+		Tags:        []string{"media"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleDeleteMedia)
+}
 
 func (h *Handler) HandleDeleteMedia(ctx context.Context, req *dto.DeleteMediaRequest) (*dto.HumaHttpResponse[dto.CitizenCardResponse], error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

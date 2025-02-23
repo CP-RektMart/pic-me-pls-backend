@@ -2,6 +2,7 @@ package quotation
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -9,6 +10,21 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterAcceptQuotation(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "accept-quotation",
+		Method:      http.MethodPatch,
+		Path:        "/api/v1/quotations/{id}/accept",
+		Summary:     "Accept quotation",
+		Description: "Accept quotation",
+		Tags:        []string{"quotations"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.Accept)
+}
 
 func (h *Handler) Accept(ctx context.Context, req *dto.AcceptQuotationRequest) (*struct{}, error) {
 	userID, err := h.authMiddleware.GetUserIDFromContext(ctx)

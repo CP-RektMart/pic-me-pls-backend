@@ -2,6 +2,7 @@ package media
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -10,6 +11,21 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterCreateMedia(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "create-media",
+		Method:      http.MethodPost,
+		Path:        "/api/v1/photographer/media",
+		Summary:     "Create media",
+		Description: "Create media",
+		Tags:        []string{"media"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleCreateMedia)
+}
 
 func (h *Handler) HandleCreateMedia(ctx context.Context, req *dto.HumaBody[dto.CreateMediaRequest]) (*struct{}, error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

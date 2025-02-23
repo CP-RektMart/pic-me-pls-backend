@@ -2,13 +2,30 @@ package packages
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
+	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterUpdatePackage(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "update-package",
+		Method:      http.MethodPatch,
+		Path:        "/api/v1/photographer/packages/{packageId}",
+		Summary:     "Update package",
+		Description: "Update package",
+		Tags:        []string{"packages"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleUpdatePackage)
+}
 
 func (h *Handler) HandleUpdatePackage(ctx context.Context, req *dto.UpdatePackageRequest) (*struct{}, error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

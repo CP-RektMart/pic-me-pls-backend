@@ -2,6 +2,7 @@ package media
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -14,6 +15,21 @@ import (
 var (
 	ErrorMediaNotAllowed = errors.New("MEDIA_NOT_ALLOWED")
 )
+
+func (h *Handler) RegisterUpdateMedia(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "update-media",
+		Method:      http.MethodPatch,
+		Path:        "/api/v1/photographer/media/{mediaId}",
+		Summary:     "Update media",
+		Description: "Update media",
+		Tags:        []string{"media"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleUpdateMedia)
+}
 
 func (h *Handler) HandleUpdateMedia(ctx context.Context, req *dto.UpdateMediaRequest) (*dto.HumaHttpResponse[dto.CitizenCardResponse], error) {
 	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)

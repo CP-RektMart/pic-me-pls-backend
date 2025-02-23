@@ -2,6 +2,7 @@ package packages
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -9,6 +10,21 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
+
+func (h *Handler) RegisterGetAllPackages(api huma.API, middlewares huma.Middlewares) {
+	huma.Register(api, huma.Operation{
+		OperationID: "get-all-packages",
+		Method:      http.MethodGet,
+		Path:        "/api/v1/photographer/packages",
+		Summary:     "Get all packages",
+		Description: "Get all packages",
+		Tags:        []string{"packages"},
+		Security: []map[string][]string{
+			{"bearer": nil},
+		},
+		Middlewares: middlewares,
+	}, h.HandleGetAllPackages)
+}
 
 func (h *Handler) HandleGetAllPackages(ctx context.Context, req *dto.HumaBody[dto.PaginationRequest]) (*dto.HumaHttpResponse[dto.PaginationResponse[[]dto.PackageResponse]], error) {
 
