@@ -6,10 +6,15 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
-func (h *Handler) HandleCreateCategory(c *fiber.Ctx) error {
-	var req dto.CreateCategoryRequest
+func (h *Handler) HandleUpdateCategory(c *fiber.Ctx) error {
+	var req dto.UpdateCategoryRequest
+	if err := c.ParamsParser(&req); err != nil {
+		return apperror.BadRequest("invalid params", err)
+	}
+
 	if err := c.BodyParser(&req); err != nil {
 		return apperror.BadRequest("invalid body", err)
 	}
@@ -18,17 +23,14 @@ func (h *Handler) HandleCreateCategory(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid body", err)
 	}
 
-	if err := h.store.DB.Where("name = ?", req.Name).First(&model.Category{}).Error; err == nil {
-		return apperror.BadRequest("duplicate category name", nil)
-	}
-
 	category := model.Category{
+		Model:       gorm.Model{ID: req.ID},
 		Name:        req.Name,
 		Description: req.Description,
 	}
-	if err := h.store.DB.Create(&category).Error; err != nil {
+	if err := h.store.DB.Updates(&category).Error; err != nil {
 		return errors.Wrap(err, "failed create category")
 	}
 
-	return c.SendStatus(fiber.StatusCreated)
+	return c.SendStatus(fiber.StatusNoContent)
 }

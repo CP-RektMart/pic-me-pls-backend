@@ -69,5 +69,6 @@ func (s *Server) RegisterRoutes(
 
 	// category
 	category := v1.Group("/categories")
-	category.Post("/", authMiddleware.AuthAdmin, categoryHandler.HandleCreate)
+	category.Post("/", authMiddleware.AuthAdmin, categoryHandler.HandleCreateCategory)
+	category.Patch("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleUpdateCategory)
 }

@@ -24,3 +24,9 @@ type CreateCategoryRequest struct {
 	Name        string `json:"name" validate:"required"`
 	Description string `json:"description" validate:"required"`
 }
+
+type UpdateCategoryRequest struct {
+	ID          uint   `params:"id" validate:"required"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
