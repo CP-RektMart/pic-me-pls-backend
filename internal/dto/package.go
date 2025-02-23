@@ -50,3 +50,16 @@ func ToPackageResponse(Package model.Package) PackageResponse {
 		Quotations:   ToQuotationResponses(Package.Quotations),
 	}
 }
+
+type UpdatePackageRequest struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description" validate:"min=0"`
+	Price       float64 `json:"price" validate:"omitempty,min=0"`
+	PackageId   uint    `params:"packageId"`
+}
+
+type UpdatePackageResponse struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
+}

@@ -61,6 +61,7 @@ func (s *Server) RegisterRoutes(
 	packages := v1.Group("/packages")
 	packages.Get("/", packagesHandler.HandleGetAllPackages)
 	packages.Post("/", authMiddleware.AuthPhotographer, packagesHandler.HandleCreatePackage)
+	packages.Patch("/:packageId", authMiddleware.AuthPhotographer, packagesHandler.HandleUpdatePackage)
 
 	// quotation
 	quotation := v1.Group("/quotations")

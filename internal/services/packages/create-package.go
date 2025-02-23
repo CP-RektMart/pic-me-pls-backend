@@ -4,15 +4,15 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
+	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
 // @Summary			Create Package
 // @Description		Create Package by photographer
-// @Tags			package
-// @Router			/api/v1/Package [POST]
+// @Tags			packages
+// @Router			/api/v1/packages [POST]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.CreatePackageRequest  true  "Package details"
 // @Success			201
