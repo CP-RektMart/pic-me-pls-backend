@@ -14,6 +14,10 @@ func (h *Handler) HandleCreate(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid body", err)
 	}
 
+	if err := h.validate.Struct(req); err != nil {
+		return apperror.BadRequest("invalid body", err)
+	}
+
 	if err := h.store.DB.Where("name = ?", req.Name).First(&model.Category{}).Error; err == nil {
 		return apperror.BadRequest("duplicate category name", nil)
 	}
