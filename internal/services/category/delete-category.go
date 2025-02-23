@@ -8,6 +8,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// @Summary			delete category
+// @Description			delete category
+// @Tags			category
+// @Router			/api/v1/categories/{id} [DELETE]
+// @Security			ApiKeyAuth
+// @Param 			id	 	path 	uint			 	true 	"category id"
+// @Success			204
+// @Failure			400	{object}	dto.HttpError
+// @Failure			401	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleDeleteCategory(c *fiber.Ctx) error {
 	var req dto.DeleteCategoryRequest
 	if err := c.ParamsParser(&req); err != nil {

@@ -9,6 +9,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary			update category
+// @Description			update category
+// @Tags			category
+// @Router			/api/v1/categories/{id} [PATCH]
+// @Security			ApiKeyAuth
+// @Param 			id	 	path 	uint			 	true 	"category id"
+// @Param 			RequestBody 	body 	dto.UpdateCategoryRequest 	true 	"request body (don't need to include id)"
+// @Success			204
+// @Failure			400	{object}	dto.HttpError
+// @Failure			401	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateCategory(c *fiber.Ctx) error {
 	var req dto.UpdateCategoryRequest
 	if err := c.ParamsParser(&req); err != nil {

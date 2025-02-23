@@ -8,6 +8,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// @Summary			create category
+// @Description			create category
+// @Tags			category
+// @Router			/api/v1/categories [POST]
+// @Security			ApiKeyAuth
+// @Param 			RequestBody 	body 	dto.CreateCategoryRequest 	true 	"request body"
+// @Success			201
+// @Failure			400	{object}	dto.HttpError
+// @Failure			401	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreateCategory(c *fiber.Ctx) error {
 	var req dto.CreateCategoryRequest
 	if err := c.BodyParser(&req); err != nil {
