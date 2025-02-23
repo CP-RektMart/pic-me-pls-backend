@@ -28,8 +28,8 @@ const QuotationPaid QuotationStatus = "PAID"
 
 type Quotation struct {
 	gorm.Model
-	GalleryID      uint            `gorm:"not null"`
-	Gallery        Gallery         `gorm:"foreignKey:GalleryID"`
+	PackageID      uint            `gorm:"not null"`
+	Package        Package         `gorm:"foreignKey:PackageID"`
 	CustomerID     uint            `gorm:"not null"`
 	Customer       User            `gorm:"foreignKey:CustomerID"`
 	PhotographerID uint            `gorm:"not null"`

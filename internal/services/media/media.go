@@ -1,4 +1,4 @@
-package gallery
+package media
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"

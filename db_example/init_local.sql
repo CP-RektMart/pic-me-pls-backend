@@ -1,24 +1,40 @@
-Delete From Quotations;
-Delete From Galleries;
-Delete From Photographers;
-Delete From Users;
-Delete From Citizen_Cards;
+-- Reset the database for testing
+DELETE FROM Quotations;
+DELETE FROM Reviews;
+DELETE FROM Media;
+DELETE FROM Tags;
+DELETE FROM Packages_Categories;
+DELETE FROM Packages;
+DELETE FROM Photographers;
+DELETE FROM Users;
+DELETE FROM Citizen_Cards;
+DELETE FROM Categories;
 
-
+ALTER SEQUENCE Packages_id_seq RESTART WITH 1;
 ALTER SEQUENCE photographers_id_seq RESTART WITH 1;
 ALTER SEQUENCE users_id_seq RESTART WITH 1;
 ALTER SEQUENCE citizen_cards_id_seq RESTART WITH 1;
-ALTER SEQUENCE galleries_id_seq RESTART WITH 1;
+ALTER SEQUENCE tags_id_seq RESTART WITH 1;
+ALTER SEQUENCE media_id_seq RESTART WITH 1;
+ALTER SEQUENCE reviews_id_seq RESTART WITH 1;
+ALTER SEQUENCE categories_id_seq RESTART WITH 1;
 ALTER SEQUENCE quotations_id_seq RESTART WITH 1;
 
 -- 1. Insert Users
 INSERT INTO Users (Name, Email, Phone_Number, Profile_Picture_URL, Role)
 VALUES
-('User 1', 'user1@example.com', '1234567890', 'url1.jpg', 'CUSTOMER'),
-('User 2', 'user2@example.com', '2345678901', 'url2.jpg', 'CUSTOMER'),
-('User 3', 'user3@example.com', '3456789012', 'url3.jpg', 'PHOTOGRAPHER'),
-('User 4', 'user4@example.com', '4567890123', 'url4.jpg', 'PHOTOGRAPHER'),
-('User 5', 'user5@example.com', '5678901234', 'url5.jpg', 'PHOTOGRAPHER');
+('User 1', 'user1@example.com', '1234567890', 'url1.jpg', 'Customer'),
+('User 2', 'user2@example.com', '2345678901', 'url2.jpg', 'Customer'),
+('User 3', 'user3@example.com', '3456789012', 'url3.jpg', 'Photographer'),
+('User 4', 'user4@example.com', '4567890123', 'url4.jpg', 'Photographer'),
+('User 5', 'user5@example.com', '5678901234', 'url5.jpg', 'Photographer'),
+('User 6', 'user6@example.com', '6789012345', 'url6.jpg', 'Photographer'),
+('User 7', 'user7@example.com', '7890123456', 'url7.jpg', 'Photographer'),
+('User 8', 'user8@example.com', '8901234567', 'url8.jpg', 'Photographer'),
+('User 9', 'user9@example.com', '9012345678', 'url9.jpg', 'Photographer'),
+('User 10', 'user10@example.com', '1123456789', 'url10.jpg', 'Photographer'),
+('User 11', 'user11@example.com', '2234567890', 'url11.jpg', 'Photographer'),
+('User 12', 'user12@example.com', '3345678901', 'url12.jpg', 'Photographer');
 
 -- 2. Insert Photographers (only for Users with Role 'Photographer')
 INSERT INTO Photographers (User_ID, Is_Verified, Active_Status)
@@ -30,9 +46,16 @@ VALUES
 -- 3. Insert Citizen Cards for Photographers
 INSERT INTO Citizen_Cards (Citizen_ID, Laser_ID, Picture, Expire_Date)
 VALUES
-('0123456789123', 'ME123456789', 'citizen3_pic.jpg', '2026-12-31'),
-('0987654321234', 'ME123456111', 'citizen4_pic.jpg', '2027-11-30'),
-('1029384756574', 'ME123456222', 'citizen5_pic.jpg', '2028-10-31');
+('1519999567819', 'LASER123', 'citizen3_pic.jpg', '2026-12-31'),
+('4819999567819', 'LASER234', 'citizen4_pic.jpg', '2027-11-30'),
+('3319999567819', 'LASER345', 'citizen5_pic.jpg', '2028-10-31'),
+('2219999567819', 'LASER456', 'citizen6_pic.jpg', '2029-09-30'),
+('7719999567819', 'LASER567', 'citizen7_pic.jpg', '2030-08-31'),
+('8819999567819', 'LASER678', 'citizen8_pic.jpg', '2031-07-31'),
+('9919999567819', 'LASER789', 'citizen9_pic.jpg', '2032-06-30'),
+('6619999567819', 'LASER890', 'citizen10_pic.jpg', '2033-05-31'),
+('5519999567819', 'LASER901', 'citizen11_pic.jpg', '2034-04-30'),
+('4419999567819', 'LASER012', 'citizen12_pic.jpg', '2035-03-31');
 
 -- 4. Link Citizen Cards to Photographers
 UPDATE Photographers
@@ -47,39 +70,78 @@ UPDATE Photographers
 SET Citizen_Card_ID = 3
 WHERE User_ID = 5;
 
--- 5. Add Galleries
-INSERT INTO galleries (photographer_id, name, description, price)
-VALUES 
-(1, 'Modern Art Gallery', 'A contemporary collection of modern abstract art pieces.', 1500.00),
-(1, 'Classic Sculpture Gallery', 'A curated collection of classical sculptures from renowned artists.', 1800.00),
-(1, 'Photography Wonders', 'A gallery featuring modern photography and street art.', 1200.00),
-(1, 'Nature’s Beauty', 'A gallery focused on nature and wildlife photography.', 1600.00),
-(2, 'Tech Art Revolution', 'A fusion of technology and art, showcasing digital masterpieces.', 2000.00),
-(2, 'Architectural Wonders', 'Architectural photography displaying breathtaking urban landscapes.', 1700.00),
-(3, 'Pop Culture Art', 'Pop art and contemporary media-inspired artwork.', 1300.00);
+-- 5. Insert Packages
+INSERT INTO Packages (Photographer_ID, Name, Description, Price)
+VALUES
+(1, 'Sunset Photography', 'A collection of sunset images', 150.00),
+(2, 'Nature Wonders', 'Beautiful natural scenery', 200.00),
+(3, 'Urban Life', 'Capturing the essence of the city', 180.00);
 
--- 5. Add Quotations
-INSERT INTO quotations (gallery_id, photographer_id, customer_id, price, description, from_date, to_date, status)
-VALUES (3, 1, 1,1800.50, 'Exclusive photoshoot session for a wedding.', '2025-07-05 10:00:00', '2025-07-07 18:00:00', 'PENDING'),
-(1, 2, 2, 3200.00, 'Corporate event photography package for a company.', '2025-08-15 09:00:00', '2025-08-15 18:00:00', 'CONFIRMED');
+-- 6. Insert Tags
+INSERT INTO Tags (Package_ID, Name)
+VALUES
+(1, 'Sunset'),
+(1, 'Landscape'),
+(2, 'Nature'),
+(3, 'City');
 
--- Query Tables
-select * from users;
-select * from photographers;
-select * from citizen_cards;
-select * from galleries;
-select * from quotations;
+-- 7. Insert Media
+INSERT INTO Media (Package_ID, Picture_URL)
+VALUES
+(1, 'https://example.com/sunset1.jpg'),
+(1, 'https://example.com/sunset2.jpg'),
+(2, 'https://example.com/nature1.jpg'),
+(3, 'https://example.com/city1.jpg');
 
--- Query galleries with photographerID, userID, username informations
-select g.name as Gallery_Name, g.description as Gallery_Description, g.price as Gallery_Price, p.id as Photographer_ID,
-u.id as User_ID, u.name as userName from galleries as g
-join photographers as p on g.photographer_id = p.id
-join users as u on u.id = p.user_id;
+-- 8. Insert Reviews
+INSERT INTO Reviews (Package_ID, Customer_ID, Rating, Comment)
+VALUES
+(1, 1, 4.5, 'Amazing!'),
+(2, 2, 5.0, 'Beautiful shots'),
+(3, 1, 4.0, 'Great urban photography');
 
--- Query quotations with gallery_name, photographer_username, customer_username
+-- 9. Insert Categories
+INSERT INTO Categories (Name, Description)
+VALUES
+('Nature', 'Packages related to nature and landscapes'),
+('City Life', 'Packages capturing city life');
+
+-- 10. Link Packages to Categories
+INSERT INTO Packages_Categories (Package_ID, Category_ID)
+VALUES
+(1, 1),
+(2, 1),
+(3, 2);
+
+-- 11. Insert Quotations
+INSERT INTO Quotations (Package_ID, Customer_ID, Photographer_ID, Status, Price, Description, from_date, to_date)
+VALUES
+(1, 1, 1, 'PENDING', 200.00, 'Quotation for sunset photography', '2025-06-15T10:00:00Z', '2025-06-15T18:00:00Z'),
+(2, 2, 2, 'CONFIRMED', 250.00, 'Nature photo session', '2025-06-15T10:00:00Z', '2025-06-15T18:00:00Z'),
+(3, 1, 3, 'PAID', 300.00, 'City life photo package', '2025-06-15T10:00:00Z', '2025-06-15T18:00:00Z');
+
+-- Verify the data
+SELECT * FROM Users;
+SELECT * FROM Photographers;
+SELECT * FROM Citizen_Cards;
+SELECT * FROM Packages;
+SELECT * FROM Tags;
+SELECT * FROM Media;
+SELECT * FROM Reviews;
+SELECT * FROM Categories;
+SELECT * FROM Packages_Categories;
+SELECT * FROM Quotations;
+
+-- Query packages including package details, photographerID, userID, username 
+select p.name as Package_Name, p.description as Package_Description, p.price as Package_Price, ph.id as Photographer_ID,
+u.id as User_ID, u.name as userName from Packages as p
+join photographers as ph on p.photographer_id = ph.id
+join users as u on u.id = ph.user_id;
+
+-- -- Query quotations including quotations, photographer_username, customer_username
 SELECT 
-    q.id, 
-    g.name AS gallery_name, 
+    q.id as quotation_id, 
+    p.name AS package_name, 
     q.description, 
     q.price, 
     q.status, 
@@ -88,11 +150,7 @@ SELECT
     q.customer_id, 
     u1.name AS customer_name
 FROM quotations AS q
-JOIN galleries AS g ON g.id = q.gallery_id
+JOIN packages AS p ON p.id = q.package_id
 JOIN users AS u1 ON u1.id = q.customer_id
-JOIN photographers AS p ON p.id = q.photographer_id
-JOIN users AS u2 ON u2.id = p.user_id;
-
-
-
-
+JOIN photographers AS ph ON ph.id = q.photographer_id
+JOIN users AS u2 ON u2.id = ph.user_id;

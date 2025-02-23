@@ -16,7 +16,7 @@ import (
 // @Tags			objects
 // @Router			/api/v1/objects [POST]
 // @Param 			file 	formData 	file		true	"picture (optional)"
-// @Param 			folder 	formData 	string		false	"folder enum (GALLERY, VERIFY_CITIZENCARD, PROFILE_IMAGE)"
+// @Param 			folder 	formData 	string		false	"folder enum (PACKAGE, VERIFY_CITIZENCARD, PROFILE_IMAGE)"
 // @Success			200	{object}	dto.HttpResponse[dto.ObjectUploadResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
