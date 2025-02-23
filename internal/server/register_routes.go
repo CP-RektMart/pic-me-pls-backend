@@ -139,7 +139,16 @@ func (s *Server) RegisterRoutes(
 		})
 	}
 
-	// // quotation
-	// quotation := v1.Group("/quotations")
-	// quotation.Patch("/:id/accept", authMiddleware.Auth, quotationHandler.Accept)
+	// quotation
+	{
+		basePath := "/api/v1/quotations"
+		quotations := humafiber.New(s.app, config)
+
+		huma.Patch(quotations, basePath+"/{id}/accept", quotationHandler.Accept, func(o *huma.Operation) {
+			o.DefaultStatus = 204
+			o.Middlewares = append(o.Middlewares, func(ctx huma.Context, next func(huma.Context)) {
+				authMiddleware.Auth(ctx, next, quotations)
+			})
+		})
+	}
 }

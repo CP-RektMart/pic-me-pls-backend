@@ -10,7 +10,7 @@ type QuotationResponse struct {
 }
 
 type AcceptQuotationRequest struct {
-	QuotationID string `params:"id"`
+	QuotationID string `path:"id"`
 }
 
 func ToQuotationResponses(quotations []model.Quotation) []QuotationResponse {
