@@ -30,3 +30,7 @@ type UpdateCategoryRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
+
+type DeleteCategoryRequest struct {
+	ID uint `params:"id" validate:"required"`
+}

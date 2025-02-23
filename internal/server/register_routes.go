@@ -72,4 +72,5 @@ func (s *Server) RegisterRoutes(
 	category.Post("/", authMiddleware.AuthAdmin, categoryHandler.HandleCreateCategory)
 	category.Patch("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleUpdateCategory)
 	category.Get("/", categoryHandler.HandleListCategory)
+	category.Delete("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleDeleteCategory)
 }
