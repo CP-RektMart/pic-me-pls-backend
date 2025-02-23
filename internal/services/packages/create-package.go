@@ -11,8 +11,8 @@ import (
 
 // @Summary			Create Package
 // @Description		Create Package by photographer
-// @Tags			package
-// @Router			/api/v1/Package [POST]
+// @Tags			packages
+// @Router			/api/v1/packages [POST]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.CreatePackageRequest  true  "Package details"
 // @Success			201

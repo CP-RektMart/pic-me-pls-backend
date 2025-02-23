@@ -67,11 +67,6 @@ components:
         result:
           $ref: '#/components/schemas/dto.TokenResponse'
       type: object
-    dto.HttpResponse-dto_UpdateGalleryResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.UpdateGalleryResponse'
-      type: object
     dto.HttpResponse-dto_UserResponse:
       properties:
         result:
@@ -268,24 +263,17 @@ components:
         refreshToken:
           type: string
       type: object
-    dto.UpdateGalleryRequest:
+    dto.UpdatePackageRequest:
       properties:
         description:
+          minLength: 0
           type: string
-        galleryId:
+        name:
+          type: string
+        packageId:
           type: integer
-        name:
-          type: string
         price:
-          type: number
-      type: object
-    dto.UpdateGalleryResponse:
-      properties:
-        description:
-          type: string
-        name:
-          type: string
-        price:
+          minimum: 0
           type: number
       type: object
     dto.UserResponse:
@@ -327,36 +315,6 @@ info:
   version: "0.1"
 openapi: 3.1.0
 paths:
-  /api/v1/Package:
-    post:
-      description: Create Package by photographer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreatePackageRequest'
-        description: Package details
-        required: true
-      responses:
-        "201":
-          description: Created
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Create Package
-      tags:
-      - package
   /api/v1/auth/login:
     post:
       description: Login
@@ -476,69 +434,6 @@ paths:
       summary: Register
       tags:
       - auth
-  /api/v1/gallery:
-    patch:
-      description: Update
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.UpdateGalleryRequest'
-        description: Gallery details
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_UpdateGalleryResponse'
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Update gallery
-      tags:
-      - gallery
-    post:
-      description: Create gallery by photographer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreateGalleryRequest'
-        description: Gallery details
-        required: true
-      responses:
-        "201":
-          description: Created
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Create gallery
-      tags:
-      - gallery
   /api/v1/me:
     get:
       description: Get me
@@ -692,7 +587,66 @@ paths:
           description: Internal Server Error
       summary: Get all packages
       tags:
-      - Packages
+      - packages
+    post:
+      description: Create Package by photographer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreatePackageRequest'
+        description: Package details
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create Package
+      tags:
+      - packages
+  /api/v1/packages/{galleryId}:
+    patch:
+      description: Update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.UpdatePackageRequest'
+        description: Package details
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Update package
+      tags:
+      - packages
   /api/v1/photographer/citizen-card:
     get:
       description: Get Photographer Citizen Card

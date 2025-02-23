@@ -11,11 +11,11 @@ import (
 
 // @Summary			Update package
 // @Description		Update
-// @Tags			package
-// @Router			/api/v1/package [PATCH]
+// @Tags			packages
+// @Router			/api/v1/packages/{galleryId} [PATCH]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.UpdatePackageRequest  true  "Package details"
-// @Success			200 {object}	dto.HttpResponse[dto.UpdatePackageResponse]
+// @Success			204
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdatePackage(c *fiber.Ctx) error {

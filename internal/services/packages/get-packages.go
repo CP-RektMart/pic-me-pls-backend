@@ -11,7 +11,7 @@ import (
 
 // @Summary      Get all packages
 // @Description  Show all available packages with pagination
-// @Tags         Packages
+// @Tags         packages
 // @Router       /api/v1/packages [GET]
 // @Param        page      query    int    false  "Page number"
 // @Param        page_size query    int    false  "Page size"
