@@ -11,6 +11,14 @@ type QuotationStatus string
 func (q QuotationStatus) String() string {
 	return string(q)
 }
+func (q QuotationStatus) IsValid() bool {
+	switch q {
+	case QuotationPending, QuotationConfirm, QuotationCancelled, QuotationPaid:
+		return true
+	default:
+		return false
+	}
+}
 
 const QuotationPending QuotationStatus = "PENDING"
 const QuotationConfirm QuotationStatus = "CONFIRMED"

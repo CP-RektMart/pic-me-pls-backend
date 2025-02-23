@@ -65,7 +65,7 @@ func main() {
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
 	objectHandler := object.NewHandler(store, config.Storage)
-	quotationHandler := quotation.NewHandler(store, authMiddleware)
+	quotationHandler := quotation.NewHandler(store, validate, authMiddleware)
 
 	server.RegisterDocs()
 

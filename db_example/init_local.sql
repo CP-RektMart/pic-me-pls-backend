@@ -22,7 +22,6 @@ VALUES
 (4,  true, true),
 (5, false, false);
 
-
 -- 3. Insert Citizen Cards for Photographers
 INSERT INTO Citizen_Cards (Citizen_ID, Laser_ID, Picture, Expire_Date)
 VALUES

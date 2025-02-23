@@ -31,7 +31,7 @@ func (h *Handler) HandleUpdate(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid quotation ID", err)
 	}
 
-	req := new(dto.QuotationRequest)
+	req := new(dto.UpdateQuotationRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -47,7 +47,13 @@ func (h *Handler) HandleUpdate(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) UpdateQuotation(req *dto.QuotationRequest, userID uint, quotationID uint) (error) {
+func (h *Handler) UpdateQuotation(req *dto.UpdateQuotationRequest, userID uint, quotationID uint) (error) {
+
+	var status model.QuotationStatus = model.QuotationStatus(req.Status)
+	if (status.IsValid()) {
+		return errors.Wrap(errors.Errorf("Invalid"), "Status is invalid")
+	}
+
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		quotation := &model.Quotation{
 			PhotographerID: userID,
@@ -57,6 +63,7 @@ func (h *Handler) UpdateQuotation(req *dto.QuotationRequest, userID uint, quotat
 			Price:          req.Price,
 			FromDate: req.FromDate,
 			ToDate:  req.ToDate,
+			Status: status,
 		}
 
 		// Find the quotation

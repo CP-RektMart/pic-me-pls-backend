@@ -14,7 +14,7 @@ import (
 // @Tags        quotation
 // @Router      /api/v1/quotations [POST]
 // @Security    ApiKeyAuth
-// @Param       body  body  dto.QuotationRequest  true  "Quotation details"
+// @Param       body  body  dto.CreateQuotationRequest  true  "Quotation details"
 // @Success     201   {object}  dto.HttpResponse[dto.CreateQuotationResponse]
 // @Failure     400   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
@@ -24,7 +24,7 @@ func (h *Handler) HandleCreate(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.QuotationRequest)
+	req := new(dto.CreateQuotationRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -45,9 +45,9 @@ func (h *Handler) HandleCreate(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) CreateQuotation(req *dto.QuotationRequest, userId uint) (uint, error) {
+func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userId uint) (uint, error) {
 	var quotationID uint
-
+	
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		quotation := &model.Quotation{
 			PhotographerID: userId,
@@ -57,6 +57,7 @@ func (h *Handler) CreateQuotation(req *dto.QuotationRequest, userId uint) (uint,
 			Price:          req.Price,
 			FromDate: req.FromDate,
 			ToDate:  req.ToDate,
+			Status: model.QuotationPending,
 		}
 
 		// Check CustomerID and GalleryID existed in database
