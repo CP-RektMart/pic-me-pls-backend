@@ -40,5 +40,5 @@ func (h *Handler) HandleCreateCategory(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed create category")
 	}
 
-	return c.SendStatus(fiber.StatusCreated)
+	return c.SendStatus(fiber.StatusNoContent)
 }
