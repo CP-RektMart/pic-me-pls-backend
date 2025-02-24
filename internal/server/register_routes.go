@@ -4,6 +4,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
@@ -12,7 +13,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/verify"
 )
 
 func (s *Server) RegisterRoutes(
@@ -20,7 +20,7 @@ func (s *Server) RegisterRoutes(
 	authHandler *auth.Handler,
 	userHandler *user.Handler,
 	photographersHandler *photographers.Handler,
-	verifyHandler *verify.Handler,
+	citizencardHandler *citizencard.Handler,
 	packagesHandler *packages.Handler,
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
@@ -78,9 +78,10 @@ func (s *Server) RegisterRoutes(
 		photographer := v1.Group("/photographer", authMiddleware.AuthPhotographer)
 
 		// citizen card
-		photographer.Get("/citizen-card", verifyHandler.HandleGetCitizenCard)
-		photographer.Post("/verify", verifyHandler.HandleVerifyCard)
-		photographer.Patch("/reverify", verifyHandler.HandleReVerifyCard)
+		citizencard := photographer.Group("/citizen-card")
+		citizencard.Get("/", citizencardHandler.HandleGetCitizenCard)
+		citizencard.Post("/verify", citizencardHandler.HandleVerifyCard)
+		citizencard.Patch("/reverify", citizencardHandler.HandleReVerifyCard)
 
 		// packages
 		packages := photographer.Group("/packages")
