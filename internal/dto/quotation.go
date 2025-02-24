@@ -1,6 +1,10 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"time"
+
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+)
 
 type AcceptQuotationRequest struct {
 	QuotationID string `params:"id"`
@@ -10,23 +14,37 @@ type GetQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
+type ConfirmQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
+type CancelQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
 type QuotationResponse struct {
-	ID           uint                 `json:"id"`
-	Status       string               `json:"status"`
-	Price        float64              `json:"price"`
-	Package      PackageResponse      `json:"package"`
-	Customer     CustomerResponse     `json:"customer"`
-	Photographer PhotographerResponse `json:"photographer"`
+	ID           uint                  `json:"id"`
+	Package      PackageResponse       `json:"package,omitempty"`
+	Customer     UserResponse          `json:"customer,omitempty"`
+	Photographer PhotographerResponse  `json:"photographer,omitempty"`
+	Status       model.QuotationStatus `json:"status"`
+	Price        float64               `json:"price"`
+	Description  string                `json:"description"`
+	FromDate     time.Time             `json:"fromDate"`
+	ToDate       time.Time             `json:"toDate"`
 }
 
 func ToQuotationResponse(quotation model.Quotation) QuotationResponse {
 	return QuotationResponse{
 		ID:           quotation.ID,
-		Status:       quotation.Status.String(),
-		Price:        quotation.Price,
 		Package:      ToPackageResponse(quotation.Package),
-		Customer:     ToCustomerResponse(quotation.Customer),
+		Customer:     ToUserResponse(quotation.Customer),
 		Photographer: ToPhotographerResponse(quotation.Photographer),
+		Status:       quotation.Status,
+		Price:        quotation.Price,
+		Description:  quotation.Description,
+		FromDate:     quotation.FromDate,
+		ToDate:       quotation.ToDate,
 	}
 }
 
