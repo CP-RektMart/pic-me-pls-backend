@@ -7,6 +7,13 @@ type MediaPackageRequest struct {
 	Description string `json:"description"`
 }
 
+type GetAllPackagesRequest struct {
+	Pagination     *PaginationRequest
+	MinPrice       float64 `query:"minPrice" validate:"omitempty,min=0"`
+	MaxPrice       float64 `query:"maxPrice" validate:"omitempty,min=0"`
+	PhotographerID *uint   `query:"photographerId" validate:"omitempty"`
+}
+
 type CreatePackageRequest struct {
 	Name        string                `json:"name" validate:"required"`
 	Description string                `json:"description" validate:"required"`
@@ -24,7 +31,6 @@ type PackageResponse struct {
 	Media        []MediaResponse      `json:"media,omitempty"`
 	Reviews      []ReviewResponse     `json:"reviews,omitempty"`
 	Categories   []CategoryResponse   `json:"categories,omitempty"`
-	Quotations   []QuotationResponse  `json:"quotations,omitempty"`
 }
 
 type CreatePackageResponse struct {
@@ -47,7 +53,6 @@ func ToPackageResponse(Package model.Package) PackageResponse {
 		Media:        ToMediaResponses(Package.Media),
 		Reviews:      ToReviewResponses(Package.Reviews),
 		Categories:   ToCategoryResponses(Package.Categories),
-		Quotations:   ToQuotationResponses(Package.Quotations),
 	}
 }
 

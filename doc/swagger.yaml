@@ -873,7 +873,22 @@ paths:
           type: integer
       - description: Page size
         in: query
-        name: page_size
+        name: pageSize
+        schema:
+          type: integer
+      - description: Minimum price
+        in: query
+        name: minPrice
+        schema:
+          type: number
+      - description: Maximum price
+        in: query
+        name: maxPrice
+        schema:
+          type: number
+      - description: Photographer ID
+        in: query
+        name: photographerId
         schema:
           type: integer
       responses:
