@@ -70,6 +70,13 @@ func (s *Server) RegisterRoutes(
 	quotation.Patch("/:id/confirm", authMiddleware.Auth, quotationHandler.HandlerConfirmQuotation)
 	quotation.Patch("/:id/cancel", authMiddleware.Auth, quotationHandler.HandlerCancelQuotation)
 
+	// category
+	category := v1.Group("/categories")
+	category.Post("/", authMiddleware.AuthAdmin, categoryHandler.HandleCreateCategory)
+	category.Patch("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleUpdateCategory)
+	category.Get("/", categoryHandler.HandleListCategory)
+	category.Delete("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleDeleteCategory)
+	
 	// media
 	media := v1.Group("/media")
 	media.Post("/", authMiddleware.AuthPhotographer, mediaHandler.HandleCreateMedia)
