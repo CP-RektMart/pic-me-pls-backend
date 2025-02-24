@@ -25,8 +25,8 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed get user id from context")
 	}
 
-	var req dto.AcceptQuotationRequest
-	if err := c.ParamsParser(&req); err != nil {
+	req := new(dto.GetQuotationRequest)
+	if err := c.ParamsParser(req); err != nil {
 		return apperror.BadRequest("invalid params", err)
 	}
 

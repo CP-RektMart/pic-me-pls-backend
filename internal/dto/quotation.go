@@ -6,6 +6,10 @@ type AcceptQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
+type GetQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
 type QuotationResponse struct {
 	ID           uint                 `json:"id"`
 	Status       string               `json:"status"`
