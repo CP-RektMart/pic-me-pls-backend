@@ -31,7 +31,6 @@ type PackageResponse struct {
 	Media        []MediaResponse      `json:"media,omitempty"`
 	Reviews      []ReviewResponse     `json:"reviews,omitempty"`
 	Categories   []CategoryResponse   `json:"categories,omitempty"`
-	Quotations   []QuotationResponse  `json:"quotations,omitempty"`
 }
 
 type CreatePackageResponse struct {
@@ -54,7 +53,6 @@ func ToPackageResponse(Package model.Package) PackageResponse {
 		Media:        ToMediaResponses(Package.Media),
 		Reviews:      ToReviewResponses(Package.Reviews),
 		Categories:   ToCategoryResponses(Package.Categories),
-		Quotations:   ToQuotationResponses(Package.Quotations),
 	}
 }
 
