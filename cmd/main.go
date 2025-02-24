@@ -14,7 +14,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
@@ -57,7 +56,6 @@ func main() {
 	authMiddleware := authentication.NewAuthMiddleware(jwtService)
 
 	// handlers
-	exampleHandler := example.NewHandler(store)
 	authHandler := auth.NewHandler(store, validate, jwtService, authMiddleware, config.GoogleClientID)
 	userHandler := user.NewHandler(store, validate, authMiddleware)
 	photographerHandler := photographer.NewHandler(store, validate, authMiddleware)
@@ -74,7 +72,6 @@ func main() {
 	// routes
 	server.RegisterRoutes(
 		authMiddleware,
-		exampleHandler,
 		authHandler,
 		userHandler,
 		photographerHandler,

@@ -4,7 +4,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/example"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
@@ -17,7 +16,6 @@ import (
 
 func (s *Server) RegisterRoutes(
 	authMiddleware authentication.AuthMiddleware,
-	exampleHandler *example.Handler,
 	authHandler *auth.Handler,
 	userHandler *user.Handler,
 	photographerHandler *photographer.Handler,
@@ -31,10 +29,6 @@ func (s *Server) RegisterRoutes(
 ) {
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
-
-	// example
-	example := v1.Group("/example")
-	example.Post("/upload", exampleHandler.HandlerUploadExample)
 
 	// auth
 	auth := v1.Group("/auth")
