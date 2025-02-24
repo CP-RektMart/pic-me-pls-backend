@@ -8,8 +8,7 @@ type MediaPackageRequest struct {
 }
 
 type GetAllPackagesRequest struct {
-	Page           int     `query:"page" validate:"omitempty,min=1"`
-	PageSize       int     `query:"pageSize" validate:"omitempty,min=1"`
+	Pagination     *PaginationRequest
 	MinPrice       float64 `query:"minPrice" validate:"omitempty,min=0"`
 	MaxPrice       float64 `query:"maxPrice" validate:"omitempty,min=0"`
 	PhotographerID *uint   `query:"photographerId" validate:"omitempty"`

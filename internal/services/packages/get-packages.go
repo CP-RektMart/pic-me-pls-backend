@@ -24,7 +24,13 @@ import (
 func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 
 	req := new(dto.GetAllPackagesRequest)
+	req.Pagination = new(dto.PaginationRequest)
+
 	if err := c.QueryParser(req); err != nil {
+		return apperror.BadRequest("Invalid query parameters", err)
+	}
+
+	if err := c.QueryParser(req.Pagination); err != nil {
 		return apperror.BadRequest("Invalid query parameters", err)
 	}
 
@@ -70,7 +76,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 }
 
 func checkPaginationRequest(req *dto.GetAllPackagesRequest) (int, int, int) {
-	page, pageSize := req.Page, req.PageSize
+	page, pageSize := req.Pagination.Page, req.Pagination.PageSize
 	if page < 1 {
 		page = 1
 	}
