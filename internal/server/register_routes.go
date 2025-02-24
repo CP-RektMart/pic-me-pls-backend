@@ -31,35 +31,37 @@ func (s *Server) RegisterRoutes(
 ) {
 	v1 := s.app.Group("/api/v1")
 
+	// auth
+	auth := v1.Group("/auth")
+	auth.Post("/login", authHandler.HandleLogin)
+	auth.Post("/register", authHandler.HandleRegister)
+	auth.Post("/refresh-token", authHandler.HandleRefreshToken)
+	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+
 	// all
 	{
-		// auth
-		auth := v1.Group("/auth")
-		auth.Post("/login", authHandler.HandleLogin)
-		auth.Post("/register", authHandler.HandleRegister)
-		auth.Post("/refresh-token", authHandler.HandleRefreshToken)
-		auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+		all := v1.Group("/", authMiddleware.Auth)
 
 		// me
-		me := v1.Group("/me", authMiddleware.Auth)
+		me := all.Group("/me")
 		me.Get("/", userHandler.HandleGetMe)
 		me.Patch("/", userHandler.HandleUpdateMe)
 
 		// photographers
-		photographers := v1.Group("/photographers")
+		photographers := all.Group("/photographers")
 		photographers.Get("/", photographersHandler.HandleGetAllPhotographers)
 
 		// quotations
-		quotations := v1.Group("/quotations", authMiddleware.Auth)
+		quotations := all.Group("/quotations", authMiddleware.Auth)
 		quotations.Get("/", quotationHandler.HandleListQuotations)
 		quotations.Get("/:id", quotationHandler.HandleGetQuotationByID)
 
 		// packages
-		packages := v1.Group("/packages")
+		packages := all.Group("/packages")
 		packages.Get("/", packagesHandler.HandleGetAllPackages)
 
 		// categories
-		categories := v1.Group("/categories")
+		categories := all.Group("/categories")
 		categories.Get("/", categoryHandler.HandleListCategory)
 	}
 
