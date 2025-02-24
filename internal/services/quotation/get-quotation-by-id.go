@@ -33,6 +33,7 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 	var quotation *model.Quotation
 	if err := h.store.DB.
 		Preload("Package.Photographer").
+		Preload("Package.Media").
 		Preload("Customer").
 		Preload("Photographer.User").
 		First(&quotation, req.QuotationID).Error; err != nil {
