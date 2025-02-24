@@ -9,22 +9,24 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary			Accept quotation
-// @Description			Acceot quotaion
+// @Summary			cancelled quotation
+// @Description			cancelled quotaion
 // @Tags			quotation
-// @Router			/api/v1/quotations/{id}/accept [PATCH]
+// @Router			/api/v1/quotations/{id}/cancel [PATCH]
 // @Security			ApiKeyAuth
 // @Param 			quotation id 	path 	uint 	true 	"quotaion id"
 // @Success			204
+// @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
+// @Failure			404	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
-func (h *Handler) Accept(c *fiber.Ctx) error {
+func (h *Handler) HandlerCancelQuotation(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed get user id from context")
 	}
 
-	var req dto.AcceptQuotationRequest
+	var req dto.CancelQuotationRequest
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("invalid params", err)
 	}
@@ -41,7 +43,7 @@ func (h *Handler) Accept(c *fiber.Ctx) error {
 		return apperror.Forbidden("user not have permission", nil)
 	}
 
-	quotation.Status = model.QuotationConfirm
+	quotation.Status = model.QuotationCancelled
 	if err := h.store.DB.Save(&quotation).Error; err != nil {
 		return errors.Wrap(err, "failed confirm quotation")
 	}
