@@ -34,7 +34,7 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 	if err := h.store.DB.
 		Preload("Package.Photographer").
 		Preload("Customer").
-		Preload("Photographer").
+		Preload("Photographer.User").
 		First(&quotation, req.QuotationID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("quotation not found", err)
@@ -42,7 +42,7 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed find quotation")
 	}
 
-	if quotation.CustomerID != userID {
+	if quotation.CustomerID != userID && quotation.Photographer.UserID != userID {
 		return apperror.Forbidden("user not have permission", nil)
 	}
 
