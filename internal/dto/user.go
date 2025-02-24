@@ -26,6 +26,14 @@ type UserResponse struct {
 	BankBranch        string `json:"bankBranch,omitempty"`
 }
 
+type CustomerResponse struct {
+	ID                uint   `json:"id"`
+	Name              string `json:"name"`
+	Email             string `json:"email"`
+	PhoneNumber       string `json:"phoneNumber"`
+	ProfilePictureURL string `json:"profilePictureUrl"`
+}
+
 func ToUserResponse(user model.User) UserResponse {
 	return UserResponse{
 		ID:                user.ID,
@@ -39,5 +47,15 @@ func ToUserResponse(user model.User) UserResponse {
 		Bank:              user.Bank,
 		AccountNo:         user.AccountNo,
 		BankBranch:        user.BankBranch,
+	}
+}
+
+func ToCustomerResponse(user model.User) CustomerResponse {
+	return CustomerResponse{
+		ID:                user.ID,
+		Name:              user.Name,
+		Email:             user.Email,
+		PhoneNumber:       user.PhoneNumber,
+		ProfilePictureURL: user.ProfilePictureURL,
 	}
 }

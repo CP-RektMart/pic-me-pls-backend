@@ -30,7 +30,9 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 
 	var quotation *model.Quotation
 	if err := h.store.DB.
+		Preload("Package.Photographer").
 		Preload("Customer").
+		Preload("Photographer").
 		First(&quotation, req.QuotationID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("quotation not found", err)

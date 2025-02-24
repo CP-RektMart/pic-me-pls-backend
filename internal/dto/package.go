@@ -47,7 +47,6 @@ func ToPackageResponse(Package model.Package) PackageResponse {
 		Media:        ToMediaResponses(Package.Media),
 		Reviews:      ToReviewResponses(Package.Reviews),
 		Categories:   ToCategoryResponses(Package.Categories),
-		Quotations:   ToQuotationResponses(Package.Quotations),
 	}
 }
 

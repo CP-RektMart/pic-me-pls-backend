@@ -45,7 +45,6 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		Preload("Media").
 		Preload("Reviews.Customer").
 		Preload("Categories").
-		Preload("Quotations.Customer").
 		Limit(pageSize).
 		Offset(offset).
 		Find(&packages).Error; err != nil {

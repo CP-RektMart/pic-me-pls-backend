@@ -7,18 +7,22 @@ type AcceptQuotationRequest struct {
 }
 
 type QuotationResponse struct {
-	ID       uint    `json:"id"`
-	Status   string  `json:"status"`
-	Customer string  `json:"customer"`
-	Price    float64 `json:"price"`
+	ID           uint                 `json:"id"`
+	Status       string               `json:"status"`
+	Price        float64              `json:"price"`
+	Package      PackageResponse      `json:"package"`
+	Customer     CustomerResponse     `json:"customer"`
+	Photographer PhotographerResponse `json:"photographer"`
 }
 
 func ToQuotationResponse(quotation model.Quotation) QuotationResponse {
 	return QuotationResponse{
-		ID:       quotation.ID,
-		Status:   quotation.Status.String(),
-		Customer: quotation.Customer.Name,
-		Price:    quotation.Price,
+		ID:           quotation.ID,
+		Status:       quotation.Status.String(),
+		Price:        quotation.Price,
+		Package:      ToPackageResponse(quotation.Package),
+		Customer:     ToCustomerResponse(quotation.Customer),
+		Photographer: ToPhotographerResponse(quotation.Photographer),
 	}
 }
 
