@@ -1,4 +1,4 @@
-package photographer
+package verify
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"

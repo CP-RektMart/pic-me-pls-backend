@@ -1,4 +1,4 @@
-package photographer
+package verify
 
 import (
 	"context"
