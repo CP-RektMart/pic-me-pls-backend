@@ -16,6 +16,8 @@ import (
 // @Security		ApiKeyAuth
 // @Success			200	{object}	dto.HttpResponse[dto.QuotationResponse]
 // @Failure			400	{object}	dto.HttpError
+// @Failure			401	{object}	dto.HttpError
+// @Failure			403	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())

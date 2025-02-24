@@ -50,6 +50,19 @@ components:
       - name
       - price
       type: object
+    dto.CustomerResponse:
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
+      type: object
     dto.DeleteMediaRequest:
       properties:
         mediaId:
@@ -218,9 +231,13 @@ components:
     dto.QuotationResponse:
       properties:
         customer:
-          type: string
+          $ref: '#/components/schemas/dto.CustomerResponse'
         id:
           type: integer
+        package:
+          $ref: '#/components/schemas/dto.PackageResponse'
+        photographer:
+          $ref: '#/components/schemas/dto.PhotographerResponse'
         price:
           type: number
         status:
@@ -924,6 +941,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
         "500":
           content:
             application/json:
