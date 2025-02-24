@@ -92,6 +92,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.ObjectUploadResponse'
       type: object
+    dto.HttpResponse-dto_QuotationResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.QuotationResponse'
+      type: object
     dto.HttpResponse-dto_RegisterResponse:
       properties:
         result:
@@ -172,11 +177,6 @@ components:
           $ref: '#/components/schemas/dto.PhotographerResponse'
         price:
           type: number
-        quotations:
-          items:
-            $ref: '#/components/schemas/dto.QuotationResponse'
-          type: array
-          uniqueItems: false
         reviews:
           items:
             $ref: '#/components/schemas/dto.ReviewResponse'
@@ -193,6 +193,15 @@ components:
         data:
           items:
             $ref: '#/components/schemas/dto.QuotationResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
+      type: object
     dto.PaginationResponse-dto_CategoryResponse:
       properties:
         data:
@@ -971,7 +980,7 @@ paths:
       summary: Create Package
       tags:
       - packages
-  /api/v1/packages/{galleryId}:
+  /api/v1/packages/{packageId}:
     patch:
       description: Update
       requestBody:
@@ -1176,19 +1185,22 @@ paths:
       summary: list quotations
       tags:
       - quotation
-  /api/v1/quotations/{id}/accept:
-    patch:
-      description: Acceot quotaion
-      parameters:
-      - description: quotaion id
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
+  /api/v1/quotations/{id}:
+    get:
+      description: Get Quotation By ID
       responses:
-        "204":
-          description: No Content
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_QuotationResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
         "401":
           content:
             application/json:
@@ -1201,12 +1213,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Forbidden
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Not Found
         "500":
           content:
             application/json:
@@ -1215,7 +1221,7 @@ paths:
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
-      summary: Accept quotation
+      summary: Get Quotation By ID
       tags:
       - quotation
   /api/v1/quotations/{id}/cancel:
@@ -1258,5 +1264,47 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: cancelled quotation
+      tags:
+      - quotation
+  /api/v1/quotations/{id}/confirm:
+    patch:
+      description: confirm quotaion
+      parameters:
+      - description: quotaion id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: confirm quotation
       tags:
       - quotation

@@ -6,6 +6,22 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 )
 
+type AcceptQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
+type GetQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
+type ConfirmQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
+type CancelQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
 type QuotationResponse struct {
 	ID           uint                  `json:"id"`
 	Package      PackageResponse       `json:"package,omitempty"`
@@ -16,14 +32,6 @@ type QuotationResponse struct {
 	Description  string                `json:"description"`
 	FromDate     time.Time             `json:"fromDate"`
 	ToDate       time.Time             `json:"toDate"`
-}
-
-type ConfirmQuotationRequest struct {
-	QuotationID string `params:"id"`
-}
-
-type CancelQuotationRequest struct {
-	QuotationID string `params:"id"`
 }
 
 func ToQuotationResponse(quotation model.Quotation) QuotationResponse {

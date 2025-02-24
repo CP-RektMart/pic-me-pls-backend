@@ -12,7 +12,7 @@ import (
 // @Summary			Update package
 // @Description		Update
 // @Tags			packages
-// @Router			/api/v1/packages/{galleryId} [PATCH]
+// @Router			/api/v1/packages/{packageId} [PATCH]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.UpdatePackageRequest  true  "Package details"
 // @Success			204
@@ -38,7 +38,7 @@ func (h *Handler) HandleUpdatePackage(c *fiber.Ctx) error {
 	}
 
 	if err := h.updatePackage(req, req.PackageId, userId); err != nil {
-		return errors.Wrap(err, "failed to update gallery")
+		return errors.Wrap(err, "failed to update package")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
