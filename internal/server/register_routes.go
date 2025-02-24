@@ -69,6 +69,13 @@ func (s *Server) RegisterRoutes(
 	quotation := v1.Group("/quotations")
 	quotation.Patch("/:id/accept", authMiddleware.Auth, quotationHandler.Accept)
 
+	// category
+	category := v1.Group("/categories")
+	category.Post("/", authMiddleware.AuthAdmin, categoryHandler.HandleCreateCategory)
+	category.Patch("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleUpdateCategory)
+	category.Get("/", categoryHandler.HandleListCategory)
+	category.Delete("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleDeleteCategory)
+	
 	// media
 	media := v1.Group("/media")
 	media.Post("/", authMiddleware.AuthPhotographer, mediaHandler.HandleCreateMedia)

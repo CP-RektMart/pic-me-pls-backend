@@ -66,7 +66,7 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 		PackageResponses = append(PackageResponses, dto.ToPackageResponse(Package))
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[[]dto.PackageResponse]{
+	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[dto.PackageResponse]{
 		Page:      page,
 		PageSize:  pageSize,
 		TotalPage: totalPage,
