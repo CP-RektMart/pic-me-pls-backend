@@ -31,52 +31,77 @@ func (s *Server) RegisterRoutes(
 ) {
 	v1 := s.app.Group("/api/v1")
 
-	// all, auth
-	auth := v1.Group("/auth")
-	auth.Post("/login", authHandler.HandleLogin)
-	auth.Post("/register", authHandler.HandleRegister)
-	auth.Post("/refresh-token", authHandler.HandleRefreshToken)
-	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+	// all
+	{
+		// auth
+		auth := v1.Group("/auth")
+		auth.Post("/login", authHandler.HandleLogin)
+		auth.Post("/register", authHandler.HandleRegister)
+		auth.Post("/refresh-token", authHandler.HandleRefreshToken)
+		auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
 
-	// all, user
-	v1.Get("/me", authMiddleware.Auth, userHandler.HandleGetMe)
-	v1.Patch("/me", authMiddleware.Auth, userHandler.HandleUpdateMe)
+		// me
+		me := v1.Group("/me", authMiddleware.Auth)
+		me.Get("/", userHandler.HandleGetMe)
+		me.Patch("/", userHandler.HandleUpdateMe)
 
-	// verify citizen card
-	photographer := v1.Group("/photographer")
-	photographer.Get("/citizen-card", authMiddleware.AuthPhotographer, verifyHandler.HandleGetCitizenCard)
-	photographer.Post("/verify", authMiddleware.AuthPhotographer, verifyHandler.HandleVerifyCard)
-	photographer.Patch("/reverify", authMiddleware.AuthPhotographer, verifyHandler.HandleReVerifyCard)
+		// photographers
+		photographers := v1.Group("/photographers")
+		photographers.Get("/", photographersHandler.HandleGetAllPhotographers)
 
-	// get photographer
-	photographers := v1.Group("/photographers")
-	photographers.Get("/", photographersHandler.HandleGetAllPhotographers)
+		// quotations
+		quotations := v1.Group("/quotations", authMiddleware.Auth)
+		quotations.Get("/", quotationHandler.HandleListQuotations)
+		quotations.Get("/:id", quotationHandler.HandleGetQuotationByID)
 
-	auth.Post("/logout", authMiddleware.Auth, authHandler.HandleLogout)
+		// packages
+		packages := v1.Group("/packages")
+		packages.Get("/", packagesHandler.HandleGetAllPackages)
 
-	// package
-	packages := v1.Group("/packages")
-	packages.Get("/", packagesHandler.HandleGetAllPackages)
-	packages.Post("/", authMiddleware.AuthPhotographer, packagesHandler.HandleCreatePackage)
-	packages.Patch("/:packageId", authMiddleware.AuthPhotographer, packagesHandler.HandleUpdatePackage)
+		// categories
+		categories := v1.Group("/categories")
+		categories.Get("/", categoryHandler.HandleListCategory)
+	}
 
-	// quotation
-	quotation := v1.Group("/quotations")
-	quotation.Get("/", authMiddleware.Auth, quotationHandler.HandleListQuotations)
-	quotation.Get("/:id", authMiddleware.Auth, quotationHandler.HandleGetQuotationByID)
-	quotation.Patch("/:id/confirm", authMiddleware.Auth, quotationHandler.HandlerConfirmQuotation)
-	quotation.Patch("/:id/cancel", authMiddleware.Auth, quotationHandler.HandlerCancelQuotation)
+	// customer
+	{
+		customer := v1.Group("/customer", authMiddleware.AuthCustomer)
 
-	// category
-	category := v1.Group("/categories")
-	category.Post("/", authMiddleware.AuthAdmin, categoryHandler.HandleCreateCategory)
-	category.Patch("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleUpdateCategory)
-	category.Get("/", categoryHandler.HandleListCategory)
-	category.Delete("/:id", authMiddleware.AuthAdmin, categoryHandler.HandleDeleteCategory)
+		// quotations
+		quotations := customer.Group("/quotations")
+		quotations.Patch("/:id/confirm", quotationHandler.HandlerConfirmQuotation)
+		quotations.Patch("/:id/cancel", quotationHandler.HandlerCancelQuotation)
+	}
 
-	// media
-	media := v1.Group("/media")
-	media.Post("/", authMiddleware.AuthPhotographer, mediaHandler.HandleCreateMedia)
-	media.Patch("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleUpdateMedia)
-	media.Delete("/:mediaId", authMiddleware.AuthPhotographer, mediaHandler.HandleDeleteMedia)
+	// photographer
+	{
+		photographer := v1.Group("/photographer", authMiddleware.AuthPhotographer)
+
+		// citizen card
+		photographer.Get("/citizen-card", verifyHandler.HandleGetCitizenCard)
+		photographer.Post("/verify", verifyHandler.HandleVerifyCard)
+		photographer.Patch("/reverify", verifyHandler.HandleReVerifyCard)
+
+		// packages
+		packages := photographer.Group("/packages")
+		packages.Post("/", packagesHandler.HandleCreatePackage)
+		packages.Patch("/:packageId", packagesHandler.HandleUpdatePackage)
+
+		// media
+		media := photographer.Group("/media")
+		media.Post("/", mediaHandler.HandleCreateMedia)
+		media.Patch("/:mediaId", mediaHandler.HandleUpdateMedia)
+		media.Delete("/:mediaId", mediaHandler.HandleDeleteMedia)
+	}
+
+	// admin
+	{
+		admin := v1.Group("/admin", authMiddleware.AuthAdmin)
+
+		// category
+		categories := admin.Group("/categories")
+		categories.Post("/", categoryHandler.HandleCreateCategory)
+		categories.Patch("/:id", categoryHandler.HandleUpdateCategory)
+		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
+	}
 }
