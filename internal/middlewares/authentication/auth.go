@@ -18,6 +18,7 @@ var (
 type AuthMiddleware interface {
 	Auth(ctx *fiber.Ctx) error
 	AuthAdmin(ctx *fiber.Ctx) error
+	AuthCustomer(ctx *fiber.Ctx) error
 	AuthPhotographer(ctx *fiber.Ctx) error
 	GetUserIDFromContext(ctx context.Context) (uint, error)
 	GetJWTEntityFromContext(ctx context.Context) (jwt.JWTentity, error)
@@ -33,25 +34,34 @@ func NewAuthMiddleware(jwtService *jwt.JWT) AuthMiddleware {
 	}
 }
 
-func (r *authMiddleware) Auth(ctx *fiber.Ctx) error {
+func (r *authMiddleware) getClaims(ctx *fiber.Ctx) (jwt.JWTentity, error) {
 	tokenByte := ctx.GetReqHeaders()["Authorization"]
 
 	if len(tokenByte) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
+		return jwt.JWTentity{}, apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
 	}
 
 	if len(tokenByte[0]) < 7 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
+		return jwt.JWTentity{}, apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
 	}
 
 	bearerToken := tokenByte[0][7:]
 	if len(bearerToken) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
+		return jwt.JWTentity{}, apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
 	}
 
 	claims, err := r.validateToken(ctx.UserContext(), bearerToken)
 	if err != nil {
-		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
+		return jwt.JWTentity{}, apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
+	}
+
+	return claims, nil
+}
+
+func (r *authMiddleware) Auth(ctx *fiber.Ctx) error {
+	claims, err := r.getClaims(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to get claims")
 	}
 
 	userContext := r.withJWTEntity(ctx.UserContext(), claims)
@@ -61,61 +71,49 @@ func (r *authMiddleware) Auth(ctx *fiber.Ctx) error {
 }
 
 func (r *authMiddleware) AuthAdmin(ctx *fiber.Ctx) error {
-	tokenByte := ctx.GetReqHeaders()["Authorization"]
-	if len(tokenByte) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
-	}
-
-	if len(tokenByte[0]) < 7 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
-	}
-
-	bearerToken := tokenByte[0][7:]
-	if len(bearerToken) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
-	}
-
-	claims, err := r.validateToken(ctx.UserContext(), bearerToken)
+	claims, err := r.getClaims(ctx)
 	if err != nil {
-		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
+		return errors.Wrap(err, "failed to get claims")
 	}
-
-	userContext := r.withJWTEntity(ctx.UserContext(), claims)
-	ctx.SetUserContext(userContext)
 
 	if claims.Role != model.UserRoleAdmin {
 		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not admin"))
 	}
 
+	userContext := r.withJWTEntity(ctx.UserContext(), claims)
+	ctx.SetUserContext(userContext)
+
 	return ctx.Next()
 }
 
-func (r *authMiddleware) AuthPhotographer(ctx *fiber.Ctx) error {
-	tokenByte := ctx.GetReqHeaders()["Authorization"]
-	if len(tokenByte) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no header"))
-	}
-
-	if len(tokenByte[0]) < 7 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("invalid header"))
-	}
-
-	bearerToken := tokenByte[0][7:]
-	if len(bearerToken) == 0 {
-		return apperror.UnAuthorized("UNAUTHORIZED", fmt.Errorf("no bearer keyword"))
-	}
-
-	claims, err := r.validateToken(ctx.UserContext(), bearerToken)
+func (r *authMiddleware) AuthCustomer(ctx *fiber.Ctx) error {
+	claims, err := r.getClaims(ctx)
 	if err != nil {
-		return apperror.UnAuthorized("UNAUTHORIZED", errors.Wrap(err, "failed to validate token"))
+		return errors.Wrap(err, "failed to get claims")
+	}
+
+	if claims.Role != model.UserRoleCustomer {
+		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not photographer"))
 	}
 
 	userContext := r.withJWTEntity(ctx.UserContext(), claims)
 	ctx.SetUserContext(userContext)
 
+	return ctx.Next()
+}
+
+func (r *authMiddleware) AuthPhotographer(ctx *fiber.Ctx) error {
+	claims, err := r.getClaims(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to get claims")
+	}
+
 	if claims.Role != model.UserRolePhotographer {
 		return apperror.Forbidden("FORBIDDEN", fmt.Errorf("user is not photographer"))
 	}
+
+	userContext := r.withJWTEntity(ctx.UserContext(), claims)
+	ctx.SetUserContext(userContext)
 
 	return ctx.Next()
 }
