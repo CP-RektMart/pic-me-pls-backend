@@ -16,8 +16,8 @@ import (
 
 // @Summary			Reverify Citizen Card
 // @Description		Reverify Photographer Citizen Card
-// @Tags			photographer
-// @Router			/api/v1/photographer/reverify [PATCH]
+// @Tags			citizencard
+// @Router			/api/v1/photographer/citizen-card/reverify [PATCH]
 // @Security		ApiKeyAuth
 // @Accept			multipart/form-data
 // @Param 			cardPicture 	formData 	file		false	"Card picture (optional)"

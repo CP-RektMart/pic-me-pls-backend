@@ -11,8 +11,8 @@ import (
 
 // @Summary			cancelled quotation
 // @Description			cancelled quotaion
-// @Tags			quotation
-// @Router			/api/v1/quotations/{id}/cancel [PATCH]
+// @Tags			quotations
+// @Router			/api/v1/customer/quotations/{id}/cancel [PATCH]
 // @Security			ApiKeyAuth
 // @Param 			quotation id 	path 	uint 	true 	"quotaion id"
 // @Success			204

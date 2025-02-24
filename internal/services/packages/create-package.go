@@ -12,7 +12,7 @@ import (
 // @Summary			Create Package
 // @Description		Create Package by photographer
 // @Tags			packages
-// @Router			/api/v1/packages [POST]
+// @Router			/api/v1/photographer/packages [POST]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.CreatePackageRequest  true  "Package details"
 // @Success			201

@@ -12,7 +12,7 @@ import (
 // @Summary			Update package
 // @Description		Update
 // @Tags			packages
-// @Router			/api/v1/packages/{packageId} [PATCH]
+// @Router			/api/v1/photographer/packages/{packageId} [PATCH]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.UpdatePackageRequest  true  "Package details"
 // @Success			204

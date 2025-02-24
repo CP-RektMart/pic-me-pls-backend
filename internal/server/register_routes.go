@@ -52,7 +52,7 @@ func (s *Server) RegisterRoutes(
 		photographers.Get("/", photographersHandler.HandleGetAllPhotographers)
 
 		// quotations
-		quotations := all.Group("/quotations", authMiddleware.Auth)
+		quotations := all.Group("/quotations")
 		quotations.Get("/", quotationHandler.HandleListQuotations)
 		quotations.Get("/:id", quotationHandler.HandleGetQuotationByID)
 

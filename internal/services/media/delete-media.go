@@ -12,7 +12,7 @@ import (
 // @Summary			Delete Media
 // @Description		Delete media
 // @Tags			media
-// @Router			/api/v1/media/{mediaId} [DELETE]
+// @Router			/api/v1/photographer/media/{mediaId} [DELETE]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.DeleteMediaRequest  true  "Media details"
 // @Success			204

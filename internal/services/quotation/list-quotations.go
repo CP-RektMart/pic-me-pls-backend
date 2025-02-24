@@ -10,7 +10,7 @@ import (
 
 // @Summary			list quotations
 // @Description			list quotations
-// @Tags			quotation
+// @Tags			quotations
 // @Router			/api/v1/quotations [GET]
 // @Security			ApiKeyAuth
 // @Param        		page      query    int    false  "Page number"

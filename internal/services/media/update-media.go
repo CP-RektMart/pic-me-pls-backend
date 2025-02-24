@@ -12,7 +12,7 @@ import (
 // @Summary			Update Media
 // @Description		Update media
 // @Tags			media
-// @Router			/api/v1/media/{mediaId} [PATCH]
+// @Router			/api/v1/photographer/media/{mediaId} [PATCH]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.UpdateMediaRequest  true  "Media details"
 // @Success			204

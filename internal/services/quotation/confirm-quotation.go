@@ -11,8 +11,8 @@ import (
 
 // @Summary			confirm quotation
 // @Description			confirm quotaion
-// @Tags			quotation
-// @Router			/api/v1/quotations/{id}/confirm [PATCH]
+// @Tags			quotations
+// @Router			/api/v1/customer/quotations/{id}/confirm [PATCH]
 // @Security			ApiKeyAuth
 // @Param 			quotation id 	path 	uint 	true 	"quotaion id"
 // @Success			204

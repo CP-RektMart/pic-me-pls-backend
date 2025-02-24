@@ -11,7 +11,7 @@ import (
 
 // @Summary			Get Citizen Card
 // @Description		Get Photographer Citizen Card
-// @Tags			photographer
+// @Tags			citizencard
 // @Router			/api/v1/photographer/citizen-card [GET]
 // @Security		ApiKeyAuth
 // @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
