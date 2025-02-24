@@ -188,6 +188,11 @@ components:
           type: array
           uniqueItems: false
       type: object
+    dto.PaginationResponse-QuotationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.QuotationResponse'
     dto.PaginationResponse-dto_CategoryResponse:
       properties:
         data:
@@ -250,12 +255,22 @@ components:
     dto.QuotationResponse:
       properties:
         customer:
+          $ref: '#/components/schemas/dto.UserResponse'
+        description:
+          type: string
+        fromDate:
           type: string
         id:
           type: integer
+        package:
+          $ref: '#/components/schemas/dto.PackageResponse'
+        photographer:
+          $ref: '#/components/schemas/dto.PhotographerResponse'
         price:
           type: number
         status:
+          $ref: '#/components/schemas/model.QuotationStatus'
+        toDate:
           type: string
       type: object
     dto.RefreshTokenRequest:
@@ -377,8 +392,22 @@ components:
         profilePictureUrl:
           type: string
         role:
-          type: string
+          $ref: '#/components/schemas/model.UserRole'
       type: object
+    model.QuotationStatus:
+      type: string
+      x-enum-varnames:
+      - QuotationPending
+      - QuotationConfirm
+      - QuotationCancelled
+      - QuotationPaid
+    model.UserRole:
+      type: string
+      x-enum-varnames:
+      - UserRoleUnknown
+      - UserRoleAdmin
+      - UserRolePhotographer
+      - UserRoleCustomer
   securitySchemes:
     "@securitydefinitions.apikey\tApiKeyAuth":
       in: header
@@ -1109,6 +1138,44 @@ paths:
       summary: Get All Photographers
       tags:
       - photographer
+  /api/v1/quotations:
+    get:
+      description: list quotations
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.PaginationResponse-QuotationResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.PaginationResponse-QuotationResponse'
+          description: Unauthorized
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: list quotations
+      tags:
+      - quotation
   /api/v1/quotations/{id}/accept:
     patch:
       description: Acceot quotaion

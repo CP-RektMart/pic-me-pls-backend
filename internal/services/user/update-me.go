@@ -87,7 +87,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		Email:             updatedUser.Email,
 		PhoneNumber:       updatedUser.PhoneNumber,
 		ProfilePictureURL: updatedUser.ProfilePictureURL,
-		Role:              updatedUser.Role.String(),
+		Role:              updatedUser.Role,
 		Facebook:          updatedUser.Facebook,
 		Instagram:         updatedUser.Instagram,
 		Bank:              updatedUser.Bank,

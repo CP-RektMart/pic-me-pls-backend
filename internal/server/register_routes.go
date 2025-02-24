@@ -67,6 +67,7 @@ func (s *Server) RegisterRoutes(
 
 	// quotation
 	quotation := v1.Group("/quotations")
+	quotation.Get("/", authMiddleware.Auth, quotationHandler.HandleListQuotations)
 	quotation.Patch("/:id/confirm", authMiddleware.Auth, quotationHandler.HandlerConfirmQuotation)
 	quotation.Patch("/:id/cancel", authMiddleware.Auth, quotationHandler.HandlerCancelQuotation)
 
