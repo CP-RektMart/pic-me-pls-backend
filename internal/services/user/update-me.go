@@ -15,7 +15,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 )
 
-func (h *Handler) RegisterUpdateMe(api huma.API, middlewares huma.Middlewares) {
+func (h *Handler) RegisterUpdateMe(api huma.API, middlewares ...func(ctx huma.Context, next func(huma.Context))) {
 	huma.Register(api, huma.Operation{
 		OperationID: "update-me",
 		Method:      http.MethodPatch,

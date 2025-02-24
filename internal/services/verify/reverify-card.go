@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (h *Handler) RegisterReVerifyCard(api huma.API, middlewares huma.Middlewares) {
+func (h *Handler) RegisterReVerifyCard(api huma.API, middlewares ...func(ctx huma.Context, next func(huma.Context))) {
 	huma.Register(api, huma.Operation{
 		OperationID: "re-verify-card",
 		Method:      http.MethodPatch,

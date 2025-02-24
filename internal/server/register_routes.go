@@ -17,7 +17,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/verify"
 	"github.com/danielgtaylor/huma/v2"
-	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
 )
 
 func (s *Server) RegisterRoutes(
@@ -34,67 +33,43 @@ func (s *Server) RegisterRoutes(
 	quotationHandler *quotation.Handler,
 	mediaHandler *media.Handler,
 ) {
-	config := huma.DefaultConfig("Pic-Me-Pls Backend", "0.0.1")
-	config.Components.SecuritySchemes = map[string]*huma.SecurityScheme{
-		"bearer": {
-			Type:         "http",
-			Scheme:       "bearer",
-			BearerFormat: "JWT",
-		},
-	}
-	api := humafiber.New(s.app, config)
-
 	// health check
-	{
-		huma.Get(api, "/health", func(ctx context.Context, input *struct{}) (*dto.HumaHttpResponse[string], error) {
-			return &dto.HumaHttpResponse[string]{
-				Body: dto.HttpResponse[string]{
-					Result: "ok",
-				},
-			}, nil
-		})
-	}
-
-	// Middlewares
-	authMiddlewares := huma.Middlewares{
-		func(ctx huma.Context, next func(huma.Context)) {
-			authMiddleware.Auth(ctx, next, api)
-		},
-	}
-	authPhotographerMiddlewares := huma.Middlewares{
-		func(ctx huma.Context, next func(huma.Context)) {
-			authMiddleware.AuthPhotographer(ctx, next, api)
-		},
-	}
+	huma.Get(s.Api, "/health", func(ctx context.Context, input *struct{}) (*dto.HumaHttpResponse[string], error) {
+		return &dto.HumaHttpResponse[string]{
+			Body: dto.HttpResponse[string]{
+				Result: "ok",
+			},
+		}, nil
+	})
 
 	// All, Auth
-	authHandler.RegisterLogin(api)
-	authHandler.RegisterRegister(api)
-	authHandler.RegisterRefreshToken(api)
-	authHandler.RegisterLogout(api, authMiddlewares)
+	authHandler.RegisterLogin(s.Api)
+	authHandler.RegisterRegister(s.Api)
+	authHandler.RegisterRefreshToken(s.Api)
+	authHandler.RegisterLogout(s.Api, authMiddleware.Auth)
 
 	// All, User
-	userHandler.RegisterMe(api, authMiddlewares)
-	userHandler.RegisterUpdateMe(api, authMiddlewares)
+	userHandler.RegisterMe(s.Api, authMiddleware.Auth)
+	userHandler.RegisterUpdateMe(s.Api, authMiddleware.Auth)
 
 	// Customer, Photographers
-	photographersHandler.RegisterGetAllPhotographers(api, authMiddlewares)
+	photographersHandler.RegisterGetAllPhotographers(s.Api, authMiddleware.Auth)
 
 	// Customer, quotation
-	quotationHandler.RegisterAcceptQuotation(api, authMiddlewares)
+	quotationHandler.RegisterAcceptQuotation(s.Api, authMiddleware.Auth)
 
 	// Photographer, verify
-	verifyHandler.RegisterGetCitizenCard(api, authPhotographerMiddlewares)
-	verifyHandler.RegisterVerifyCard(api, authPhotographerMiddlewares)
-	verifyHandler.RegisterReVerifyCard(api, authPhotographerMiddlewares)
+	verifyHandler.RegisterGetCitizenCard(s.Api, authMiddleware.AuthPhotographer)
+	verifyHandler.RegisterVerifyCard(s.Api, authMiddleware.AuthPhotographer)
+	verifyHandler.RegisterReVerifyCard(s.Api, authMiddleware.AuthPhotographer)
 
 	// Photographer, packages
-	packagesHandler.RegisterGetAllPackages(api, authMiddlewares)
-	packagesHandler.RegisterCreatePackage(api, authPhotographerMiddlewares)
-	packagesHandler.RegisterUpdatePackage(api, authPhotographerMiddlewares)
+	packagesHandler.RegisterGetAllPackages(s.Api, authMiddleware.Auth)
+	packagesHandler.RegisterCreatePackage(s.Api, authMiddleware.AuthPhotographer)
+	packagesHandler.RegisterUpdatePackage(s.Api, authMiddleware.AuthPhotographer)
 
 	// Photographer, media
-	mediaHandler.RegisterCreateMedia(api, authPhotographerMiddlewares)
-	mediaHandler.RegisterUpdateMedia(api, authPhotographerMiddlewares)
-	mediaHandler.RegisterDeleteMedia(api, authPhotographerMiddlewares)
+	mediaHandler.RegisterCreateMedia(s.Api, authMiddleware.AuthPhotographer)
+	mediaHandler.RegisterUpdateMedia(s.Api, authMiddleware.AuthPhotographer)
+	mediaHandler.RegisterDeleteMedia(s.Api, authMiddleware.AuthPhotographer)
 }

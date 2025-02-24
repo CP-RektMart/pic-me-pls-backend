@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (h *Handler) RegisterDeleteMedia(api huma.API, middlewares huma.Middlewares) {
+func (h *Handler) RegisterDeleteMedia(api huma.API, middlewares ...func(ctx huma.Context, next func(huma.Context))) {
 	huma.Register(api, huma.Operation{
 		OperationID: "delete-media",
 		Method:      http.MethodDelete,

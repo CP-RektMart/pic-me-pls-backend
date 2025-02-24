@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (h *Handler) RegisterGetCitizenCard(api huma.API, middlewares huma.Middlewares) {
+func (h *Handler) RegisterGetCitizenCard(api huma.API, middlewares ...func(ctx huma.Context, next func(huma.Context))) {
 	huma.Register(api, huma.Operation{
 		OperationID: "get-citizen-card",
 		Method:      http.MethodGet,

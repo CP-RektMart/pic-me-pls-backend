@@ -46,7 +46,7 @@ func main() {
 	jwtService := jwt.New(config.JWT, store.Cache)
 
 	// middlewares
-	authMiddleware := authentication.NewAuthMiddleware(jwtService)
+	authMiddleware := authentication.NewAuthMiddleware(server.Api, jwtService)
 
 	// handlers
 	authHandler := auth.NewHandler(store, validate, jwtService, authMiddleware, config.GoogleClientID)

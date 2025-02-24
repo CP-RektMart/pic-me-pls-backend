@@ -12,6 +12,8 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/requestlogger"
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -33,6 +35,7 @@ type CorsConfig struct {
 type Server struct {
 	config Config
 	app    *fiber.App
+	Api    huma.API
 }
 
 func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *database.Store) *Server {
@@ -56,9 +59,20 @@ func New(config Config, corsConfig CorsConfig, jwtConfig jwt.Config, db *databas
 		Use(requestid.New()).
 		Use(requestlogger.New())
 
+	humaConfig := huma.DefaultConfig("Pic-Me-Pls Backend", "0.0.1")
+	humaConfig.Components.SecuritySchemes = map[string]*huma.SecurityScheme{
+		"bearer": {
+			Type:         "http",
+			Scheme:       "bearer",
+			BearerFormat: "JWT",
+		},
+	}
+	api := humafiber.New(app, humaConfig)
+
 	return &Server{
 		config: config,
 		app:    app,
+		Api:    api,
 	}
 }
 

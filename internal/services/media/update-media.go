@@ -16,7 +16,7 @@ var (
 	ErrorMediaNotAllowed = errors.New("MEDIA_NOT_ALLOWED")
 )
 
-func (h *Handler) RegisterUpdateMedia(api huma.API, middlewares huma.Middlewares) {
+func (h *Handler) RegisterUpdateMedia(api huma.API, middlewares ...func(ctx huma.Context, next func(huma.Context))) {
 	huma.Register(api, huma.Operation{
 		OperationID: "update-media",
 		Method:      http.MethodPatch,

@@ -17,28 +17,30 @@ var (
 )
 
 type AuthMiddleware interface {
-	Auth(ctx huma.Context, next func(huma.Context), api huma.API)
-	AuthAdmin(ctx huma.Context, next func(huma.Context), api huma.API)
-	AuthPhotographer(ctx huma.Context, next func(huma.Context), api huma.API)
+	Auth(ctx huma.Context, next func(huma.Context))
+	AuthAdmin(ctx huma.Context, next func(huma.Context))
+	AuthPhotographer(ctx huma.Context, next func(huma.Context))
 	GetUserIDFromContext(ctx context.Context) (uint, error)
 	GetJWTEntityFromContext(ctx context.Context) (jwt.JWTentity, error)
 }
 
 type authMiddleware struct {
+	Api        huma.API
 	jwtService *jwt.JWT
 }
 
-func NewAuthMiddleware(jwtService *jwt.JWT) AuthMiddleware {
+func NewAuthMiddleware(api huma.API, jwtService *jwt.JWT) AuthMiddleware {
 	return &authMiddleware{
+		Api:        api,
 		jwtService: jwtService,
 	}
 }
 
-func (r *authMiddleware) Auth(ctx huma.Context, next func(huma.Context), api huma.API) {
+func (r *authMiddleware) Auth(ctx huma.Context, next func(huma.Context)) {
 	tokenByte := ctx.Header("Authorization")
 
 	if len(tokenByte) < 7 {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
@@ -46,7 +48,7 @@ func (r *authMiddleware) Auth(ctx huma.Context, next func(huma.Context), api hum
 
 	bearerToken := tokenByte[7:]
 	if len(bearerToken) == 0 {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
@@ -54,7 +56,7 @@ func (r *authMiddleware) Auth(ctx huma.Context, next func(huma.Context), api hum
 
 	claims, err := r.validateToken(ctx.Context(), bearerToken)
 	if err != nil {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
@@ -64,10 +66,10 @@ func (r *authMiddleware) Auth(ctx huma.Context, next func(huma.Context), api hum
 	next(userContext)
 }
 
-func (r *authMiddleware) AuthAdmin(ctx huma.Context, next func(huma.Context), api huma.API) {
+func (r *authMiddleware) AuthAdmin(ctx huma.Context, next func(huma.Context)) {
 	tokenByte := ctx.Header("Authorization")
 	if len(tokenByte) < 7 {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
@@ -75,7 +77,7 @@ func (r *authMiddleware) AuthAdmin(ctx huma.Context, next func(huma.Context), ap
 
 	bearerToken := tokenByte[7:]
 	if len(bearerToken) == 0 {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
@@ -83,14 +85,14 @@ func (r *authMiddleware) AuthAdmin(ctx huma.Context, next func(huma.Context), ap
 
 	claims, err := r.validateToken(ctx.Context(), bearerToken)
 	if err != nil {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
 	}
 
 	if claims.Role != model.UserRoleAdmin {
-		if err := huma.WriteErr(api, ctx, http.StatusForbidden, "no permission", ErrNoPermission); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusForbidden, "no permission", ErrNoPermission); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
@@ -100,11 +102,11 @@ func (r *authMiddleware) AuthAdmin(ctx huma.Context, next func(huma.Context), ap
 	next(userContext)
 }
 
-func (r *authMiddleware) AuthPhotographer(ctx huma.Context, next func(huma.Context), api huma.API) {
+func (r *authMiddleware) AuthPhotographer(ctx huma.Context, next func(huma.Context)) {
 	tokenByte := ctx.Header("Authorization")
 
 	if len(tokenByte) < 7 {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
@@ -112,7 +114,7 @@ func (r *authMiddleware) AuthPhotographer(ctx huma.Context, next func(huma.Conte
 
 	bearerToken := tokenByte[7:]
 	if len(bearerToken) == 0 {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
@@ -120,14 +122,14 @@ func (r *authMiddleware) AuthPhotographer(ctx huma.Context, next func(huma.Conte
 
 	claims, err := r.validateToken(ctx.Context(), bearerToken)
 	if err != nil {
-		if err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusUnauthorized, "invalid token", ErrInvalidToken); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
 	}
 
 	if claims.Role != model.UserRolePhotographer {
-		if err := huma.WriteErr(api, ctx, http.StatusForbidden, "no permission", ErrNoPermission); err != nil {
+		if err := huma.WriteErr(r.Api, ctx, http.StatusForbidden, "no permission", ErrNoPermission); err != nil {
 			logger.ErrorContext(ctx.Context(), "failed to write error", err)
 		}
 		return
