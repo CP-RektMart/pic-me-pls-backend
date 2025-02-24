@@ -33,15 +33,7 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	// Set default values
-	if params.Page <= 0 {
-		params.Page = 1
-	}
-	if params.PageSize <= 0 {
-		params.PageSize = 5
-	}
-
-	offset := (params.Page - 1) * params.PageSize
+	page, pageSize, offset := dto.GetPaginationData(params.PaginationRequest, 1, 5)
 
 	// Query photographers
 	query := h.store.DB.
@@ -54,10 +46,10 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 	if err := query.Model(&model.Photographer{}).Count(&totalCount).Error; err != nil {
 		return errors.Wrap(err, "Error counting photographers")
 	}
-	totalPage := (int(totalCount) + params.PageSize - 1) / params.PageSize
+	totalPage := (int(totalCount) + pageSize - 1) / pageSize
 
 	// Retrieve photographers
-	if err := query.Limit(params.PageSize).Offset(offset).Find(&photographers).Error; err != nil {
+	if err := query.Limit(pageSize).Offset(offset).Find(&photographers).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("No photographers found", err)
 		}
@@ -71,8 +63,8 @@ func (h *Handler) HandleGetAllPhotographers(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[dto.PhotographerResponse]{
-		Page:      params.Page,
-		PageSize:  params.PageSize,
+		Page:      page,
+		PageSize:  pageSize,
 		TotalPage: totalPage,
 		Data:      photographerResponses,
 	})

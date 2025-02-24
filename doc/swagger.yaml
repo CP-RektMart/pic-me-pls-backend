@@ -2,6 +2,8 @@ components:
   schemas:
     dto.CategoryResponse:
       properties:
+        description:
+          type: string
         id:
           type: integer
         name:
@@ -17,6 +19,16 @@ components:
           type: string
         picture:
           type: string
+      type: object
+    dto.CreateCategoryRequest:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+      required:
+      - description
+      - name
       type: object
     dto.CreateMediaRequest:
       properties:
@@ -59,6 +71,11 @@ components:
       properties:
         error:
           type: string
+      type: object
+    dto.HttpResponse-PaginationResponse[dto_CategoryResponse]:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PaginationResponse-dto_CategoryResponse'
       type: object
     dto.HttpResponse-dto_CitizenCardResponse:
       properties:
@@ -176,6 +193,11 @@ components:
         data:
           items:
             $ref: '#/components/schemas/dto.QuotationResponse'
+    dto.PaginationResponse-dto_CategoryResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.CategoryResponse'
           type: array
           uniqueItems: false
         page:
@@ -310,6 +332,17 @@ components:
           type: integer
         refreshToken:
           type: string
+      type: object
+    dto.UpdateCategoryRequest:
+      properties:
+        description:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
       type: object
     dto.UpdateMediaRequest:
       properties:
@@ -508,6 +541,149 @@ paths:
       summary: Register
       tags:
       - auth
+  /api/v1/categories:
+    get:
+      description: list category
+      parameters:
+      - description: 'Page number for pagination (default: 1)'
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: 'Number of records per page (default: 20)'
+        in: query
+        name: pageSize
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-PaginationResponse[dto_CategoryResponse]'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: list category
+      tags:
+      - category
+    post:
+      description: create category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreateCategoryRequest'
+        description: request body
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: create category
+      tags:
+      - category
+  /api/v1/categories/{id}:
+    delete:
+      description: delete category
+      parameters:
+      - description: category id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: delete category
+      tags:
+      - category
+    patch:
+      description: update category
+      parameters:
+      - description: category id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.UpdateCategoryRequest'
+        description: request body (don't need to include id)
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: update category
+      tags:
+      - category
   /api/v1/me:
     get:
       description: Get me
@@ -726,7 +902,22 @@ paths:
           type: integer
       - description: Page size
         in: query
-        name: page_size
+        name: pageSize
+        schema:
+          type: integer
+      - description: Minimum price
+        in: query
+        name: minPrice
+        schema:
+          type: number
+      - description: Maximum price
+        in: query
+        name: maxPrice
+        schema:
+          type: number
+      - description: Photographer ID
+        in: query
+        name: photographerId
         schema:
           type: integer
       responses:
@@ -998,12 +1189,24 @@ paths:
       responses:
         "204":
           description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
         "403":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
         "500":
           content:
             application/json:
@@ -1013,5 +1216,47 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Accept quotation
+      tags:
+      - quotation
+  /api/v1/quotations/{id}/cancel:
+    patch:
+      description: cancelled quotaion
+      parameters:
+      - description: quotaion id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: cancelled quotation
       tags:
       - quotation

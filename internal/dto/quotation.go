@@ -18,7 +18,11 @@ type QuotationResponse struct {
 	ToDate       time.Time             `json:"toDate"`
 }
 
-type AcceptQuotationRequest struct {
+type ConfirmQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
+type CancelQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
