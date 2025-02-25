@@ -17,7 +17,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/objects"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
@@ -65,7 +65,7 @@ func main() {
 	reviewHandler := review.NewHandler(store, validate)
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
-	objectHandler := object.NewHandler(store, config.Storage)
+	objectHandler := objects.NewHandler(store, config.Storage)
 	quotationHandler := quotation.NewHandler(store, authMiddleware, validate)
 	mediaHandler := media.NewHandler(store, validate, authMiddleware)
 
