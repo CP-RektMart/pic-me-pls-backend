@@ -10,7 +10,7 @@ import (
 
 // @Summary			list category
 // @Description			list category
-// @Tags			category
+// @Tags			categories
 // @Router			/api/v1/categories [GET]
 // @Param			page		query		int	false	"Page number for pagination (default: 1)"
 // @Param			pageSize	query		int	false	"Number of records per page (default: 20)"

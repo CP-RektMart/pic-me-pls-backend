@@ -11,7 +11,7 @@ import (
 
 // @Summary			Get Quotation By ID
 // @Description		Get Quotation By ID
-// @Tags			quotation
+// @Tags			quotations
 // @Router			/api/v1/quotations/{id} [GET]
 // @Security		ApiKeyAuth
 // @Success			200	{object}	dto.HttpResponse[dto.QuotationResponse]

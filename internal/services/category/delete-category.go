@@ -10,8 +10,8 @@ import (
 
 // @Summary			delete category
 // @Description			delete category
-// @Tags			category
-// @Router			/api/v1/categories/{id} [DELETE]
+// @Tags			categories
+// @Router			/api/v1/admin/categories/{id} [DELETE]
 // @Security			ApiKeyAuth
 // @Param 			id	 	path 	uint			 	true 	"category id"
 // @Success			204

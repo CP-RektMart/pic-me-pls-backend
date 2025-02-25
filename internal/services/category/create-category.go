@@ -10,8 +10,8 @@ import (
 
 // @Summary			create category
 // @Description			create category
-// @Tags			category
-// @Router			/api/v1/categories [POST]
+// @Tags			categories
+// @Router			/api/v1/admin/categories [POST]
 // @Security			ApiKeyAuth
 // @Param 			RequestBody 	body 	dto.CreateCategoryRequest 	true 	"request body"
 // @Success			201

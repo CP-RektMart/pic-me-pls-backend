@@ -12,7 +12,7 @@ import (
 // @Summary			Create Media
 // @Description		Create media by photographer
 // @Tags			media
-// @Router			/api/v1/media [POST]
+// @Router			/api/v1/photographer/media [POST]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.CreateMediaRequest  true  "Media details"
 // @Success			201

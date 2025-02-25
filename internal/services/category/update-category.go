@@ -11,8 +11,8 @@ import (
 
 // @Summary			update category
 // @Description			update category
-// @Tags			category
-// @Router			/api/v1/categories/{id} [PATCH]
+// @Tags			categories
+// @Router			/api/v1/admin/categories/{id} [PATCH]
 // @Security			ApiKeyAuth
 // @Param 			id	 	path 	uint			 	true 	"category id"
 // @Param 			RequestBody 	body 	dto.UpdateCategoryRequest 	true 	"request body (don't need to include id)"

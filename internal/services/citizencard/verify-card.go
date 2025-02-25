@@ -1,4 +1,4 @@
-package photographer
+package citizencard
 
 import (
 	"context"
@@ -15,8 +15,8 @@ import (
 
 // @Summary			Verify Citizen Card
 // @Description		Verify Photographer Citizen Card
-// @Tags			photographer
-// @Router			/api/v1/photographer/verify [POST]
+// @Tags			citizencard
+// @Router			/api/v1/photographer/citizen-card/verify [POST]
 // @Security		ApiKeyAuth
 // @Accept			multipart/form-data
 // @Param 			cardPicture 	formData 	file		false	"Card picture (optional)"

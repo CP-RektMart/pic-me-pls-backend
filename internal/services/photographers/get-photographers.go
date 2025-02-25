@@ -1,4 +1,4 @@
-package photographer
+package photographers
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -11,7 +11,7 @@ import (
 
 // @Summary			Get All Photographers
 // @Description		Retrieve a paginated list of photographers, optionally filtered by name.
-// @Tags			photographer
+// @Tags			photographers
 // @Router			/api/v1/photographers [GET]
 // @Param			page		query		int	false	"Page number for pagination (default: 1)"
 // @Param			pageSize	query		int	false	"Number of records per page (default: 5, max: 20)"
