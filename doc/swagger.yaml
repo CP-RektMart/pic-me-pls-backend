@@ -1,467 +1,474 @@
-components:
-  schemas:
-    dto.CategoryResponse:
-      properties:
-        description:
-          type: string
-        id:
-          type: integer
-        name:
-          type: string
-      type: object
-    dto.CitizenCardResponse:
-      properties:
-        citizenId:
-          type: string
-        expireDate:
-          type: string
-        laserId:
-          type: string
-        picture:
-          type: string
-      type: object
-    dto.CreateCategoryRequest:
-      properties:
-        description:
-          type: string
-        name:
-          type: string
-      required:
-      - description
-      - name
-      type: object
-    dto.CreateMediaRequest:
-      properties:
-        description:
-          type: string
-        packageId:
-          minimum: 1
-          type: integer
-        pictureUrl:
-          type: string
-      required:
-      - packageId
-      - pictureUrl
-      type: object
-    dto.CreatePackageRequest:
-      properties:
-        description:
-          type: string
-        media:
-          items:
-            $ref: '#/components/schemas/dto.MediaPackageRequest'
-          type: array
-          uniqueItems: false
-        name:
-          type: string
-        price:
-          type: number
-      required:
-      - description
-      - media
-      - name
-      - price
-      type: object
-    dto.DeleteMediaRequest:
-      properties:
-        mediaId:
-          type: integer
-      type: object
-    dto.HttpError:
-      properties:
-        error:
-          type: string
-      type: object
-    dto.HttpResponse-PaginationResponse[dto_CategoryResponse]:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.PaginationResponse-dto_CategoryResponse'
-      type: object
-    dto.HttpResponse-dto_CitizenCardResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.CitizenCardResponse'
-      type: object
-    dto.HttpResponse-dto_LoginResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.LoginResponse'
-      type: object
-    dto.HttpResponse-dto_ObjectUploadResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.ObjectUploadResponse'
-      type: object
-    dto.HttpResponse-dto_QuotationResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.QuotationResponse'
-      type: object
-    dto.HttpResponse-dto_RegisterResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.RegisterResponse'
-      type: object
-    dto.HttpResponse-dto_TokenResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.TokenResponse'
-      type: object
-    dto.HttpResponse-dto_UserResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.UserResponse'
-      type: object
-    dto.LoginRequest:
-      properties:
-        idToken:
-          type: string
-        provider:
-          description: GOOGLE
-          type: string
-      required:
-      - idToken
-      - provider
-      type: object
-    dto.LoginResponse:
-      properties:
-        accessToken:
-          type: string
-        exp:
-          type: integer
-        refreshToken:
-          type: string
-        user:
-          $ref: '#/components/schemas/dto.UserResponse'
-      type: object
-    dto.MediaPackageRequest:
-      properties:
-        description:
-          type: string
-        pictureUrl:
-          type: string
-      required:
-      - pictureUrl
-      type: object
-    dto.MediaResponse:
-      properties:
-        id:
-          type: integer
-        pictureUrl:
-          type: string
-      type: object
-    dto.ObjectUploadResponse:
-      properties:
-        url:
-          type: string
-      type: object
-    dto.PackageResponse:
-      properties:
-        categories:
-          items:
-            $ref: '#/components/schemas/dto.CategoryResponse'
-          type: array
-          uniqueItems: false
-        description:
-          type: string
-        id:
-          type: integer
-        media:
-          items:
-            $ref: '#/components/schemas/dto.MediaResponse'
-          type: array
-          uniqueItems: false
-        name:
-          type: string
-        photographer:
-          $ref: '#/components/schemas/dto.PhotographerResponse'
-        price:
-          type: number
-        reviews:
-          items:
-            $ref: '#/components/schemas/dto.ReviewResponse'
-          type: array
-          uniqueItems: false
-        tags:
-          items:
-            $ref: '#/components/schemas/dto.TagResponse'
-          type: array
-          uniqueItems: false
-      type: object
-    dto.PaginationResponse-QuotationResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/dto.QuotationResponse'
-          type: array
-          uniqueItems: false
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        totalPage:
-          type: integer
-      type: object
-    dto.PaginationResponse-dto_CategoryResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/dto.CategoryResponse'
-          type: array
-          uniqueItems: false
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        totalPage:
-          type: integer
-      type: object
-    dto.PaginationResponse-dto_PackageResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/dto.PackageResponse'
-          type: array
-          uniqueItems: false
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        totalPage:
-          type: integer
-      type: object
-    dto.PaginationResponse-dto_PhotographerResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/dto.PhotographerResponse'
-          type: array
-          uniqueItems: false
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        totalPage:
-          type: integer
-      type: object
-    dto.PhotographerResponse:
-      properties:
-        activeStatus:
-          type: boolean
-        email:
-          type: string
-        id:
-          type: integer
-        isVerified:
-          type: boolean
-        name:
-          type: string
-        phoneNumber:
-          type: string
-        profilePictureUrl:
-          type: string
-      type: object
-    dto.QuotationResponse:
-      properties:
-        customer:
-          $ref: '#/components/schemas/dto.UserResponse'
-        description:
-          type: string
-        fromDate:
-          type: string
-        id:
-          type: integer
-        package:
-          $ref: '#/components/schemas/dto.PackageResponse'
-        photographer:
-          $ref: '#/components/schemas/dto.PhotographerResponse'
-        price:
-          type: number
-        status:
-          $ref: '#/components/schemas/model.QuotationStatus'
-        toDate:
-          type: string
-      type: object
-    dto.RefreshTokenRequest:
-      properties:
-        refreshToken:
-          type: string
-      required:
-      - refreshToken
-      type: object
-    dto.RegisterRequest:
-      properties:
-        idToken:
-          type: string
-        provider:
-          description: GOOGLE
-          type: string
-        role:
-          description: CUSTOMER, PHOTOGRAPHER, ADMIN
-          type: string
-      required:
-      - idToken
-      - provider
-      - role
-      type: object
-    dto.RegisterResponse:
-      properties:
-        accessToken:
-          type: string
-        exp:
-          type: integer
-        refreshToken:
-          type: string
-        user:
-          $ref: '#/components/schemas/dto.UserResponse'
-      type: object
-    dto.ReviewResponse:
-      properties:
-        comment:
-          type: string
-        customer:
-          type: string
-        id:
-          type: integer
-        rating:
-          type: number
-      type: object
-    dto.TagResponse:
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-      type: object
-    dto.TokenResponse:
-      properties:
-        accessToken:
-          type: string
-        exp:
-          type: integer
-        refreshToken:
-          type: string
-      type: object
-    dto.UpdateCategoryRequest:
-      properties:
-        description:
-          type: string
-        id:
-          type: integer
-        name:
-          type: string
-      required:
-      - id
-      type: object
-    dto.UpdateMediaRequest:
-      properties:
-        description:
-          type: string
-        mediaId:
-          minimum: 1
-          type: integer
-        pictureUrl:
-          type: string
-      required:
-      - mediaId
-      type: object
-    dto.UpdatePackageRequest:
-      properties:
-        description:
-          minLength: 0
-          type: string
-        name:
-          type: string
-        packageId:
-          type: integer
-        price:
-          minimum: 0
-          type: number
-      type: object
-    dto.UserResponse:
-      properties:
-        accountNo:
-          type: string
-        bank:
-          type: string
-        bankBranch:
-          type: string
-        email:
-          type: string
-        facebook:
-          type: string
-        id:
-          type: integer
-        instagram:
-          type: string
-        name:
-          type: string
-        phoneNumber:
-          type: string
-        profilePictureUrl:
-          type: string
-        role:
-          $ref: '#/components/schemas/model.UserRole'
-      type: object
-    model.QuotationStatus:
-      type: string
-      x-enum-varnames:
-      - QuotationPending
-      - QuotationConfirm
-      - QuotationCancelled
-      - QuotationPaid
-    model.UserRole:
-      type: string
-      x-enum-varnames:
-      - UserRoleUnknown
-      - UserRoleAdmin
-      - UserRolePhotographer
-      - UserRoleCustomer
-  securitySchemes:
-    "@securitydefinitions.apikey\tApiKeyAuth":
-      in: header
-      name: Authorization
-      type: apiKey
-externalDocs:
-  description: ""
-  url: ""
+definitions:
+  dto.CategoryResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.CitizenCardResponse:
+    properties:
+      citizenId:
+        type: string
+      expireDate:
+        type: string
+      laserId:
+        type: string
+      picture:
+        type: string
+    type: object
+  dto.CreateCategoryRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  dto.CreateMediaRequest:
+    properties:
+      description:
+        type: string
+      packageId:
+        minimum: 1
+        type: integer
+      pictureUrl:
+        type: string
+    required:
+    - packageId
+    - pictureUrl
+    type: object
+  dto.CreatePackageRequest:
+    properties:
+      description:
+        type: string
+      media:
+        items:
+          $ref: '#/definitions/dto.MediaPackageRequest'
+        type: array
+      name:
+        type: string
+      price:
+        type: number
+    required:
+    - description
+    - media
+    - name
+    - price
+    type: object
+  dto.CreateQuotationRequest:
+    properties:
+      customerId:
+        type: integer
+      description:
+        type: string
+      fromDate:
+        type: string
+      packageId:
+        type: integer
+      price:
+        type: number
+      toDate:
+        type: string
+    required:
+    - customerId
+    - fromDate
+    - packageId
+    - price
+    - toDate
+    type: object
+  dto.DeleteMediaRequest:
+    properties:
+      mediaId:
+        type: integer
+    type: object
+  dto.HttpError:
+    properties:
+      error:
+        type: string
+    type: object
+  dto.HttpResponse-PaginationResponse[dto_CategoryResponse]:
+    properties:
+      result:
+        $ref: '#/definitions/dto.PaginationResponse-dto_CategoryResponse'
+    type: object
+  dto.HttpResponse-dto_CitizenCardResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.CitizenCardResponse'
+    type: object
+  dto.HttpResponse-dto_LoginResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.LoginResponse'
+    type: object
+  dto.HttpResponse-dto_ObjectUploadResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.ObjectUploadResponse'
+    type: object
+  dto.HttpResponse-dto_QuotationResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.QuotationResponse'
+    type: object
+  dto.HttpResponse-dto_RegisterResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.RegisterResponse'
+    type: object
+  dto.HttpResponse-dto_TokenResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.TokenResponse'
+    type: object
+  dto.HttpResponse-dto_UserResponse:
+    properties:
+      result:
+        $ref: '#/definitions/dto.UserResponse'
+    type: object
+  dto.LoginRequest:
+    properties:
+      idToken:
+        type: string
+      provider:
+        description: GOOGLE
+        type: string
+    required:
+    - idToken
+    - provider
+    type: object
+  dto.LoginResponse:
+    properties:
+      accessToken:
+        type: string
+      exp:
+        type: integer
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserResponse'
+    type: object
+  dto.MediaPackageRequest:
+    properties:
+      description:
+        type: string
+      pictureUrl:
+        type: string
+    required:
+    - pictureUrl
+    type: object
+  dto.MediaResponse:
+    properties:
+      id:
+        type: integer
+      pictureUrl:
+        type: string
+    type: object
+  dto.ObjectUploadResponse:
+    properties:
+      url:
+        type: string
+    type: object
+  dto.PackageResponse:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/dto.CategoryResponse'
+        type: array
+      description:
+        type: string
+      id:
+        type: integer
+      media:
+        items:
+          $ref: '#/definitions/dto.MediaResponse'
+        type: array
+      name:
+        type: string
+      photographer:
+        $ref: '#/definitions/dto.PhotographerResponse'
+      price:
+        type: number
+      reviews:
+        items:
+          $ref: '#/definitions/dto.ReviewResponse'
+        type: array
+      tags:
+        items:
+          $ref: '#/definitions/dto.TagResponse'
+        type: array
+    type: object
+  dto.PaginationResponse-QuotationResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.QuotationResponse'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalPage:
+        type: integer
+    type: object
+  dto.PaginationResponse-dto_CategoryResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.CategoryResponse'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalPage:
+        type: integer
+    type: object
+  dto.PaginationResponse-dto_PackageResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.PackageResponse'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalPage:
+        type: integer
+    type: object
+  dto.PaginationResponse-dto_PhotographerResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.PhotographerResponse'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalPage:
+        type: integer
+    type: object
+  dto.PhotographerResponse:
+    properties:
+      activeStatus:
+        type: boolean
+      email:
+        type: string
+      id:
+        type: integer
+      isVerified:
+        type: boolean
+      name:
+        type: string
+      phoneNumber:
+        type: string
+      profilePictureUrl:
+        type: string
+    type: object
+  dto.QuotationResponse:
+    properties:
+      customer:
+        $ref: '#/definitions/dto.UserResponse'
+      description:
+        type: string
+      fromDate:
+        type: string
+      id:
+        type: integer
+      package:
+        $ref: '#/definitions/dto.PackageResponse'
+      photographer:
+        $ref: '#/definitions/dto.PhotographerResponse'
+      price:
+        type: number
+      status:
+        $ref: '#/definitions/model.QuotationStatus'
+      toDate:
+        type: string
+    type: object
+  dto.RefreshTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
+    type: object
+  dto.RegisterRequest:
+    properties:
+      idToken:
+        type: string
+      provider:
+        description: GOOGLE
+        type: string
+      role:
+        description: CUSTOMER, PHOTOGRAPHER, ADMIN
+        type: string
+    required:
+    - idToken
+    - provider
+    - role
+    type: object
+  dto.RegisterResponse:
+    properties:
+      accessToken:
+        type: string
+      exp:
+        type: integer
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserResponse'
+    type: object
+  dto.ReviewResponse:
+    properties:
+      comment:
+        type: string
+      customer:
+        type: string
+      id:
+        type: integer
+      rating:
+        type: number
+    type: object
+  dto.TagResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.TokenResponse:
+    properties:
+      accessToken:
+        type: string
+      exp:
+        type: integer
+      refreshToken:
+        type: string
+    type: object
+  dto.UpdateCategoryRequest:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - id
+    type: object
+  dto.UpdateMediaRequest:
+    properties:
+      description:
+        type: string
+      mediaId:
+        minimum: 1
+        type: integer
+      pictureUrl:
+        type: string
+    required:
+    - mediaId
+    type: object
+  dto.UpdatePackageRequest:
+    properties:
+      description:
+        minLength: 0
+        type: string
+      name:
+        type: string
+      packageId:
+        type: integer
+      price:
+        minimum: 0
+        type: number
+    type: object
+  dto.UserResponse:
+    properties:
+      accountNo:
+        type: string
+      bank:
+        type: string
+      bankBranch:
+        type: string
+      email:
+        type: string
+      facebook:
+        type: string
+      id:
+        type: integer
+      instagram:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+      profilePictureUrl:
+        type: string
+      role:
+        $ref: '#/definitions/model.UserRole'
+    type: object
+  model.QuotationStatus:
+    enum:
+    - PENDING
+    - CONFIRMED
+    - CANCELLED
+    - PAID
+    type: string
+    x-enum-varnames:
+    - QuotationPending
+    - QuotationConfirm
+    - QuotationCancelled
+    - QuotationPaid
+  model.UserRole:
+    enum:
+    - ""
+    - ADMIN
+    - PHOTOGRAPHER
+    - CUSTOMER
+    type: string
+    x-enum-varnames:
+    - UserRoleUnknown
+    - UserRoleAdmin
+    - UserRolePhotographer
+    - UserRoleCustomer
 info:
+  contact: {}
   description: Pic Me Pls API Documentation
   title: Pic Me Pls API
   version: "0.1"
-openapi: 3.1.0
 paths:
   /api/v1/admin/categories:
     post:
       description: create category
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreateCategoryRequest'
-        description: request body
+      parameters:
+      - description: request body
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCategoryRequest'
       responses:
         "201":
           description: Created
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: create category
@@ -475,29 +482,22 @@ paths:
         in: path
         name: id
         required: true
-        schema:
-          type: integer
+        type: integer
       responses:
         "204":
           description: No Content
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: delete category
@@ -510,36 +510,28 @@ paths:
         in: path
         name: id
         required: true
-        schema:
-          type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.UpdateCategoryRequest'
-        description: request body (don't need to include id)
+        type: integer
+      - description: request body (don't need to include id)
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCategoryRequest'
       responses:
         "204":
           description: No Content
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: update category
@@ -548,32 +540,26 @@ paths:
   /api/v1/auth/login:
     post:
       description: Login
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.LoginRequest'
-        description: request request
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_LoginResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_LoginResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       summary: Login
       tags:
       - auth
@@ -584,17 +570,13 @@ paths:
         "204":
           description: No Content
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Logout
@@ -603,64 +585,52 @@ paths:
   /api/v1/auth/refresh-token:
     post:
       description: Refresh Token
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.RefreshTokenRequest'
-        description: request request
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.RefreshTokenRequest'
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_TokenResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_TokenResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       summary: Refresh Token
       tags:
       - auth
   /api/v1/auth/register:
     post:
       description: Register
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.RegisterRequest'
-        description: request request
+      parameters:
+      - description: request request
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_RegisterResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_RegisterResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       summary: Register
       tags:
       - auth
@@ -671,26 +641,20 @@ paths:
       - description: 'Page number for pagination (default: 1)'
         in: query
         name: page
-        schema:
-          type: integer
+        type: integer
       - description: 'Number of records per page (default: 20)'
         in: query
         name: pageSize
-        schema:
-          type: integer
+        type: integer
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-PaginationResponse[dto_CategoryResponse]'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-PaginationResponse[dto_CategoryResponse]'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       summary: list category
       tags:
       - categories
@@ -702,35 +666,26 @@ paths:
         in: path
         name: id
         required: true
-        schema:
-          type: integer
+        type: integer
       responses:
         "204":
           description: No Content
         "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: cancelled quotation
@@ -744,35 +699,26 @@ paths:
         in: path
         name: id
         required: true
-        schema:
-          type: integer
+        type: integer
       responses:
         "204":
           description: No Content
         "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: confirm quotation
@@ -783,55 +729,72 @@ paths:
       description: Get me
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_UserResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_UserResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Get me
       tags:
       - user
     patch:
+      consumes:
+      - multipart/form-data
       description: Update user's profile
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: string
-        description: Bank Branch
+      parameters:
+      - description: Profile picture (optional)
+        in: formData
+        name: profilePicture
+        type: file
+      - description: Name
+        in: formData
+        name: name
+        type: string
+      - description: Phone Number
+        in: formData
+        name: phoneNumber
+        type: string
+      - description: Facebook
+        in: formData
+        name: facebook
+        type: string
+      - description: Instagram
+        in: formData
+        name: instagram
+        type: string
+      - description: Bank
+        in: formData
+        name: bank
+        type: string
+      - description: Account No
+        in: formData
+        name: accountNo
+        type: string
+      - description: Bank Branch
+        in: formData
+        name: bankBranch
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_UserResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_UserResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Update me
@@ -845,54 +808,47 @@ paths:
         in: query
         name: URL
         required: true
-        schema:
-          type: string
+        type: string
       responses:
         "204":
           description: No Content
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       summary: Delete image
       tags:
       - objects
     post:
       description: receive formData body, path (string, folder path, don't include
         ".." or prefix with "/") and file
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: string
-        description: folder enum (PACKAGE, VERIFY_CITIZENCARD, PROFILE_IMAGE)
+      parameters:
+      - description: picture (optional)
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: folder enum (PACKAGE, VERIFY_CITIZENCARD, PROFILE_IMAGE)
+        in: formData
+        name: folder
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_ObjectUploadResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_ObjectUploadResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       summary: Upload image
       tags:
       - objects
@@ -903,47 +859,36 @@ paths:
       - description: Page number
         in: query
         name: page
-        schema:
-          type: integer
+        type: integer
       - description: Page size
         in: query
         name: pageSize
-        schema:
-          type: integer
+        type: integer
       - description: Minimum price
         in: query
         name: minPrice
-        schema:
-          type: number
+        type: number
       - description: Maximum price
         in: query
         name: maxPrice
-        schema:
-          type: number
+        type: number
       - description: Photographer ID
         in: query
         name: photographerId
-        schema:
-          type: integer
+        type: integer
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.PaginationResponse-dto_PackageResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-dto_PackageResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       summary: Get all packages
       tags:
       - packages
@@ -952,23 +897,17 @@ paths:
       description: Get Photographer Citizen Card
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_CitizenCardResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_CitizenCardResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Get Citizen Card
@@ -976,33 +915,42 @@ paths:
       - citizencard
   /api/v1/photographer/citizen-card/reverify:
     patch:
+      consumes:
+      - multipart/form-data
       description: Reverify Photographer Citizen Card
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: string
-        description: Expire Date
+      parameters:
+      - description: Card picture (optional)
+        in: formData
+        name: cardPicture
+        type: file
+      - description: Citizen ID
+        in: formData
+        name: citizenId
         required: true
+        type: string
+      - description: Laser ID
+        in: formData
+        name: laserId
+        required: true
+        type: string
+      - description: Expire Date
+        in: formData
+        name: expireDate
+        required: true
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_CitizenCardResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_CitizenCardResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Reverify Citizen Card
@@ -1010,33 +958,42 @@ paths:
       - citizencard
   /api/v1/photographer/citizen-card/verify:
     post:
+      consumes:
+      - multipart/form-data
       description: Verify Photographer Citizen Card
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: string
-        description: Expire Date
+      parameters:
+      - description: Card picture (optional)
+        in: formData
+        name: cardPicture
+        type: file
+      - description: Citizen ID
+        in: formData
+        name: citizenId
         required: true
+        type: string
+      - description: Laser ID
+        in: formData
+        name: laserId
+        required: true
+        type: string
+      - description: Expire Date
+        in: formData
+        name: expireDate
+        required: true
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_CitizenCardResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_CitizenCardResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Verify Citizen Card
@@ -1045,28 +1002,24 @@ paths:
   /api/v1/photographer/media:
     post:
       description: Create media by photographer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreateMediaRequest'
-        description: Media details
+      parameters:
+      - description: Media details
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.CreateMediaRequest'
       responses:
         "201":
           description: Created
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Create Media
@@ -1075,28 +1028,24 @@ paths:
   /api/v1/photographer/media/{mediaId}:
     delete:
       description: Delete media
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.DeleteMediaRequest'
-        description: Media details
+      parameters:
+      - description: Media details
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.DeleteMediaRequest'
       responses:
         "204":
           description: No Content
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Delete Media
@@ -1104,28 +1053,24 @@ paths:
       - media
     patch:
       description: Update media
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.UpdateMediaRequest'
-        description: Media details
+      parameters:
+      - description: Media details
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateMediaRequest'
       responses:
         "204":
           description: No Content
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Update Media
@@ -1134,28 +1079,24 @@ paths:
   /api/v1/photographer/packages:
     post:
       description: Create Package by photographer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreatePackageRequest'
-        description: Package details
+      parameters:
+      - description: Package details
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePackageRequest'
       responses:
         "201":
           description: Created
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Create Package
@@ -1164,33 +1105,92 @@ paths:
   /api/v1/photographer/packages/{packageId}:
     patch:
       description: Update
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.UpdatePackageRequest'
-        description: Package details
+      parameters:
+      - description: Package details
+        in: body
+        name: RequestBody
         required: true
+        schema:
+          $ref: '#/definitions/dto.UpdatePackageRequest'
       responses:
         "204":
           description: No Content
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Update package
       tags:
       - packages
+  /api/v1/photographer/quotations:
+    post:
+      description: Creates a new quotation for a customer and package
+      parameters:
+      - description: Quotation details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateQuotationRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_QuotationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a quotation
+      tags:
+      - quotations
+  /api/v1/photographer/quotations/{id}:
+    patch:
+      description: Updates an existing quotation
+      parameters:
+      - description: Quotation ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Quotation update details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateQuotationRequest'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update a quotation
+      tags:
+      - quotations
   /api/v1/photographers:
     get:
       description: Retrieve a paginated list of photographers, optionally filtered
@@ -1199,37 +1199,28 @@ paths:
       - description: 'Page number for pagination (default: 1)'
         in: query
         name: page
-        schema:
-          type: integer
+        type: integer
       - description: 'Number of records per page (default: 5, max: 20)'
         in: query
         name: pageSize
-        schema:
-          type: integer
+        type: integer
       - description: Filter by photographer's name (case-insensitive)
         in: query
         name: name
-        schema:
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.PaginationResponse-dto_PhotographerResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-dto_PhotographerResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       summary: Get All Photographers
       tags:
       - photographers
@@ -1240,32 +1231,24 @@ paths:
       - description: Page number
         in: query
         name: page
-        schema:
-          type: integer
+        type: integer
       - description: Page size
         in: query
         name: page_size
-        schema:
-          type: integer
+        type: integer
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.PaginationResponse-QuotationResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-QuotationResponse'
         "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.PaginationResponse-QuotationResponse'
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-QuotationResponse'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: list quotations
@@ -1276,37 +1259,33 @@ paths:
       description: Get Quotation By ID
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_QuotationResponse'
           description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpResponse-dto_QuotationResponse'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.HttpError'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HttpError'
       security:
       - ApiKeyAuth: []
       summary: Get Quotation By ID
       tags:
       - quotations
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

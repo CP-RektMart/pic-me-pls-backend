@@ -11,8 +11,8 @@ import (
 
 // @Summary     Update a quotation
 // @Description Updates an existing quotation
-// @Tags        quotation
-// @Router      /api/v1/quotations/{id} [PATCH]
+// @Tags        quotations
+// @Router      /api/v1/photographer/quotations/{id} [PATCH]
 // @Security    ApiKeyAuth
 // @Param       id    path      uint                 		true  "Quotation ID"
 // @Param       body  body      dto.CreateQuotationRequest       true  "Quotation update details"
@@ -20,7 +20,7 @@ import (
 // @Failure     400   {object}  dto.HttpError
 // @Failure     403   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
-func (h *Handler) HandleUpdate(c *fiber.Ctx) error {
+func (h *Handler) HandleUpdateQuotation(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")

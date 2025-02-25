@@ -11,14 +11,14 @@ import (
 
 // @Summary     Create a quotation
 // @Description Creates a new quotation for a customer and package
-// @Tags        quotation
-// @Router      /api/v1/quotations [POST]
+// @Tags        quotations
+// @Router      /api/v1/photographer/quotations [POST]
 // @Security    ApiKeyAuth
 // @Param       body  body  dto.CreateQuotationRequest  true  "Quotation details"
 // @Success     201   {object}  dto.HttpResponse[dto.QuotationResponse]
 // @Failure     400   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
-func (h *Handler) HandleCreate(c *fiber.Ctx) error {
+func (h *Handler) HandleCreateQuotation(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
@@ -59,16 +59,20 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) 
 		if err := tx.First(&customer, req.CustomerID).Error; err != nil {
 			return apperror.NotFound("customer not found", err)
 		}
+		newQuotation.Customer = customer
 
 		var targetPackage model.Package
 		if err := tx.First(&targetPackage, req.PackageID).Error; err != nil {
 			return apperror.NotFound("package not found", err)
 		}
+		newQuotation.Package = targetPackage
 
 		var photographer model.Photographer
 		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
 			return apperror.NotFound("Photographer not found for user", err)
 		}
+		newQuotation.Photographer = photographer
+		newQuotation.PhotographerID = photographer.ID
 
 		if err := tx.Create(&newQuotation).Error; err != nil {
 			return errors.Wrap(err, "failed to create quotation")
