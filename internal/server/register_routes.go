@@ -73,6 +73,7 @@ func (s *Server) RegisterRoutes(
 		quotations := customer.Group("/quotations")
 		quotations.Patch("/:id/confirm", quotationHandler.HandlerConfirmQuotation)
 		quotations.Patch("/:id/cancel", quotationHandler.HandlerCancelQuotation)
+
 	}
 
 	// photographer
@@ -95,6 +96,10 @@ func (s *Server) RegisterRoutes(
 		media.Post("/", mediaHandler.HandleCreateMedia)
 		media.Patch("/:mediaId", mediaHandler.HandleUpdateMedia)
 		media.Delete("/:mediaId", mediaHandler.HandleDeleteMedia)
+
+		quotations := photographer.Group("/quotations")
+		quotations.Post("/", quotationHandler.HandleCreateQuotation)
+		quotations.Patch("/:id", quotationHandler.HandleUpdateQuotation)
 	}
 
 	// admin
