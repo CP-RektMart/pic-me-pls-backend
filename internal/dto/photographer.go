@@ -6,11 +6,18 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 )
 
-// Form data
-type CitizenCardRequest struct {
-	CitizenID  string    `validate:"required"`
-	LaserID    string    `validate:"required"`
-	ExpireDate time.Time `validate:"required"`
+type VerifyCitizenCardRequest struct {
+	CitizenID  string    `json:"citizenId" validate:"required"`
+	ImageURL   string    `json:"imageUrl" validate:"required"`
+	LaserID    string    `json:"laserId" validate:"required"`
+	ExpireDate time.Time `json:"expireDate" validate:"required"`
+}
+
+type ReVerifyCitizenCardRequest struct {
+	CitizenID  string    `json:"citizenId"`
+	ImageURL   string    `json:"imageUrl"`
+	LaserID    string    `json:"laserId"`
+	ExpireDate time.Time `json:"expireDate"`
 }
 
 type CitizenCardResponse struct {

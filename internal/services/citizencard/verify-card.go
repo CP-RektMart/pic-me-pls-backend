@@ -1,8 +1,6 @@
 package citizencard
 
 import (
-	"context"
-	"mime/multipart"
 	"time"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -18,25 +16,18 @@ import (
 // @Tags			citizencard
 // @Router			/api/v1/photographer/citizen-card/verify [POST]
 // @Security		ApiKeyAuth
-// @Accept			multipart/form-data
-// @Param 			cardPicture 	formData 	file		false	"Card picture (optional)"
-// @Param 			citizenId 		formData 	string		true	"Citizen ID"
-// @Param 			laserId 		formData 	string		true	"Laser ID"
-// @Param 			expireDate 		formData 	string		true	"Expire Date"
+// @Param 			RequestBody 	body 	dto.VerifyCitizenCardRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.CitizenCardRequest)
-	req.CitizenID = c.FormValue("citizenId")
-	req.LaserID = c.FormValue("laserId")
-	req.ExpireDate, err = time.Parse(time.RFC3339, c.FormValue("expireDate"))
-	if err != nil {
+	req := new(dto.VerifyCitizenCardRequest)
+	if err := c.BodyParser(&req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
@@ -44,18 +35,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("cardPicture")
-	if err != nil {
-		return apperror.BadRequest("card Picture is require", errors.Errorf("Field Missing"))
-	}
-
-	var signedURL string
-	signedURL, err = h.uploadCardFile(c.UserContext(), file, citizenCardFolder(userId))
-	if err != nil {
-		return errors.Wrap(err, "File upload failed")
-	}
-
-	user, err := h.createCitizenCard(req, signedURL, userId)
+	user, err := h.createCitizenCard(userID, req.ImageURL, req.CitizenID, req.LaserID, req.ExpireDate)
 	if err != nil {
 		return errors.Wrap(err, "Fail to create citizen card")
 	}
@@ -72,24 +52,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) uploadCardFile(c context.Context, file *multipart.FileHeader, folder string) (string, error) {
-	contentType := file.Header.Get("Content-Type")
-
-	src, err := file.Open()
-	if err != nil {
-		return "", errors.Wrap(err, "failed to open file")
-	}
-	defer src.Close()
-	signedURL, err := h.store.Storage.UploadFile(c, folder+file.Filename, contentType, src, true)
-	if err != nil {
-
-		return "", errors.Wrap(err, "failed to upload file")
-	}
-
-	return signedURL, nil
-}
-
-func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, signedURL string, userId uint) (*model.CitizenCard, error) {
+func (h *Handler) createCitizenCard(userId uint, imageURL, citizenID, laserID string, expireDate time.Time) (*model.CitizenCard, error) {
 	var citizenCard model.CitizenCard
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
@@ -101,14 +64,14 @@ func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, signedURL strin
 
 		// Check if the photographer already has a CitizenCard
 		if photographer.CitizenCardID != nil {
-			return apperror.BadRequest("photographer already has a citizen card", errors.Errorf("Already verified"))
+			return errors.Wrap(ErrAlreadyVerified, "Photographer already has a citizen card")
 		}
 
 		// Create the CitizenCard using the request data
-		citizenCard.CitizenID = req.CitizenID
-		citizenCard.LaserID = req.LaserID
-		citizenCard.Picture = signedURL
-		citizenCard.ExpireDate = req.ExpireDate
+		citizenCard.CitizenID = citizenID
+		citizenCard.LaserID = laserID
+		citizenCard.Picture = imageURL
+		citizenCard.ExpireDate = expireDate
 
 		// Insert the CitizenCard into the database
 		if err := tx.Create(&citizenCard).Error; err != nil {
@@ -123,6 +86,9 @@ func (h *Handler) createCitizenCard(req *dto.CitizenCardRequest, signedURL strin
 
 		return nil
 	}); err != nil {
+		if errors.Is(err, ErrAlreadyVerified) {
+			return nil, apperror.BadRequest("photographer already has a citizen card", errors.Errorf("Already verified"))
+		}
 		return nil, errors.Wrap(err, "failed to create citizen card")
 	}
 
