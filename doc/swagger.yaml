@@ -1,11 +1,8 @@
 definitions:
   dto.CategoryResponse:
     properties:
-<<<<<<< HEAD
       description:
         type: string
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
       id:
         type: integer
       name:
@@ -22,7 +19,6 @@ definitions:
       picture:
         type: string
     type: object
-<<<<<<< HEAD
   dto.CreateCategoryRequest:
     properties:
       description:
@@ -33,8 +29,6 @@ definitions:
     - description
     - name
     type: object
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
   dto.CreateMediaRequest:
     properties:
       description:
@@ -66,7 +60,6 @@ definitions:
     - name
     - price
     type: object
-<<<<<<< HEAD
   dto.CreateQuotationRequest:
     properties:
       customerId:
@@ -88,8 +81,6 @@ definitions:
     - price
     - toDate
     type: object
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
   dto.DeleteMediaRequest:
     properties:
       mediaId:
@@ -100,14 +91,11 @@ definitions:
       error:
         type: string
     type: object
-<<<<<<< HEAD
   dto.HttpResponse-PaginationResponse[dto_CategoryResponse]:
     properties:
       result:
         $ref: '#/definitions/dto.PaginationResponse-dto_CategoryResponse'
     type: object
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
   dto.HttpResponse-dto_CitizenCardResponse:
     properties:
       result:
@@ -206,13 +194,6 @@ definitions:
         $ref: '#/definitions/dto.PhotographerResponse'
       price:
         type: number
-<<<<<<< HEAD
-=======
-      quotations:
-        items:
-          $ref: '#/definitions/dto.QuotationResponse'
-        type: array
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
       reviews:
         items:
           $ref: '#/definitions/dto.ReviewResponse'
@@ -222,7 +203,6 @@ definitions:
           $ref: '#/definitions/dto.TagResponse'
         type: array
     type: object
-<<<<<<< HEAD
   dto.PaginationResponse-QuotationResponse:
     properties:
       data:
@@ -255,12 +235,6 @@ definitions:
         items:
           $ref: '#/definitions/dto.PackageResponse'
         type: array
-=======
-  dto.PaginationResponse-dto_PackageResponse:
-    properties:
-      data:
-        $ref: '#/definitions/dto.PackageResponse'
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
       page:
         type: integer
       pageSize:
@@ -271,13 +245,9 @@ definitions:
   dto.PaginationResponse-dto_PhotographerResponse:
     properties:
       data:
-<<<<<<< HEAD
         items:
           $ref: '#/definitions/dto.PhotographerResponse'
         type: array
-=======
-        $ref: '#/definitions/dto.PhotographerResponse'
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
       page:
         type: integer
       pageSize:
@@ -302,22 +272,14 @@ definitions:
       profilePictureUrl:
         type: string
     type: object
-<<<<<<< HEAD
   dto.QuotationResponse:
     properties:
       customer:
         $ref: '#/definitions/dto.UserResponse'
-=======
-  dto.QuotationRequest:
-    properties:
-      customerId:
-        type: integer
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
       description:
         type: string
       fromDate:
         type: string
-<<<<<<< HEAD
       id:
         type: integer
       package:
@@ -329,30 +291,6 @@ definitions:
       status:
         $ref: '#/definitions/model.QuotationStatus'
       toDate:
-=======
-      packageId:
-        type: integer
-      price:
-        type: number
-      toDate:
-        type: string
-    required:
-    - customerId
-    - fromDate
-    - packageId
-    - price
-    - toDate
-    type: object
-  dto.QuotationResponse:
-    properties:
-      customer:
-        type: string
-      id:
-        type: integer
-      price:
-        type: number
-      status:
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         type: string
     type: object
   dto.RefreshTokenRequest:
@@ -415,7 +353,6 @@ definitions:
       refreshToken:
         type: string
     type: object
-<<<<<<< HEAD
   dto.UpdateCategoryRequest:
     properties:
       description:
@@ -427,8 +364,6 @@ definitions:
     required:
     - id
     type: object
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
   dto.UpdateMediaRequest:
     properties:
       description:
@@ -477,7 +412,6 @@ definitions:
       profilePictureUrl:
         type: string
       role:
-<<<<<<< HEAD
         $ref: '#/definitions/model.UserRole'
     type: object
   model.QuotationStatus:
@@ -504,10 +438,6 @@ definitions:
     - UserRoleAdmin
     - UserRolePhotographer
     - UserRoleCustomer
-=======
-        type: string
-    type: object
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
 info:
   contact: {}
   description: Pic Me Pls API Documentation
@@ -870,86 +800,6 @@ paths:
       summary: Update me
       tags:
       - user
-<<<<<<< HEAD
-=======
-  /api/v1/media:
-    post:
-      description: Create media by photographer
-      parameters:
-      - description: Media details
-        in: body
-        name: RequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateMediaRequest'
-      responses:
-        "201":
-          description: Created
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-      security:
-      - ApiKeyAuth: []
-      summary: Create Media
-      tags:
-      - media
-  /api/v1/media/{mediaId}:
-    delete:
-      description: Delete media
-      parameters:
-      - description: Media details
-        in: body
-        name: RequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/dto.DeleteMediaRequest'
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-      security:
-      - ApiKeyAuth: []
-      summary: Delete Media
-      tags:
-      - media
-    patch:
-      description: Update media
-      parameters:
-      - description: Media details
-        in: body
-        name: RequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpdateMediaRequest'
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-      security:
-      - ApiKeyAuth: []
-      summary: Update Media
-      tags:
-      - media
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
   /api/v1/objects:
     delete:
       description: Delete image
@@ -1012,7 +862,6 @@ paths:
         type: integer
       - description: Page size
         in: query
-<<<<<<< HEAD
         name: pageSize
         type: integer
       - description: Minimum price
@@ -1026,9 +875,6 @@ paths:
       - description: Photographer ID
         in: query
         name: photographerId
-=======
-        name: page_size
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         type: integer
       responses:
         "200":
@@ -1046,60 +892,6 @@ paths:
       summary: Get all packages
       tags:
       - packages
-<<<<<<< HEAD
-=======
-    post:
-      description: Create Package by photographer
-      parameters:
-      - description: Package details
-        in: body
-        name: RequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreatePackageRequest'
-      responses:
-        "201":
-          description: Created
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-      security:
-      - ApiKeyAuth: []
-      summary: Create Package
-      tags:
-      - packages
-  /api/v1/packages/{galleryId}:
-    patch:
-      description: Update
-      parameters:
-      - description: Package details
-        in: body
-        name: RequestBody
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpdatePackageRequest'
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-      security:
-      - ApiKeyAuth: []
-      summary: Update package
-      tags:
-      - packages
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
   /api/v1/photographer/citizen-card:
     get:
       description: Get Photographer Citizen Card
@@ -1431,7 +1223,6 @@ paths:
             $ref: '#/definitions/dto.HttpError'
       summary: Get All Photographers
       tags:
-<<<<<<< HEAD
       - photographers
   /api/v1/quotations:
     get:
@@ -1454,84 +1245,6 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/dto.PaginationResponse-QuotationResponse'
-=======
-      - photographer
-  /api/v1/quotations:
-    post:
-      description: Creates a new quotation for a customer and package
-      parameters:
-      - description: Quotation details
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/dto.QuotationRequest'
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.HttpResponse-dto_QuotationResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-      security:
-      - ApiKeyAuth: []
-      summary: Create a quotation
-      tags:
-      - quotation
-  /api/v1/quotations/{id}:
-    patch:
-      description: Updates an existing quotation
-      parameters:
-      - description: Quotation ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Quotation update details
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/dto.QuotationRequest'
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.HttpError'
-      security:
-      - ApiKeyAuth: []
-      summary: Update a quotation
-      tags:
-      - quotation
-  /api/v1/quotations/{id}/accept:
-    patch:
-      description: Acceot quotaion
-      parameters:
-      - description: quotaion id
-        in: path
-        name: id
-        required: true
-        type: integer
-      responses:
-        "204":
-          description: No Content
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/dto.HttpError'
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "500":
           description: Internal Server Error
           schema:
@@ -1540,7 +1253,6 @@ paths:
       - ApiKeyAuth: []
       summary: list quotations
       tags:
-<<<<<<< HEAD
       - quotations
   /api/v1/quotations/{id}:
     get:
@@ -1571,9 +1283,6 @@ paths:
       summary: Get Quotation By ID
       tags:
       - quotations
-=======
-      - quotation
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
 securityDefinitions:
   ApiKeyAuth:
     in: header

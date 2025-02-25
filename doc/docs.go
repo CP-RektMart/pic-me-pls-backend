@@ -15,7 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-<<<<<<< HEAD
         "/api/v1/admin/categories": {
             "post": {
                 "security": [
@@ -163,8 +162,6 @@ const docTemplate = `{
                 }
             }
         },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "/api/v1/auth/login": {
             "post": {
                 "description": "Login",
@@ -316,7 +313,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "/api/v1/categories": {
             "get": {
                 "description": "list category",
@@ -458,8 +454,6 @@ const docTemplate = `{
                 }
             }
         },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "/api/v1/me": {
             "get": {
                 "security": [
@@ -579,133 +573,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
-=======
-        "/api/v1/media": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create media by photographer",
-                "tags": [
-                    "media"
-                ],
-                "summary": "Create Media",
-                "parameters": [
-                    {
-                        "description": "Media details",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateMediaRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/media/{mediaId}": {
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Delete media",
-                "tags": [
-                    "media"
-                ],
-                "summary": "Delete Media",
-                "parameters": [
-                    {
-                        "description": "Media details",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.DeleteMediaRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Update media",
-                "tags": [
-                    "media"
-                ],
-                "summary": "Update Media",
-                "parameters": [
-                    {
-                        "description": "Media details",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UpdateMediaRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    }
-                }
-            }
-        },
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "/api/v1/objects": {
             "post": {
                 "description": "receive formData body, path (string, folder path, don't include \"..\" or prefix with \"/\") and file",
@@ -800,7 +667,6 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Page size",
-<<<<<<< HEAD
                         "name": "pageSize",
                         "in": "query"
                     },
@@ -820,9 +686,6 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Photographer ID",
                         "name": "photographerId",
-=======
-                        "name": "page_size",
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                         "in": "query"
                     }
                 ],
@@ -846,91 +709,6 @@ const docTemplate = `{
                         }
                     }
                 }
-<<<<<<< HEAD
-=======
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create Package by photographer",
-                "tags": [
-                    "packages"
-                ],
-                "summary": "Create Package",
-                "parameters": [
-                    {
-                        "description": "Package details",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreatePackageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/packages/{galleryId}": {
-            "patch": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Update",
-                "tags": [
-                    "packages"
-                ],
-                "summary": "Update package",
-                "parameters": [
-                    {
-                        "description": "Package details",
-                        "name": "RequestBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UpdatePackageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    }
-                }
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
             }
         },
         "/api/v1/photographer/citizen-card": {
@@ -942,11 +720,7 @@ const docTemplate = `{
                 ],
                 "description": "Get Photographer Citizen Card",
                 "tags": [
-<<<<<<< HEAD
                     "citizencard"
-=======
-                    "photographer"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 ],
                 "summary": "Get Citizen Card",
                 "responses": {
@@ -971,11 +745,7 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "/api/v1/photographer/citizen-card/reverify": {
-=======
-        "/api/v1/photographer/reverify": {
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
             "patch": {
                 "security": [
                     {
@@ -987,11 +757,7 @@ const docTemplate = `{
                     "multipart/form-data"
                 ],
                 "tags": [
-<<<<<<< HEAD
                     "citizencard"
-=======
-                    "photographer"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 ],
                 "summary": "Reverify Citizen Card",
                 "parameters": [
@@ -1045,11 +811,7 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "/api/v1/photographer/citizen-card/verify": {
-=======
-        "/api/v1/photographer/verify": {
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
             "post": {
                 "security": [
                     {
@@ -1061,11 +823,7 @@ const docTemplate = `{
                     "multipart/form-data"
                 ],
                 "tags": [
-<<<<<<< HEAD
                     "citizencard"
-=======
-                    "photographer"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 ],
                 "summary": "Verify Citizen Card",
                 "parameters": [
@@ -1119,7 +877,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "/api/v1/photographer/media": {
             "post": {
                 "security": [
@@ -1428,17 +1185,11 @@ const docTemplate = `{
                 }
             }
         },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "/api/v1/photographers": {
             "get": {
                 "description": "Retrieve a paginated list of photographers, optionally filtered by name.",
                 "tags": [
-<<<<<<< HEAD
                     "photographers"
-=======
-                    "photographer"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 ],
                 "summary": "Get All Photographers",
                 "parameters": [
@@ -1484,17 +1235,12 @@ const docTemplate = `{
             }
         },
         "/api/v1/quotations": {
-<<<<<<< HEAD
             "get": {
-=======
-            "post": {
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-<<<<<<< HEAD
                 "description": "list quotations",
                 "tags": [
                     "quotations"
@@ -1525,35 +1271,6 @@ const docTemplate = `{
                         "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/dto.PaginationResponse-QuotationResponse"
-=======
-                "description": "Creates a new quotation for a customer and package",
-                "tags": [
-                    "quotation"
-                ],
-                "summary": "Create a quotation",
-                "parameters": [
-                    {
-                        "description": "Quotation details",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.QuotationRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpResponse-dto_QuotationResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                         }
                     },
                     "500": {
@@ -1566,17 +1283,12 @@ const docTemplate = `{
             }
         },
         "/api/v1/quotations/{id}": {
-<<<<<<< HEAD
             "get": {
-=======
-            "patch": {
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-<<<<<<< HEAD
                 "description": "Get Quotation By ID",
                 "tags": [
                     "quotations"
@@ -1588,34 +1300,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.HttpResponse-dto_QuotationResponse"
                         }
-=======
-                "description": "Updates an existing quotation",
-                "tags": [
-                    "quotation"
-                ],
-                "summary": "Update a quotation",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Quotation ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Quotation update details",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.QuotationRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1623,47 +1307,11 @@ const docTemplate = `{
                             "$ref": "#/definitions/dto.HttpError"
                         }
                     },
-<<<<<<< HEAD
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/dto.HttpError"
                         }
-=======
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HttpError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/quotations/{id}/accept": {
-            "patch": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Acceot quotaion",
-                "tags": [
-                    "quotation"
-                ],
-                "summary": "Accept quotation",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "quotaion id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                     },
                     "403": {
                         "description": "Forbidden",
@@ -1685,12 +1333,9 @@ const docTemplate = `{
         "dto.CategoryResponse": {
             "type": "object",
             "properties": {
-<<<<<<< HEAD
                 "description": {
                     "type": "string"
                 },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 "id": {
                     "type": "integer"
                 },
@@ -1716,7 +1361,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "dto.CreateCategoryRequest": {
             "type": "object",
             "required": [
@@ -1732,8 +1376,6 @@ const docTemplate = `{
                 }
             }
         },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "dto.CreateMediaRequest": {
             "type": "object",
             "required": [
@@ -1779,7 +1421,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "dto.CreateQuotationRequest": {
             "type": "object",
             "required": [
@@ -1810,8 +1451,6 @@ const docTemplate = `{
                 }
             }
         },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "dto.DeleteMediaRequest": {
             "type": "object",
             "properties": {
@@ -1828,7 +1467,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "dto.HttpResponse-PaginationResponse[dto_CategoryResponse]": {
             "type": "object",
             "properties": {
@@ -1837,8 +1475,6 @@ const docTemplate = `{
                 }
             }
         },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "dto.HttpResponse-dto_CitizenCardResponse": {
             "type": "object",
             "properties": {
@@ -1991,15 +1627,6 @@ const docTemplate = `{
                 "price": {
                     "type": "number"
                 },
-<<<<<<< HEAD
-=======
-                "quotations": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.QuotationResponse"
-                    }
-                },
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 "reviews": {
                     "type": "array",
                     "items": {
@@ -2014,7 +1641,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "dto.PaginationResponse-QuotationResponse": {
             "type": "object",
             "properties": {
@@ -2055,20 +1681,14 @@ const docTemplate = `{
                 }
             }
         },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "dto.PaginationResponse-dto_PackageResponse": {
             "type": "object",
             "properties": {
                 "data": {
-<<<<<<< HEAD
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.PackageResponse"
                     }
-=======
-                    "$ref": "#/definitions/dto.PackageResponse"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 },
                 "page": {
                     "type": "integer"
@@ -2085,14 +1705,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "data": {
-<<<<<<< HEAD
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.PhotographerResponse"
                     }
-=======
-                    "$ref": "#/definitions/dto.PhotographerResponse"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 },
                 "page": {
                     "type": "integer"
@@ -2131,26 +1747,11 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "dto.QuotationResponse": {
             "type": "object",
             "properties": {
                 "customer": {
                     "$ref": "#/definitions/dto.UserResponse"
-=======
-        "dto.QuotationRequest": {
-            "type": "object",
-            "required": [
-                "customerId",
-                "fromDate",
-                "packageId",
-                "price",
-                "toDate"
-            ],
-            "properties": {
-                "customerId": {
-                    "type": "integer"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 },
                 "description": {
                     "type": "string"
@@ -2158,7 +1759,6 @@ const docTemplate = `{
                 "fromDate": {
                     "type": "string"
                 },
-<<<<<<< HEAD
                 "id": {
                     "type": "integer"
                 },
@@ -2167,38 +1767,14 @@ const docTemplate = `{
                 },
                 "photographer": {
                     "$ref": "#/definitions/dto.PhotographerResponse"
-=======
-                "packageId": {
-                    "type": "integer"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "toDate": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.QuotationResponse": {
-            "type": "object",
-            "properties": {
-                "customer": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                 },
                 "price": {
                     "type": "number"
                 },
                 "status": {
-<<<<<<< HEAD
                     "$ref": "#/definitions/model.QuotationStatus"
                 },
                 "toDate": {
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
                     "type": "string"
                 }
             }
@@ -2294,7 +1870,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
         "dto.UpdateCategoryRequest": {
             "type": "object",
             "required": [
@@ -2312,8 +1887,6 @@ const docTemplate = `{
                 }
             }
         },
-=======
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         "dto.UpdateMediaRequest": {
             "type": "object",
             "required": [
@@ -2385,7 +1958,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
-<<<<<<< HEAD
                     "$ref": "#/definitions/model.UserRole"
                 }
             }
@@ -2419,11 +1991,6 @@ const docTemplate = `{
                 "UserRolePhotographer",
                 "UserRoleCustomer"
             ]
-=======
-                    "type": "string"
-                }
-            }
->>>>>>> 32b6a63d26e226db78e89f907cc8202154e89ae2
         }
     },
     "securityDefinitions": {

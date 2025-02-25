@@ -115,7 +115,6 @@ VALUES
 
 -- 11. Insert Quotations
 INSERT INTO Quotations (Package_ID, Customer_ID, Photographer_ID, Status, Price, Description, from_date, to_date)
-INSERT INTO Quotations (Package_ID, Customer_ID, Photographer_ID, Status, Price, Description, from_date, to_date)
 VALUES
 (1, 1, 1, 'pending', 200.00, 'Quotation for sunset photography', '2026-12-31', '2026-12-31'),
 (2, 2, 2, 'confirmed', 250.00, 'Nature photo session', '2026-12-31', '2026-12-31'),
