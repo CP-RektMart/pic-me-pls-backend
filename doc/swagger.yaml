@@ -445,7 +445,7 @@ components:
       - UserRolePhotographer
       - UserRoleCustomer
   securitySchemes:
-    "@securitydefinitions.apikey\tApiKeyAuth":
+    ApiKeyAuth:
       in: header
       name: Authorization
       type: apiKey

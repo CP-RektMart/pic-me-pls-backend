@@ -30,7 +30,7 @@ import (
 // @title						Pic Me Pls API
 // @version						0.1
 // @description					Pic Me Pls API Documentation
-// @securitydefinitions.apikey	ApiKeyAuth
+// @securityDefinitions.apikey ApiKeyAuth
 // @in							header
 // @name						Authorization
 // @externalDocs.description	OpenAPI
