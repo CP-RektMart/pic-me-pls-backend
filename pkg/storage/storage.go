@@ -60,6 +60,7 @@ func (c *Client) MoveFile(ctx context.Context, source string, destination string
 	return nil
 }
 
+// You can pass any path like /folder/file.jpg or https://your-supabase-url.supabase.co/storage/v1/object/public/your-bucket/folder/file.jpg
 func (c *Client) DeleteFile(ctx context.Context, path string) error {
 	if err := c.DeleteFiles(ctx, []string{path}); err != nil {
 		return errors.Wrap(err, "failed to delete file")
@@ -67,6 +68,7 @@ func (c *Client) DeleteFile(ctx context.Context, path string) error {
 	return nil
 }
 
+// You can pass any path like /folder/file.jpg or https://your-supabase-url.supabase.co/storage/v1/object/public/your-bucket/folder/file.jpg
 func (c *Client) DeleteFiles(ctx context.Context, path []string) error {
 	relativePaths := make([]string, 0, len(path))
 	for _, p := range path {
@@ -77,7 +79,14 @@ func (c *Client) DeleteFiles(ctx context.Context, path []string) error {
 		relativePaths = append(relativePaths, relativePath)
 	}
 
-	if _, err := c.Client.RemoveFile(c.config.Bucket, relativePaths); err != nil {
+	// There's some bug. If I start the server, and trigger remove file, it will work.
+	// But if you trigger upload file before remove file, it will not work.
+	client, err := supabase.NewClient(c.config.Url, c.config.Secret, nil)
+	if err != nil {
+		return errors.Wrap(err, "failed to new Supabase client")
+	}
+
+	if _, err := client.Storage.RemoveFile(c.config.Bucket, relativePaths); err != nil {
 		return errors.Wrap(err, "failed to delete file")
 	}
 
