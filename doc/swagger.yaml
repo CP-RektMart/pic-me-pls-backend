@@ -414,6 +414,25 @@ components:
         role:
           $ref: '#/components/schemas/model.UserRole'
       type: object
+    dto.UserUpdateRequest:
+      properties:
+        accountNo:
+          type: string
+        bank:
+          type: string
+        bankBranch:
+          type: string
+        facebook:
+          type: string
+        instagram:
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
+      type: object
     dto.VerifyCitizenCardRequest:
       properties:
         citizenId:
@@ -836,10 +855,11 @@ paths:
       description: Update user's profile
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: string
-        description: Bank Branch
+              $ref: '#/components/schemas/dto.UserUpdateRequest'
+        description: request request
+        required: true
       responses:
         "200":
           content:
