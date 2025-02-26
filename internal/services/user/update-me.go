@@ -101,9 +101,6 @@ func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest) (*model.
 		return nil
 	})
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, "", apperror.NotFound("User not found", err)
-		}
 		return nil, "", errors.Wrap(err, "Failed to update user")
 	}
 
