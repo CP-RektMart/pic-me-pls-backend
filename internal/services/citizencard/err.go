@@ -1,6 +1,6 @@
 package citizencard
 
-import "errors"
+import "github.com/cockroachdb/errors"
 
 var (
 	ErrNoExistingCitizenCard = errors.New("NO_EXISTING_CITIZEN_CARD")

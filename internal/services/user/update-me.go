@@ -1,11 +1,6 @@
 package user
 
 import (
-	"context"
-	"mime/multipart"
-	"path"
-	"strconv"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"gorm.io/gorm"
@@ -20,66 +15,39 @@ import (
 // @Tags			user
 // @Router			/api/v1/me [PATCH]
 // @Security		ApiKeyAuth
-// @Accept			multipart/form-data
-// @Param 			profilePicture 	formData 	file		false	"Profile picture (optional)"
-// @Param 			name 			formData 	string		false	"Name"
-// @Param 			phoneNumber 	formData 	string		false	"Phone Number"
-// @Param 			facebook 		formData 	string		false	"Facebook"
-// @Param 			instagram 		formData 	string		false	"Instagram"
-// @Param 			bank 			formData 	string		false	"Bank"
-// @Param 			accountNo 		formData 	string		false	"Account No"
-// @Param 			bankBranch 		formData 	string		false	"Bank Branch"
+// @Param 			RequestBody 	body 	dto.UserUpdateRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse[dto.UserResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	ctx := c.UserContext()
+	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
 	req := new(dto.UserUpdateRequest)
-	req.Name = c.FormValue("name")
-	req.PhoneNumber = c.FormValue("phoneNumber")
-	req.Facebook = c.FormValue("facebook")
-	req.Instagram = c.FormValue("instagram")
-	req.Bank = c.FormValue("bank")
-	req.AccountNo = c.FormValue("accountNo")
-	req.BankBranch = c.FormValue("bankBranch")
+	if err := c.BodyParser(&req); err != nil {
+		return apperror.BadRequest("invalid request body", err)
+	}
 
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	file, err := c.FormFile("profilePicture")
-	// if error mean cannot get file just ignore.
-	// because field is not provide mean not change.
-	var signedURL string
-	if err == nil {
-		signedURL, err = h.uploadProfileFile(c.UserContext(), file, profileFolder(userId))
-		if err != nil {
-			return errors.Wrap(err, "File upload failed")
-		}
-	}
-
-	// var oldPictureURL string
-	updatedUser, err := h.updateUserDB(userId, req, signedURL, nil)
+	updatedUser, oldImageUrl, err := h.updateUserDB(userId, req)
 	if err != nil {
-		if signedURL != "" {
-			err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(signedURL))
-			if err != nil {
-				return errors.Wrap(err, "Fail to delete the picture")
-			}
+		if err := h.store.Storage.DeleteFile(ctx, req.ProfilePictureURL); err != nil {
+			return errors.Wrap(err, "failed to deleting old picture")
 		}
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	// if oldPictureURL != "" && oldPictureURL != signedURL {
-	// 	err = h.store.Storage.DeleteFile(c.UserContext(), profileFolder(userId)+path.Base(oldPictureURL))
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Fail to delete old picture")
-	// 	}
-	// }
+	if oldImageUrl != "" && oldImageUrl != req.ProfilePictureURL {
+		if err := h.store.Storage.DeleteFile(ctx, oldImageUrl); err != nil {
+			return errors.Wrap(err, "failed to deleting old picture")
+		}
+	}
 
 	response := dto.UserResponse{
 		ID:                updatedUser.ID,
@@ -100,34 +68,16 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) uploadProfileFile(c context.Context, file *multipart.FileHeader, folder string) (string, error) {
-	contentType := file.Header.Get("Content-Type")
-
-	src, err := file.Open()
-	if err != nil {
-		return "", errors.Wrap(err, "failed to open file")
-	}
-	defer src.Close()
-	var signedURL string
-	if signedURL, err = h.store.Storage.UploadFile(c, folder+file.Filename, contentType, src, true); err != nil {
-		return "", errors.Wrap(err, "failed to upload file")
-	}
-
-	return signedURL, nil
-}
-
-func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest, signedURL string, oldPictureURL *string) (*model.User, error) {
+func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest) (*model.User, string, error) {
 	var user model.User
+	oldImageUrl := ""
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.First(&user, "id = ?", userID).Error; err != nil {
 			return errors.Wrap(err, "User not found")
 		}
 
-		// Assign old picture URL if needed
-		if oldPictureURL != nil {
-			*oldPictureURL = user.ProfilePictureURL
-		}
+		oldImageUrl = user.ProfilePictureURL
 
 		updateField := func(field *string, newValue string) {
 			if newValue != "" {
@@ -135,9 +85,9 @@ func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest, signedUR
 			}
 		}
 
+		updateField(&user.ProfilePictureURL, req.ProfilePictureURL)
 		updateField(&user.Name, req.Name)
 		updateField(&user.PhoneNumber, req.PhoneNumber)
-		updateField(&user.ProfilePictureURL, signedURL)
 		updateField(&user.Facebook, req.Facebook)
 		updateField(&user.Instagram, req.Instagram)
 		updateField(&user.Bank, req.Bank)
@@ -150,14 +100,12 @@ func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest, signedUR
 
 		return nil
 	})
-
 	if err != nil {
-		return nil, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, "", apperror.NotFound("User not found", err)
+		}
+		return nil, "", errors.Wrap(err, "Failed to update user")
 	}
 
-	return &user, nil
-}
-
-func profileFolder(userID uint) string {
-	return "profile/" + strconv.FormatUint(uint64(userID), 10) + "/"
+	return &user, oldImageUrl, nil
 }
