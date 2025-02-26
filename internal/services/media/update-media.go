@@ -19,7 +19,7 @@ import (
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateMedia(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
@@ -37,24 +37,24 @@ func (h *Handler) HandleUpdateMedia(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err = h.updateMedia(req, req.MediaId, userId); err != nil {
+	if err = h.updateMedia(req, req.MediaID, userID); err != nil {
 		return errors.Wrap(err, "failed to update media")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) updateMedia(req *dto.UpdateMediaRequest, mediaId uint, userId uint) error {
+func (h *Handler) updateMedia(req *dto.UpdateMediaRequest, mediaID uint, userID uint) error {
 	var media model.Media
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		if err := h.store.DB.Preload("Package.Photographer").First(&media, "id = ?", mediaId).Error; err != nil {
+		if err := h.store.DB.Preload("Package.Photographer").First(&media, "id = ?", mediaID).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return apperror.NotFound("Media not found", err)
 			}
 			return errors.Wrap(err, "Failed to get media")
 		}
 
-		if media.Package.Photographer.UserID != userId {
+		if media.Package.Photographer.UserID != userID {
 			return apperror.Forbidden("You are not allowed to update this media", errors.New("unauthorized"))
 		}
 

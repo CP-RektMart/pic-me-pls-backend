@@ -21,7 +21,7 @@ import (
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	ctx := c.UserContext()
-	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)
+	userID, err := h.authMiddleware.GetUserIDFromContext(ctx)
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
@@ -35,7 +35,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	updatedUser, oldImageUrl, err := h.updateUserDB(userId, req)
+	updatedUser, oldImageUrl, err := h.updateUserDB(userID, req)
 	if err != nil {
 		if err := h.store.Storage.DeleteFile(ctx, req.ProfilePictureURL); err != nil {
 			return errors.Wrap(err, "failed to deleting old picture")

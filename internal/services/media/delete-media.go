@@ -19,7 +19,7 @@ import (
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleDeleteMedia(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
@@ -29,24 +29,24 @@ func (h *Handler) HandleDeleteMedia(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid media id", err)
 	}
 
-	if err := h.deleteMedia(req.MediaId, userId); err != nil {
+	if err := h.deleteMedia(req.MediaID, userID); err != nil {
 		return errors.Wrap(err, "failed to delete media")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) deleteMedia(mediaId uint, userId uint) error {
+func (h *Handler) deleteMedia(mediaID uint, userID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var media model.Media
-		if err := h.store.DB.Preload("Package.Photographer").First(&media, "id = ?", mediaId).Error; err != nil {
+		if err := h.store.DB.Preload("Package.Photographer").First(&media, "id = ?", mediaID).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return apperror.NotFound("Media not found", err)
 			}
 			return errors.Wrap(err, "Failed to get media")
 		}
 
-		if media.Package.Photographer.UserID != userId {
+		if media.Package.Photographer.UserID != userID {
 			return apperror.Forbidden("You are not allowed to delete this media", errors.New("unauthorized"))
 		}
 

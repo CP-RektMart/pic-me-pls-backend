@@ -62,13 +62,13 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) updateCitizenCard(userId uint, imageURL, citizenID, laserID string, expireDate time.Time) (*model.CitizenCard, string, error) {
+func (h *Handler) updateCitizenCard(userID uint, imageURL, citizenID, laserID string, expireDate time.Time) (*model.CitizenCard, string, error) {
 	var updatedCitizenCard model.CitizenCard
 	oldImageUrl := ""
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var photographer model.Photographer
-		if err := tx.First(&photographer, "user_id = ?", userId).Error; err != nil {
+		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
 			return errors.Wrap(err, "Photographer not found for user")
 		}
 
