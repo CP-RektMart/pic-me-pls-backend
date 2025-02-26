@@ -282,6 +282,17 @@ components:
         toDate:
           type: string
       type: object
+    dto.ReVerifyCitizenCardRequest:
+      properties:
+        citizenId:
+          type: string
+        expireDate:
+          type: string
+        imageUrl:
+          type: string
+        laserId:
+          type: string
+      type: object
     dto.RefreshTokenRequest:
       properties:
         refreshToken:
@@ -403,6 +414,22 @@ components:
         role:
           $ref: '#/components/schemas/model.UserRole'
       type: object
+    dto.VerifyCitizenCardRequest:
+      properties:
+        citizenId:
+          type: string
+        expireDate:
+          type: string
+        imageUrl:
+          type: string
+        laserId:
+          type: string
+      required:
+      - citizenId
+      - expireDate
+      - imageUrl
+      - laserId
+      type: object
     model.QuotationStatus:
       type: string
       x-enum-varnames:
@@ -418,7 +445,7 @@ components:
       - UserRolePhotographer
       - UserRoleCustomer
   securitySchemes:
-    "@securitydefinitions.apikey\tApiKeyAuth":
+    ApiKeyAuth:
       in: header
       name: Authorization
       type: apiKey
@@ -979,10 +1006,10 @@ paths:
       description: Reverify Photographer Citizen Card
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: string
-        description: Expire Date
+              $ref: '#/components/schemas/dto.ReVerifyCitizenCardRequest'
+        description: request request
         required: true
       responses:
         "200":
@@ -1013,10 +1040,10 @@ paths:
       description: Verify Photographer Citizen Card
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: string
-        description: Expire Date
+              $ref: '#/components/schemas/dto.VerifyCitizenCardRequest'
+        description: request request
         required: true
       responses:
         "200":
