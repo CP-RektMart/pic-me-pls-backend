@@ -36,7 +36,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	user, oldImageUrl, err := h.updateCitizenCard(userID, req.ImageURL, req.CitizenID, req.LaserID, req.ExpireDate)
+	user, oldImageURL, err := h.updateCitizenCard(userID, req.ImageURL, req.CitizenID, req.LaserID, req.ExpireDate)
 	if err != nil {
 		if err := h.store.Storage.DeleteFile(ctx, req.ImageURL); err != nil {
 			return errors.Wrap(err, "failed to deleting old picture")
@@ -44,8 +44,8 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to updating user profile")
 	}
 
-	if oldImageUrl != "" && oldImageUrl != req.ImageURL {
-		if err := h.store.Storage.DeleteFile(ctx, oldImageUrl); err != nil {
+	if oldImageURL != "" && oldImageURL != req.ImageURL {
+		if err := h.store.Storage.DeleteFile(ctx, oldImageURL); err != nil {
 			return errors.Wrap(err, "failed to deleting old picture")
 		}
 	}
@@ -64,7 +64,7 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 
 func (h *Handler) updateCitizenCard(userID uint, imageURL, citizenID, laserID string, expireDate time.Time) (*model.CitizenCard, string, error) {
 	var updatedCitizenCard model.CitizenCard
-	oldImageUrl := ""
+	oldImageURL := ""
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var photographer model.Photographer
@@ -81,7 +81,7 @@ func (h *Handler) updateCitizenCard(userID uint, imageURL, citizenID, laserID st
 			return errors.Wrap(err, "Error finding existing citizen card")
 		}
 
-		oldImageUrl = existingCitizenCard.Picture
+		oldImageURL = existingCitizenCard.Picture
 
 		existingCitizenCard.CitizenID = citizenID
 		existingCitizenCard.Picture = imageURL
@@ -110,5 +110,5 @@ func (h *Handler) updateCitizenCard(userID uint, imageURL, citizenID, laserID st
 		return nil, "", errors.Wrap(err, "Error updating citizen card")
 	}
 
-	return &updatedCitizenCard, oldImageUrl, nil
+	return &updatedCitizenCard, oldImageURL, nil
 }

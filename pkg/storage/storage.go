@@ -14,7 +14,7 @@ import (
 )
 
 type Config struct {
-	Url    string `env:"URL"`
+	URL    string `env:"URL"`
 	Secret string `env:"SECRET"`
 	Bucket string `env:"BUCKET"`
 }
@@ -25,7 +25,7 @@ type Client struct {
 }
 
 func New(ctx context.Context, config Config) (*Client, error) {
-	client, err := supabase.NewClient(config.Url, config.Secret, nil)
+	client, err := supabase.NewClient(config.URL, config.Secret, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to new Supabase client")
 	}
@@ -81,7 +81,7 @@ func (c *Client) DeleteFiles(ctx context.Context, path []string) error {
 
 	// There's some bug. If I start the server, and trigger remove file, it will work.
 	// But if you trigger upload file before remove file, it will not work.
-	client, err := supabase.NewClient(c.config.Url, c.config.Secret, nil)
+	client, err := supabase.NewClient(c.config.URL, c.config.Secret, nil)
 	if err != nil {
 		return errors.Wrap(err, "failed to new Supabase client")
 	}
@@ -106,15 +106,15 @@ func (c *Client) CleanURL(rawURL string) (string, error) {
 }
 
 func (c *Client) RelativePath(path string) (string, error) {
-	bucketURL, err := url.Parse(c.config.Url)
+	bucketURL, err := url.Parse(c.config.URL)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to parse bucket url")
 	}
 
-	cleanedUrl, err := c.CleanURL(path)
+	cleanedURL, err := c.CleanURL(path)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to clean url")
 	}
 
-	return strings.Replace(cleanedUrl, fmt.Sprintf("https://%s/storage/v1/object/public/%s/", bucketURL.Host, c.config.Bucket), "", 1), nil
+	return strings.Replace(cleanedURL, fmt.Sprintf("https://%s/storage/v1/object/public/%s/", bucketURL.Host, c.config.Bucket), "", 1), nil
 }
