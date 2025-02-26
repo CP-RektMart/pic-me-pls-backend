@@ -19,7 +19,7 @@ import (
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdatePackage(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
@@ -37,24 +37,24 @@ func (h *Handler) HandleUpdatePackage(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err := h.updatePackage(req, req.PackageId, userId); err != nil {
+	if err := h.updatePackage(req, req.PackageID, userID); err != nil {
 		return errors.Wrap(err, "failed to update package")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) updatePackage(req *dto.UpdatePackageRequest, packageId uint, userId uint) error {
+func (h *Handler) updatePackage(req *dto.UpdatePackageRequest, packageID uint, userID uint) error {
 	var pkg model.Package
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		if err := h.store.DB.Preload("Photographer").First(&pkg, "id = ?", packageId).Error; err != nil {
+		if err := h.store.DB.Preload("Photographer").First(&pkg, "id = ?", packageID).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return apperror.NotFound("Package not found", err)
 			}
 			return errors.Wrap(err, "Failed to get package")
 		}
 
-		if pkg.Photographer.UserID != userId {
+		if pkg.Photographer.UserID != userID {
 			return apperror.Forbidden("You are not allowed to update this package", errors.New("unauthorized"))
 		}
 

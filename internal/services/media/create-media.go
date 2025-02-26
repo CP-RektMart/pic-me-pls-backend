@@ -19,7 +19,7 @@ import (
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreateMedia(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
@@ -33,14 +33,14 @@ func (h *Handler) HandleCreateMedia(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err := h.createMedia(req, userId); err != nil {
+	if err := h.createMedia(req, userID); err != nil {
 		return errors.Wrap(err, "failed to create media")
 	}
 
 	return c.SendStatus(fiber.StatusCreated)
 }
 
-func (h *Handler) createMedia(req *dto.CreateMediaRequest, userId uint) error {
+func (h *Handler) createMedia(req *dto.CreateMediaRequest, userID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var pkg model.Package
 		if err := h.store.DB.Preload("Photographer").First(&pkg, "id = ?", req.PackageID).Error; err != nil {
@@ -50,7 +50,7 @@ func (h *Handler) createMedia(req *dto.CreateMediaRequest, userId uint) error {
 			return errors.Wrap(err, "failed to get package")
 		}
 
-		if pkg.Photographer.UserID != userId {
+		if pkg.Photographer.UserID != userID {
 			return apperror.Forbidden("You are not allowed to create media in this package", errors.New("unauthorized"))
 		}
 

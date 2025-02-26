@@ -12,18 +12,18 @@ import (
 
 func New() func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
-		requestId := ctx.GetRespHeader("X-Request-Id")
+		requestID := ctx.GetRespHeader("X-Request-Id")
 		err := ctx.Next()
 		if err != nil {
-			return handleError(ctx, err, requestId)
+			return handleError(ctx, err, requestID)
 		}
 
-		logger.InfoContext(ctx.UserContext(), "request received", slog.String("request_id", requestId), slog.String("method", ctx.Method()), slog.String("path", ctx.Path()), slog.Int("status", ctx.Response().StatusCode()))
+		logger.InfoContext(ctx.UserContext(), "request received", slog.String("request_id", requestID), slog.String("method", ctx.Method()), slog.String("path", ctx.Path()), slog.Int("status", ctx.Response().StatusCode()))
 		return nil
 	}
 }
 
-func handleError(c *fiber.Ctx, err error, requestId string) error {
+func handleError(c *fiber.Ctx, err error, requestID string) error {
 	var fiberError *fiber.Error
 	if errors.As(err, &fiberError) {
 		c.Set(fiber.HeaderContentType, fiber.MIMETextPlainCharsetUTF8)
@@ -39,7 +39,7 @@ func handleError(c *fiber.Ctx, err error, requestId string) error {
 		message = appError.Message
 	}
 
-	logger.ErrorContext(c.UserContext(), "Request Error", slog.String("request_id", requestId), slog.String("method", c.Method()), slog.String("path", c.Path()), slog.Int("status", status), slog.Any("error", err))
+	logger.ErrorContext(c.UserContext(), "Request Error", slog.String("request_id", requestID), slog.String("method", c.Method()), slog.String("path", c.Path()), slog.Int("status", status), slog.Any("error", err))
 	return c.Status(status).JSON(dto.HttpError{
 		Error: message,
 	})

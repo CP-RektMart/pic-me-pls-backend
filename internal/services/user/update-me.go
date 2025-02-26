@@ -21,7 +21,7 @@ import (
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 	ctx := c.UserContext()
-	userId, err := h.authMiddleware.GetUserIDFromContext(ctx)
+	userID, err := h.authMiddleware.GetUserIDFromContext(ctx)
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
@@ -35,7 +35,7 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	updatedUser, oldImageUrl, err := h.updateUserDB(userId, req)
+	updatedUser, oldImageURL, err := h.updateUserDB(userID, req)
 	if err != nil {
 		if err := h.store.Storage.DeleteFile(ctx, req.ProfilePictureURL); err != nil {
 			return errors.Wrap(err, "failed to deleting old picture")
@@ -43,8 +43,8 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error updating user profile")
 	}
 
-	if oldImageUrl != "" && oldImageUrl != req.ProfilePictureURL {
-		if err := h.store.Storage.DeleteFile(ctx, oldImageUrl); err != nil {
+	if oldImageURL != "" && oldImageURL != req.ProfilePictureURL {
+		if err := h.store.Storage.DeleteFile(ctx, oldImageURL); err != nil {
 			return errors.Wrap(err, "failed to deleting old picture")
 		}
 	}
@@ -70,14 +70,14 @@ func (h *Handler) HandleUpdateMe(c *fiber.Ctx) error {
 
 func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest) (*model.User, string, error) {
 	var user model.User
-	oldImageUrl := ""
+	oldImageURL := ""
 
 	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.First(&user, "id = ?", userID).Error; err != nil {
 			return errors.Wrap(err, "User not found")
 		}
 
-		oldImageUrl = user.ProfilePictureURL
+		oldImageURL = user.ProfilePictureURL
 
 		updateField := func(field *string, newValue string) {
 			if newValue != "" {
@@ -104,5 +104,5 @@ func (h *Handler) updateUserDB(userID uint, req *dto.UserUpdateRequest) (*model.
 		return nil, "", errors.Wrap(err, "Failed to update user")
 	}
 
-	return &user, oldImageUrl, nil
+	return &user, oldImageURL, nil
 }

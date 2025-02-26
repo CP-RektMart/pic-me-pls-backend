@@ -18,13 +18,13 @@ import (
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetMe(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
 	var user model.User
-	result := h.store.DB.First(&user, userId)
+	result := h.store.DB.First(&user, userID)
 	if result.Error != nil {
 		return apperror.Internal("failed to get user", nil)
 	}
