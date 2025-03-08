@@ -1,4 +1,4 @@
-package object
+package objects
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ func (h *Handler) Delete(c *fiber.Ctx) error {
 		return apperror.BadRequest("No URL specify", nil)
 	}
 
-	prefix := fmt.Sprintf("%s/storage/v1/object/public/%s/", h.config.Url, h.config.Bucket)
+	prefix := fmt.Sprintf("%s/storage/v1/object/public/%s/", h.config.URL, h.config.Bucket)
 	path := strings.TrimPrefix(URL, prefix)
 
 	if err := h.validatePath(path); err != nil {

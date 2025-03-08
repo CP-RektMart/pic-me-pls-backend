@@ -83,7 +83,7 @@ definitions:
     type: object
   dto.DeleteMediaRequest:
     properties:
-      mediaId:
+      mediaID:
         type: integer
     type: object
   dto.HttpError:
@@ -293,6 +293,17 @@ definitions:
       toDate:
         type: string
     type: object
+  dto.ReVerifyCitizenCardRequest:
+    properties:
+      citizenId:
+        type: string
+      expireDate:
+        type: string
+      imageUrl:
+        type: string
+      laserId:
+        type: string
+    type: object
   dto.RefreshTokenRequest:
     properties:
       refreshToken:
@@ -368,13 +379,13 @@ definitions:
     properties:
       description:
         type: string
-      mediaId:
+      mediaID:
         minimum: 1
         type: integer
       pictureUrl:
         type: string
     required:
-    - mediaId
+    - mediaID
     type: object
   dto.UpdatePackageRequest:
     properties:
@@ -383,7 +394,7 @@ definitions:
         type: string
       name:
         type: string
-      packageId:
+      packageID:
         type: integer
       price:
         minimum: 0
@@ -413,6 +424,41 @@ definitions:
         type: string
       role:
         $ref: '#/definitions/model.UserRole'
+    type: object
+  dto.UserUpdateRequest:
+    properties:
+      accountNo:
+        type: string
+      bank:
+        type: string
+      bankBranch:
+        type: string
+      facebook:
+        type: string
+      instagram:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+      profilePictureUrl:
+        type: string
+    type: object
+  dto.VerifyCitizenCardRequest:
+    properties:
+      citizenId:
+        type: string
+      expireDate:
+        type: string
+      imageUrl:
+        type: string
+      laserId:
+        type: string
+    required:
+    - citizenId
+    - expireDate
+    - imageUrl
+    - laserId
     type: object
   model.QuotationStatus:
     enum:
@@ -746,42 +792,14 @@ paths:
       tags:
       - user
     patch:
-      consumes:
-      - multipart/form-data
       description: Update user's profile
       parameters:
-      - description: Profile picture (optional)
-        in: formData
-        name: profilePicture
-        type: file
-      - description: Name
-        in: formData
-        name: name
-        type: string
-      - description: Phone Number
-        in: formData
-        name: phoneNumber
-        type: string
-      - description: Facebook
-        in: formData
-        name: facebook
-        type: string
-      - description: Instagram
-        in: formData
-        name: instagram
-        type: string
-      - description: Bank
-        in: formData
-        name: bank
-        type: string
-      - description: Account No
-        in: formData
-        name: accountNo
-        type: string
-      - description: Bank Branch
-        in: formData
-        name: bankBranch
-        type: string
+      - description: request request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserUpdateRequest'
       responses:
         "200":
           description: OK
@@ -915,29 +933,14 @@ paths:
       - citizencard
   /api/v1/photographer/citizen-card/reverify:
     patch:
-      consumes:
-      - multipart/form-data
       description: Reverify Photographer Citizen Card
       parameters:
-      - description: Card picture (optional)
-        in: formData
-        name: cardPicture
-        type: file
-      - description: Citizen ID
-        in: formData
-        name: citizenId
+      - description: request request
+        in: body
+        name: RequestBody
         required: true
-        type: string
-      - description: Laser ID
-        in: formData
-        name: laserId
-        required: true
-        type: string
-      - description: Expire Date
-        in: formData
-        name: expireDate
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/dto.ReVerifyCitizenCardRequest'
       responses:
         "200":
           description: OK
@@ -958,29 +961,14 @@ paths:
       - citizencard
   /api/v1/photographer/citizen-card/verify:
     post:
-      consumes:
-      - multipart/form-data
       description: Verify Photographer Citizen Card
       parameters:
-      - description: Card picture (optional)
-        in: formData
-        name: cardPicture
-        type: file
-      - description: Citizen ID
-        in: formData
-        name: citizenId
+      - description: request request
+        in: body
+        name: RequestBody
         required: true
-        type: string
-      - description: Laser ID
-        in: formData
-        name: laserId
-        required: true
-        type: string
-      - description: Expire Date
-        in: formData
-        name: expireDate
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/dto.VerifyCitizenCardRequest'
       responses:
         "200":
           description: OK

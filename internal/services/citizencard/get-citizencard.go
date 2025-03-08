@@ -18,13 +18,13 @@ import (
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
 	var photographer model.Photographer
-	if err := h.store.DB.First(&photographer, "user_id = ?", userId).Error; err != nil {
+	if err := h.store.DB.First(&photographer, "user_id = ?", userID).Error; err != nil {
 		return errors.Wrap(err, "Photographer not found for user")
 	}
 

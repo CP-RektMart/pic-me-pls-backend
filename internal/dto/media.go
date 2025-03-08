@@ -24,7 +24,7 @@ type CreateMediaRequest struct {
 type UpdateMediaRequest struct {
 	PictureURL  string `json:"pictureUrl"`
 	Description string `json:"description"`
-	MediaId     uint   `params:"mediaId" validate:"required,min=1"`
+	MediaID     uint   `params:"mediaId" validate:"required,min=1"`
 }
 
 type UpdateMediaResponse struct {
@@ -33,5 +33,5 @@ type UpdateMediaResponse struct {
 }
 
 type DeleteMediaRequest struct {
-	MediaId uint `params:"mediaId"`
+	MediaID uint `params:"mediaId"`
 }

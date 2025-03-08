@@ -19,7 +19,7 @@ import (
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreatePackage(c *fiber.Ctx) error {
-	userId, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
@@ -42,17 +42,17 @@ func (h *Handler) HandleCreatePackage(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
 	}
 
-	if err = h.CreatePackage(req, userId); err != nil {
+	if err = h.CreatePackage(req, userID); err != nil {
 		return errors.Wrap(err, "failed to create Package")
 	}
 
 	return c.SendStatus(fiber.StatusCreated)
 }
 
-func (h *Handler) CreatePackage(req *dto.CreatePackageRequest, userId uint) error {
+func (h *Handler) CreatePackage(req *dto.CreatePackageRequest, userID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		Package := &model.Package{
-			PhotographerID: userId,
+			PhotographerID: userID,
 			Name:           req.Name,
 			Description:    req.Description,
 			Price:          req.Price,

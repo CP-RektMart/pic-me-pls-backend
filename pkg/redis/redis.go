@@ -8,11 +8,11 @@ import (
 )
 
 type Config struct {
-	Url string `env:"URL"`
+	URL string `env:"URL"`
 }
 
 func New(ctx context.Context, config Config) (*redis.Client, error) {
-	opt, err := redis.ParseURL(config.Url)
+	opt, err := redis.ParseURL(config.URL)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse redis url")
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/object"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/objects"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
@@ -25,7 +25,7 @@ func (s *Server) RegisterRoutes(
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
 	messageHandler *message.Handler,
-	objectHandler *object.Handler,
+	objectsHandler *objects.Handler,
 	quotationHandler *quotation.Handler,
 	mediaHandler *media.Handler,
 ) {
@@ -41,6 +41,11 @@ func (s *Server) RegisterRoutes(
 	// all
 	{
 		all := v1.Group("/", authMiddleware.Auth)
+
+		// objects
+		objects := all.Group("/objects")
+		objects.Post("/", objectsHandler.Upload)
+		objects.Delete("/", objectsHandler.Delete)
 
 		// me
 		me := all.Group("/me")
