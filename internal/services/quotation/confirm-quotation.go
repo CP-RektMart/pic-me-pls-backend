@@ -50,3 +50,4 @@ func (h *Handler) HandlerConfirmQuotation(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+

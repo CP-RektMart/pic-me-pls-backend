@@ -131,3 +131,26 @@ SELECT * FROM Reviews;
 SELECT * FROM Categories;
 SELECT * FROM Packages_Categories;
 SELECT * FROM Quotations;
+
+-- Query packages including package details, photographerID, userID, username 
+select p.name as Package_Name, p.description as Package_Description, p.price as Package_Price, ph.id as Photographer_ID,
+u.id as User_ID, u.name as userName from Packages as p
+join photographers as ph on p.photographer_id = ph.id
+join users as u on u.id = ph.user_id;
+
+-- -- Query quotations including quotations, photographer_username, customer_username
+SELECT 
+    q.id as quotation_id, 
+    p.name AS package_name, 
+    q.description, 
+    q.price, 
+    q.status, 
+    q.photographer_id, 
+    u2.name AS photographer_name, 
+    q.customer_id, 
+    u1.name AS customer_name
+FROM quotations AS q
+JOIN packages AS p ON p.id = q.package_id
+JOIN users AS u1 ON u1.id = q.customer_id
+JOIN photographers AS ph ON ph.id = q.photographer_id
+JOIN users AS u2 ON u2.id = ph.user_id;

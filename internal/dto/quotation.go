@@ -22,6 +22,20 @@ type CancelQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
+type UpdateQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
+type CreateQuotationRequest struct {
+	PackageID   uint    `json:"packageId" validate:"required"`
+	CustomerID  uint    `json:"customerId" validate:"required"`
+	Price       float64 `json:"price" validate:"required"`
+	Description string  `json:"description,omitempty"`
+
+	FromDate time.Time `json:"fromDate" validate:"required"`
+	ToDate   time.Time     `json:"toDate" validate:"required"`
+}
+
 type QuotationResponse struct {
 	ID           uint                  `json:"id"`
 	Package      PackageResponse       `json:"package,omitempty"`
