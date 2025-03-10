@@ -4,14 +4,18 @@ import "gorm.io/gorm"
 
 type Package struct {
 	gorm.Model
+	Name        string `gorm:"not null"`
+	Description string
+	Price       float64 `gorm:"not null"`
+
+	CategoryID uint
+	Category   Category
+
 	PhotographerID uint         `gorm:"not null"`
 	Photographer   Photographer `gorm:"foreignKey:PhotographerID"`
-	Name           string       `gorm:"not null"`
-	Description    string
-	Price          float64     `gorm:"not null"`
-	Tags           []Tag       `gorm:"foreignKey:PackageID"`
-	Media          []Media     `gorm:"foreignKey:PackageID"`
-	Reviews        []Review    `gorm:"foreignKey:PackageID"`
-	Categories     []Category  `gorm:"many2many:Packages_Categories"`
-	Quotations     []Quotation `gorm:"foreignKey:PackageID"`
+
+	Tags       []Tag
+	Media      []Media
+	Reviews    []Review
+	Quotations []Quotation
 }

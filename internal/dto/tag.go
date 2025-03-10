@@ -7,10 +7,17 @@ type TagResponse struct {
 	Name string `json:"name"`
 }
 
+func ToTagResponse(tag model.Tag) TagResponse {
+	return TagResponse{
+		ID:   tag.ID,
+		Name: tag.Name,
+	}
+}
+
 func ToTagResponses(tags []model.Tag) []TagResponse {
-	var responses []TagResponse
+	responses := make([]TagResponse, 0)
 	for _, tag := range tags {
-		responses = append(responses, TagResponse{ID: tag.ID, Name: tag.Name})
+		responses = append(responses, ToTagResponse(tag))
 	}
 	return responses
 }

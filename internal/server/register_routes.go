@@ -40,7 +40,7 @@ func (s *Server) RegisterRoutes(
 
 	// all
 	{
-		all := v1.Group("/", authMiddleware.Auth)
+		all := v1.Group("/")
 
 		// objects
 		objects := all.Group("/objects")
@@ -49,8 +49,8 @@ func (s *Server) RegisterRoutes(
 
 		// me
 		me := all.Group("/me")
-		me.Get("/", userHandler.HandleGetMe)
-		me.Patch("/", userHandler.HandleUpdateMe)
+		me.Get("/", authMiddleware.Auth, userHandler.HandleGetMe)
+		me.Patch("/", authMiddleware.Auth, userHandler.HandleUpdateMe)
 
 		// photographers
 		photographers := all.Group("/photographers")

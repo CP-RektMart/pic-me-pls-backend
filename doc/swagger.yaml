@@ -83,6 +83,19 @@ components:
       - price
       - toDate
       type: object
+    dto.CustomerResponse:
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
+      type: object
     dto.DeleteMediaRequest:
       properties:
         mediaID:
@@ -180,11 +193,8 @@ components:
       type: object
     dto.PackageResponse:
       properties:
-        categories:
-          items:
-            $ref: '#/components/schemas/dto.CategoryResponse'
-          type: array
-          uniqueItems: false
+        category:
+          $ref: '#/components/schemas/dto.CategoryResponse'
         description:
           type: string
         id:
@@ -354,7 +364,7 @@ components:
         comment:
           type: string
         customer:
-          type: string
+          $ref: '#/components/schemas/dto.CustomerResponse'
         id:
           type: integer
         rating:
@@ -995,6 +1005,11 @@ paths:
         name: photographerId
         schema:
           type: integer
+      - description: 'list of categoryIDs separate by comma ex: 1,2'
+        in: query
+        name: categoryIds
+        schema:
+          type: string
       responses:
         "200":
           content:

@@ -8,14 +8,6 @@ type MediaResponse struct {
 	Description string `json:"description"`
 }
 
-func ToMediaResponses(media []model.Media) []MediaResponse {
-	var responses []MediaResponse
-	for _, m := range media {
-		responses = append(responses, MediaResponse{ID: m.ID, PictureURL: m.PictureURL, Description: m.Description})
-	}
-	return responses
-}
-
 type CreateMediaRequest struct {
 	PictureURL  string `json:"pictureUrl" validate:"required"`
 	Description string `json:"description"`
@@ -35,4 +27,20 @@ type UpdateMediaResponse struct {
 
 type DeleteMediaRequest struct {
 	MediaID uint `params:"mediaId"`
+}
+
+func ToMediaResponse(media model.Media) MediaResponse {
+	return MediaResponse{
+		ID:          media.ID,
+		PictureURL:  media.PictureURL,
+		Description: media.Description,
+	}
+}
+
+func ToMediaResponses(media []model.Media) []MediaResponse {
+	responses := make([]MediaResponse, 0)
+	for _, m := range media {
+		responses = append(responses, ToMediaResponse(m))
+	}
+	return responses
 }
