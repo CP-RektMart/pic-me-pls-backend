@@ -413,13 +413,14 @@ components:
       type: object
     dto.UpdatePackageRequest:
       properties:
+        categoryId:
+          type: integer
         description:
-          minLength: 0
           type: string
+        id:
+          type: integer
         name:
           type: string
-        packageID:
-          type: integer
         price:
           minimum: 0
           type: number
@@ -1248,9 +1249,16 @@ paths:
       summary: Create Package
       tags:
       - packages
-  /api/v1/photographer/packages/{packageId}:
+  /api/v1/photographer/packages/{id}:
     patch:
-      description: Update
+      description: Update package
+      parameters:
+      - description: package id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       requestBody:
         content:
           application/json:

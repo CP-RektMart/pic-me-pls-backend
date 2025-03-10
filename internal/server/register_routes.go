@@ -94,7 +94,7 @@ func (s *Server) RegisterRoutes(
 		// packages
 		packages := photographer.Group("/packages")
 		packages.Post("/", packagesHandler.HandleCreatePackage)
-		packages.Patch("/:packageId", packagesHandler.HandleUpdatePackage)
+		packages.Patch("/:id", packagesHandler.HandleUpdatePackage)
 
 		// media
 		media := photographer.Group("/media")

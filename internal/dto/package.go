@@ -48,10 +48,11 @@ type CreatePackageResponse struct {
 }
 
 type UpdatePackageRequest struct {
+	ID          uint    `params:"id" validate:"required"`
 	Name        string  `json:"name"`
-	Description string  `json:"description" validate:"min=0"`
+	Description string  `json:"description"`
 	Price       float64 `json:"price" validate:"omitempty,min=0"`
-	PackageID   uint    `params:"packageId"`
+	CategoryID  uint    `json:"categoryId"`
 }
 
 type UpdatePackageResponse struct {
