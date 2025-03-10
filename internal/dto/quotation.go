@@ -33,7 +33,7 @@ type CreateQuotationRequest struct {
 	Description string  `json:"description,omitempty"`
 
 	FromDate time.Time `json:"fromDate" validate:"required"`
-	ToDate   time.Time     `json:"toDate" validate:"required"`
+	ToDate   time.Time `json:"toDate" validate:"required"`
 }
 
 type QuotationResponse struct {
