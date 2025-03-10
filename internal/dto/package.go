@@ -20,8 +20,9 @@ type GetAllPackagesRequest struct {
 
 type CreatePackageRequest struct {
 	Name        string                `json:"name" validate:"required"`
-	Description string                `json:"description" validate:"required"`
-	Price       float64               `json:"price" validate:"required"`
+	Description string                `json:"description"`
+	Price       float64               `json:"price" validate:"required,min=0"`
+	CategoryID  uint                  `json:"categoryId"`
 	Media       []MediaPackageRequest `json:"media" validate:"required"`
 }
 
@@ -81,4 +82,19 @@ func ToPackageResponses(packages []model.Package) []PackageResponse {
 	}
 
 	return packageResponses
+}
+
+func ToPackageMediaModel(media MediaPackageRequest) model.Media {
+	return model.Media{
+		PictureURL:  media.PictureURL,
+		Description: media.Description,
+	}
+}
+
+func ToPackageMediaModels(media []MediaPackageRequest) []model.Media {
+	result := make([]model.Media, 0)
+	for _, m := range media {
+		result = append(result, ToPackageMediaModel(m))
+	}
+	return result
 }

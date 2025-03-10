@@ -6,15 +6,14 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
 // @Summary			Create Package
-// @Description		Create Package by photographer
+// @Description			Create Package by photographer
 // @Tags			packages
 // @Router			/api/v1/photographer/packages [POST]
-// @Security		ApiKeyAuth
-// @Param        	RequestBody 	body  dto.CreatePackageRequest  true  "Package details"
+// @Security			ApiKeyAuth
+// @Param        		RequestBody 	body  dto.CreatePackageRequest  true  "Package details"
 // @Success			201
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
@@ -24,57 +23,44 @@ func (h *Handler) HandleCreatePackage(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.CreatePackageRequest)
-	if err := c.BodyParser(req); err != nil {
+	var req dto.CreatePackageRequest
+	if err := c.BodyParser(&req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
+
 	for _, media := range req.Media {
 		if err := h.validate.Struct(media); err != nil {
 			return apperror.BadRequest("invalid request body", err)
 		}
 	}
 
-	if req.Price <= 0 {
-		return apperror.BadRequest("invalid request body", errors.New("Price must be positive"))
-	}
-
-	if err = h.CreatePackage(req, userID); err != nil {
+	if err = h.createPackage(&req, userID); err != nil {
 		return errors.Wrap(err, "failed to create Package")
 	}
 
 	return c.SendStatus(fiber.StatusCreated)
 }
 
-func (h *Handler) CreatePackage(req *dto.CreatePackageRequest, userID uint) error {
-	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		Package := &model.Package{
-			PhotographerID: userID,
-			Name:           req.Name,
-			Description:    req.Description,
-			Price:          req.Price,
-		}
+func (h *Handler) createPackage(req *dto.CreatePackageRequest, userID uint) error {
+	var photographer model.Photographer
+	if err := h.store.DB.Where("user_id = ?", userID).First(&photographer).Error; err != nil {
+		return errors.Wrap(err, "Failed fetch photographer")
+	}
 
-		if err := tx.Create(&Package).Error; err != nil {
-			return errors.Wrap(err, "failed to create Package")
-		}
-
-		for _, media := range req.Media {
-			if err := tx.Create(&model.Media{
-				PictureURL:  media.PictureURL,
-				Description: media.Description,
-				PackageID:   Package.ID,
-			}).Error; err != nil {
-				return errors.Wrap(err, "failed to create media")
-			}
-		}
-
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "failed to create Package")
+	newPackage := &model.Package{
+		Name:           req.Name,
+		Description:    req.Description,
+		Price:          req.Price,
+		PhotographerID: photographer.ID,
+		CategoryID:     req.CategoryID,
+		Media:          dto.ToPackageMediaModels(req.Media),
+	}
+	if err := h.store.DB.Create(&newPackage).Error; err != nil {
+		return errors.Wrap(err, "failed to save Package to DB")
 	}
 
 	return nil
