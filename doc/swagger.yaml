@@ -166,6 +166,8 @@ components:
       type: object
     dto.MediaResponse:
       properties:
+        description:
+          type: string
         id:
           type: integer
         pictureUrl:

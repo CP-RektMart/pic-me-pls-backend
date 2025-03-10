@@ -3,14 +3,15 @@ package dto
 import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 
 type MediaResponse struct {
-	ID         uint   `json:"id"`
-	PictureURL string `json:"pictureUrl"`
+	ID          uint   `json:"id"`
+	PictureURL  string `json:"pictureUrl"`
+	Description string `json:"description"`
 }
 
 func ToMediaResponses(media []model.Media) []MediaResponse {
 	var responses []MediaResponse
 	for _, m := range media {
-		responses = append(responses, MediaResponse{ID: m.ID, PictureURL: m.PictureURL})
+		responses = append(responses, MediaResponse{ID: m.ID, PictureURL: m.PictureURL, Description: m.Description})
 	}
 	return responses
 }
