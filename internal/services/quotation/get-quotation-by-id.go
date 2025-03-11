@@ -48,6 +48,15 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 		return apperror.Forbidden("user not have permission", nil)
 	}
 
+	var packages []model.Package
+
+	photographerID := quotation.PhotographerID
+	if err := h.store.DB.Where("photographer_id = ?", photographerID).Find(&packages).Error; err != nil {
+		return apperror.NotFound("package not found", err)
+	}
+
+	quotation.Photographer.Packages = packages
+
 	response := dto.ToQuotationResponse(*quotation)
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.QuotationResponse]{

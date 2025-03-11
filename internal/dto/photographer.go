@@ -28,13 +28,14 @@ type CitizenCardResponse struct {
 }
 
 type PhotographerResponse struct {
-	ID                uint   `json:"id"`
-	Name              string `json:"name"`
-	Email             string `json:"email"`
-	PhoneNumber       string `json:"phoneNumber"`
-	ProfilePictureURL string `json:"profilePictureUrl"`
-	IsVerified        bool   `json:"isVerified"`
-	ActiveStatus      bool   `json:"activeStatus"`
+	ID                uint                   `json:"id"`
+	Name              string                 `json:"name"`
+	Email             string                 `json:"email"`
+	PhoneNumber       string                 `json:"phoneNumber"`
+	ProfilePictureURL string                 `json:"profilePictureUrl"`
+	IsVerified        bool                   `json:"isVerified"`
+	ActiveStatus      bool                   `json:"activeStatus"`
+	Packages          []SmallPackageResponse `json:"packages"`
 }
 
 type PhotographerRequest struct {
@@ -51,5 +52,18 @@ func ToPhotographerResponse(photographer model.Photographer) PhotographerRespons
 		ProfilePictureURL: photographer.User.ProfilePictureURL,
 		IsVerified:        photographer.IsVerified,
 		ActiveStatus:      photographer.ActiveStatus,
+		Packages:          ToSmallPackageResponses(photographer.Packages),
 	}
+}
+
+func ToSmallPackageResponses(packages []model.Package) []SmallPackageResponse {
+	var responses []SmallPackageResponse
+	for _, p := range packages {
+		responses = append(responses, SmallPackageResponse{
+			ID:          p.ID,
+			Name:        p.Name,
+			Description: p.Description,
+		})
+	}
+	return responses
 }
