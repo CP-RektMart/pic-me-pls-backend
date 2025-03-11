@@ -23,7 +23,7 @@ import (
 func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
-		return errors.Wrap(err, "failed get user id from context")
+		return errors.Wrap(err, "failed to get user id from context")
 	}
 
 	req := new(dto.GetQuotationRequest)
