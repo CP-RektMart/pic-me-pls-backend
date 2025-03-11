@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
 )
 
 type AcceptQuotationRequest struct {
@@ -63,9 +64,7 @@ func ToQuotationResponse(quotation model.Quotation) QuotationResponse {
 }
 
 func ToQuotationResponses(quotations []model.Quotation) []QuotationResponse {
-	responses := make([]QuotationResponse, 0, len(quotations))
-	for _, quotation := range quotations {
-		responses = append(responses, ToQuotationResponse(quotation))
-	}
-	return responses
+	return lo.Map(quotations, func(quotation model.Quotation, _ int) QuotationResponse {
+		return ToQuotationResponse(quotation)
+	})
 }

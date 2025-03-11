@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
+)
 
 type MediaResponse struct {
 	ID          uint   `json:"id"`
@@ -38,9 +41,7 @@ func ToMediaResponse(media model.Media) MediaResponse {
 }
 
 func ToMediaResponses(media []model.Media) []MediaResponse {
-	responses := make([]MediaResponse, 0, len(media))
-	for _, m := range media {
-		responses = append(responses, ToMediaResponse(m))
-	}
-	return responses
+	return lo.Map(media, func(m model.Media, _ int) MediaResponse {
+		return ToMediaResponse(m)
+	})
 }
