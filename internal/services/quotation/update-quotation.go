@@ -1,8 +1,6 @@
 package quotation
 
 import (
-	"fmt"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -28,24 +26,22 @@ func (h *Handler) HandleUpdateQuotation(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	req := new(dto.UpdateQuotationRequest)
-	if err := c.ParamsParser(req); err != nil {
+	param := new(dto.UpdateQuotationRequest)
+	if err := c.ParamsParser(param); err != nil {
 		return apperror.BadRequest("invalid params", err)
 	}
 
-	body := new(dto.CreateQuotationRequest)
+
+	req := new(dto.CreateQuotationRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	fmt.Println(body.CustomerID)
-	fmt.Println(body.PackageID)
-
-	if err := h.validate.Struct(body); err != nil {
+	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err := h.UpdateQuotation(body, userID, req.QuotationID); err != nil {
+	if err := h.UpdateQuotation(req, userID, param.QuotationID); err != nil {
 		return errors.Wrap(err, "failed to create quotation")
 	}
 
