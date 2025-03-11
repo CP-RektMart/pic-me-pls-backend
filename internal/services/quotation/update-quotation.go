@@ -1,6 +1,8 @@
 package quotation
 
 import (
+	"fmt"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -26,8 +28,8 @@ func (h *Handler) HandleUpdateQuotation(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	var req dto.UpdateQuotationRequest
-	if err := c.ParamsParser(&req); err != nil {
+	req := new(dto.UpdateQuotationRequest)
+	if err := c.ParamsParser(req); err != nil {
 		return apperror.BadRequest("invalid params", err)
 	}
 
@@ -35,6 +37,9 @@ func (h *Handler) HandleUpdateQuotation(c *fiber.Ctx) error {
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
+
+	fmt.Println(body.CustomerID)
+	fmt.Println(body.PackageID)
 
 	if err := h.validate.Struct(body); err != nil {
 		return apperror.BadRequest("invalid request body", err)

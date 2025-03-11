@@ -24,7 +24,7 @@ type CancelQuotationRequest struct {
 }
 
 type UpdateQuotationRequest struct {
-	QuotationID string `params:"id"`
+	QuotationID string `params:"id" validate:"required"`
 }
 
 type CreateQuotationRequest struct {
