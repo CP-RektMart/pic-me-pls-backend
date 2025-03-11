@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
+)
 
 type ReviewResponse struct {
 	ID       uint             `json:"id"`
@@ -19,9 +22,8 @@ func ToReviewResponse(review model.Review) ReviewResponse {
 }
 
 func ToReviewResponses(reviews []model.Review) []ReviewResponse {
-	responses := make([]ReviewResponse, 0, len(reviews))
-	for _, review := range reviews {
-		responses = append(responses, ToReviewResponse(review))
-	}
-	return responses
+	return lo.Map(reviews, func(review model.Review, _ int) ReviewResponse {
+		return ToReviewResponse(review)
+	})
+
 }

@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
+)
 
 type TagResponse struct {
 	ID   uint   `json:"id"`
@@ -15,9 +18,7 @@ func ToTagResponse(tag model.Tag) TagResponse {
 }
 
 func ToTagResponses(tags []model.Tag) []TagResponse {
-	responses := make([]TagResponse, 0)
-	for _, tag := range tags {
-		responses = append(responses, ToTagResponse(tag))
-	}
-	return responses
+	return lo.Map(tags, func(tag model.Tag, _ int) TagResponse {
+		return ToTagResponse(tag)
+	})
 }
