@@ -401,12 +401,16 @@ components:
       type: object
     dto.SmallPackageResponse:
       properties:
+        category:
+          $ref: '#/components/schemas/dto.CategoryResponse'
         description:
           type: string
         id:
           type: integer
         name:
           type: string
+        price:
+          type: number
       type: object
     dto.TagResponse:
       properties:
