@@ -19,7 +19,7 @@ func ToReviewResponse(review model.Review) ReviewResponse {
 }
 
 func ToReviewResponses(reviews []model.Review) []ReviewResponse {
-	responses := make([]ReviewResponse, 0)
+	responses := make([]ReviewResponse, 0, len(reviews))
 	for _, review := range reviews {
 		responses = append(responses, ToReviewResponse(review))
 	}

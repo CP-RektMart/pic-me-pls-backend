@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/utils/convert"
+	"github.com/samber/lo"
 )
 
 type MediaPackageRequest struct {
@@ -71,7 +71,7 @@ func ToPackageResponse(Package model.Package) PackageResponse {
 		Tags:         ToTagResponses(Package.Tags),
 		Media:        ToMediaResponses(Package.Media),
 		Reviews:      ToReviewResponses(Package.Reviews),
-		Category:     convert.ToPointer(ToCategoryResponse(Package.Category)),
+		Category:     lo.EmptyableToPtr(ToCategoryResponse(Package.Category)),
 	}
 }
 
@@ -93,7 +93,7 @@ func ToPackageMediaModel(media MediaPackageRequest) model.Media {
 }
 
 func ToPackageMediaModels(media []MediaPackageRequest) []model.Media {
-	result := make([]model.Media, 0)
+	result := make([]model.Media, 0, len(media))
 	for _, m := range media {
 		result = append(result, ToPackageMediaModel(m))
 	}

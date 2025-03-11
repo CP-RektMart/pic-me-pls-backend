@@ -38,7 +38,7 @@ func ToMediaResponse(media model.Media) MediaResponse {
 }
 
 func ToMediaResponses(media []model.Media) []MediaResponse {
-	responses := make([]MediaResponse, 0)
+	responses := make([]MediaResponse, 0, len(media))
 	for _, m := range media {
 		responses = append(responses, ToMediaResponse(m))
 	}

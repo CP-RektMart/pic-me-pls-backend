@@ -63,7 +63,7 @@ func ToQuotationResponse(quotation model.Quotation) QuotationResponse {
 }
 
 func ToQuotationResponses(quotations []model.Quotation) []QuotationResponse {
-	responses := make([]QuotationResponse, 0)
+	responses := make([]QuotationResponse, 0, len(quotations))
 	for _, quotation := range quotations {
 		responses = append(responses, ToQuotationResponse(quotation))
 	}
