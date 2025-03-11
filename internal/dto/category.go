@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
+)
 
 type CategoryResponse struct {
 	ID          uint   `json:"id"`
@@ -32,9 +35,7 @@ func ToCategoryResponse(category model.Category) CategoryResponse {
 }
 
 func ToCategoryResponses(categories []model.Category) []CategoryResponse {
-	responses := make([]CategoryResponse, 0, len(categories))
-	for _, category := range categories {
-		responses = append(responses, ToCategoryResponse(category))
-	}
-	return responses
+	return lo.Map(categories, func(category model.Category, _ int) CategoryResponse {
+		return ToCategoryResponse(category)
+	})
 }

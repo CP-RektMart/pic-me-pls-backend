@@ -76,13 +76,9 @@ func ToPackageResponse(Package model.Package) PackageResponse {
 }
 
 func ToPackageResponses(packages []model.Package) []PackageResponse {
-	packageResponses := make([]PackageResponse, 0)
-
-	for _, p := range packages {
-		packageResponses = append(packageResponses, ToPackageResponse(p))
-	}
-
-	return packageResponses
+	return lo.Map(packages, func(pkg model.Package, _ int) PackageResponse {
+		return ToPackageResponse(pkg)
+	})
 }
 
 func ToPackageMediaModel(media MediaPackageRequest) model.Media {
@@ -93,9 +89,7 @@ func ToPackageMediaModel(media MediaPackageRequest) model.Media {
 }
 
 func ToPackageMediaModels(media []MediaPackageRequest) []model.Media {
-	result := make([]model.Media, 0, len(media))
-	for _, m := range media {
-		result = append(result, ToPackageMediaModel(m))
-	}
-	return result
+	return lo.Map(media, func(m MediaPackageRequest, _ int) model.Media {
+		return ToPackageMediaModel(m)
+	})
 }
