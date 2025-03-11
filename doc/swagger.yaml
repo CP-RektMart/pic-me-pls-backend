@@ -305,6 +305,11 @@ components:
           type: boolean
         name:
           type: string
+        packages:
+          items:
+            $ref: '#/components/schemas/dto.SmallPackageResponse'
+          type: array
+          uniqueItems: false
         phoneNumber:
           type: string
         profilePictureUrl:
@@ -385,6 +390,15 @@ components:
           type: integer
         rating:
           type: number
+      type: object
+    dto.SmallPackageResponse:
+      properties:
+        description:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
       type: object
     dto.TagResponse:
       properties:

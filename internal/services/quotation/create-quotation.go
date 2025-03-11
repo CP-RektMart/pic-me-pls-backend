@@ -33,26 +33,25 @@ func (h *Handler) HandleCreateQuotation(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err = h.CreateQuotation(req,userID); err != nil {
+	if err = h.CreateQuotation(req, userID); err != nil {
 		return errors.Wrap(err, "failed to create quotation")
 	}
-
 
 	return c.SendStatus(fiber.StatusCreated)
 }
 
-func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) (error) {
+func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) error {
 	var newQuotation model.Quotation
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		newQuotation = model.Quotation{
-			CustomerID: req.CustomerID,
-			PackageID: req.PackageID,
-			Description:    req.Description,
-			Price:          req.Price,
-			FromDate: req.FromDate,
-			ToDate:  req.ToDate,
-			Status: model.QuotationPending,
+			CustomerID:  req.CustomerID,
+			PackageID:   req.PackageID,
+			Description: req.Description,
+			Price:       req.Price,
+			FromDate:    req.FromDate,
+			ToDate:      req.ToDate,
+			Status:      model.QuotationPending,
 		}
 
 		var customer model.User
@@ -82,4 +81,4 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) 
 		return errors.Wrap(err, "failed to create quotation")
 	}
 	return nil
-} 
+}

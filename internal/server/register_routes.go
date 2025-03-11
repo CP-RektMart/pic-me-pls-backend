@@ -64,8 +64,8 @@ func (s *Server) RegisterRoutes(
 
 		// quotations
 		quotations := all.Group("/quotations")
-		quotations.Get("/", quotationHandler.HandleListQuotations)
-		quotations.Get("/:id", quotationHandler.HandleGetQuotationByID)
+		quotations.Get("/", authMiddleware.Auth, quotationHandler.HandleListQuotations)
+		quotations.Get("/:id", authMiddleware.Auth, quotationHandler.HandleGetQuotationByID)
 
 		// packages
 		packages := all.Group("/packages")

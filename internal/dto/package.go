@@ -38,6 +38,12 @@ type PackageResponse struct {
 	Category     *CategoryResponse    `json:"category"`
 }
 
+type SmallPackageResponse struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
 type CreatePackageResponse struct {
 	ID               uint    `json:"id"`
 	Name             string  `json:"name"`

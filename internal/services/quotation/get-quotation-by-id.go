@@ -23,7 +23,7 @@ import (
 func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
-		return errors.Wrap(err, "failed get user id from context")
+		return errors.Wrap(err, "failed to get user id from context")
 	}
 
 	req := new(dto.GetQuotationRequest)
@@ -47,6 +47,15 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 	if quotation.CustomerID != userID && quotation.Photographer.UserID != userID {
 		return apperror.Forbidden("user not have permission", nil)
 	}
+
+	var packages []model.Package
+
+	photographerID := quotation.PhotographerID
+	if err := h.store.DB.Where("photographer_id = ?", photographerID).Find(&packages).Error; err != nil {
+		return apperror.NotFound("package not found", err)
+	}
+
+	quotation.Photographer.Packages = packages
 
 	response := dto.ToQuotationResponse(*quotation)
 
