@@ -56,14 +56,18 @@ func ToPhotographerResponse(photographer model.Photographer) PhotographerRespons
 	}
 }
 
+func ToSmallPackageResponse(pkg model.Package) SmallPackageResponse {
+	return SmallPackageResponse{
+		ID:          pkg.ID,
+		Name:        pkg.Name,
+		Description: pkg.Description,
+	}
+}
+
 func ToSmallPackageResponses(packages []model.Package) []SmallPackageResponse {
 	var responses []SmallPackageResponse
-	for _, p := range packages {
-		responses = append(responses, SmallPackageResponse{
-			ID:          p.ID,
-			Name:        p.Name,
-			Description: p.Description,
-		})
+	for _, pkg := range packages {
+		responses = append(responses, ToSmallPackageResponse(pkg))
 	}
 	return responses
 }
