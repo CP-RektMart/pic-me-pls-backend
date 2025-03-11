@@ -32,7 +32,7 @@ func ToCategoryResponse(category model.Category) CategoryResponse {
 }
 
 func ToCategoryResponses(categories []model.Category) []CategoryResponse {
-	responses := make([]CategoryResponse, 0)
+	responses := make([]CategoryResponse, 0, len(categories))
 	for _, category := range categories {
 		responses = append(responses, ToCategoryResponse(category))
 	}
