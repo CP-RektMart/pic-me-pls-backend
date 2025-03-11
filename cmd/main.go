@@ -15,6 +15,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/customer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/objects"
@@ -68,6 +69,7 @@ func main() {
 	objectHandler := objects.NewHandler(store, config.Storage)
 	quotationHandler := quotation.NewHandler(store, authMiddleware, validate)
 	mediaHandler := media.NewHandler(store, validate, authMiddleware)
+	customerHandler := customer.NewHandler(store, validate)
 
 	server.RegisterDocs()
 
@@ -85,6 +87,7 @@ func main() {
 		objectHandler,
 		quotationHandler,
 		mediaHandler,
+		customerHandler,
 	)
 
 	server.Start(ctx, stop)

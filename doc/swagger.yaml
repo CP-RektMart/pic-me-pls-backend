@@ -85,6 +85,15 @@ components:
       - price
       - toDate
       type: object
+    dto.CustomerPublicResponse:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        profilePictureUrl:
+          type: string
+      type: object
     dto.CustomerResponse:
       properties:
         email:
@@ -117,6 +126,11 @@ components:
       properties:
         result:
           $ref: '#/components/schemas/dto.CitizenCardResponse'
+      type: object
+    dto.HttpResponse-dto_CustomerPublicResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.CustomerPublicResponse'
       type: object
     dto.HttpResponse-dto_LoginResponse:
       properties:
@@ -424,6 +438,8 @@ components:
         price:
           minimum: 0
           type: number
+      required:
+      - id
       type: object
     dto.UserResponse:
       properties:
@@ -860,6 +876,40 @@ paths:
       summary: confirm quotation
       tags:
       - quotations
+  /api/v1/customers/{id}:
+    get:
+      description: Get customer public profile
+      parameters:
+      - description: customer's userId
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_CustomerPublicResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get customer public profile
+      tags:
+      - customer
   /api/v1/me:
     get:
       description: Get me
