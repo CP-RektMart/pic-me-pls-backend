@@ -117,6 +117,14 @@ components:
         error:
           type: string
       type: object
+    dto.HttpListResponse-dto_SmallPackageResponse:
+      properties:
+        result:
+          items:
+            $ref: '#/components/schemas/dto.SmallPackageResponse'
+          type: array
+          uniqueItems: false
+      type: object
     dto.HttpResponse-PaginationResponse[dto_CategoryResponse]:
       properties:
         result:
@@ -1284,6 +1292,32 @@ paths:
       tags:
       - media
   /api/v1/photographer/packages:
+    get:
+      description: List Photographer's packages
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_SmallPackageResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: List Photographer's packages
+      tags:
+      - packages
     post:
       description: Create Package by photographer
       requestBody:
