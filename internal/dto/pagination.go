@@ -12,6 +12,19 @@ type PaginationResponse[T any] struct {
 	Data      []T `json:"data"`
 }
 
+func (p *PaginationRequest) CheckPaginationRequest() (page int, pageSize int, offset int) {
+	page, pageSize = p.Page, p.PageSize
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+
+	offset = (page - 1) * pageSize
+	return
+}
+
 func GetPaginationData(req PaginationRequest, defaultPage, defaultPageSize int) (int, int, int) {
 	page, pageSize := req.Page, req.PageSize
 
