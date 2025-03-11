@@ -5,6 +5,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/customer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/message"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/objects"
@@ -28,6 +29,7 @@ func (s *Server) RegisterRoutes(
 	objectsHandler *objects.Handler,
 	quotationHandler *quotation.Handler,
 	mediaHandler *media.Handler,
+	customerHandler *customer.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -41,6 +43,10 @@ func (s *Server) RegisterRoutes(
 	// all
 	{
 		all := v1.Group("/")
+
+		// customer
+		customer := all.Group("/customers")
+		customer.Get("/:id", customerHandler.HandlerCustomerPublicProfile)
 
 		// objects
 		objects := all.Group("/objects")
