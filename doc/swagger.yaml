@@ -291,6 +291,11 @@ components:
           type: boolean
         name:
           type: string
+        packages:
+          items:
+            $ref: '#/components/schemas/dto.SmallPackageResponse'
+          type: array
+          uniqueItems: false
         phoneNumber:
           type: string
         profilePictureUrl:
@@ -372,6 +377,15 @@ components:
         rating:
           type: number
       type: object
+    dto.SmallPackageResponse:
+      properties:
+        description:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+      type: object
     dto.TagResponse:
       properties:
         id:
@@ -424,6 +438,8 @@ components:
         price:
           minimum: 0
           type: number
+      required:
+      - id
       type: object
     dto.UserResponse:
       properties:
