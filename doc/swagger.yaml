@@ -45,6 +45,8 @@ components:
       type: object
     dto.CreatePackageRequest:
       properties:
+        categoryId:
+          type: integer
         description:
           type: string
         media:
@@ -55,9 +57,9 @@ components:
         name:
           type: string
         price:
+          minimum: 0
           type: number
       required:
-      - description
       - media
       - name
       - price
@@ -82,6 +84,19 @@ components:
       - packageId
       - price
       - toDate
+      type: object
+    dto.CustomerResponse:
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
       type: object
     dto.DeleteMediaRequest:
       properties:
@@ -180,11 +195,8 @@ components:
       type: object
     dto.PackageResponse:
       properties:
-        categories:
-          items:
-            $ref: '#/components/schemas/dto.CategoryResponse'
-          type: array
-          uniqueItems: false
+        category:
+          $ref: '#/components/schemas/dto.CategoryResponse'
         description:
           type: string
         id:
@@ -359,7 +371,7 @@ components:
         comment:
           type: string
         customer:
-          type: string
+          $ref: '#/components/schemas/dto.CustomerResponse'
         id:
           type: integer
         rating:
@@ -415,16 +427,19 @@ components:
       type: object
     dto.UpdatePackageRequest:
       properties:
+        categoryId:
+          type: integer
         description:
-          minLength: 0
           type: string
+        id:
+          type: integer
         name:
           type: string
-        packageID:
-          type: integer
         price:
           minimum: 0
           type: number
+      required:
+      - id
       type: object
     dto.UserResponse:
       properties:
@@ -1009,6 +1024,11 @@ paths:
         name: photographerId
         schema:
           type: integer
+      - description: 'list of categoryIDs separate by comma ex: 1,2'
+        in: query
+        name: categoryIds
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -1245,9 +1265,16 @@ paths:
       summary: Create Package
       tags:
       - packages
-  /api/v1/photographer/packages/{packageId}:
+  /api/v1/photographer/packages/{id}:
     patch:
-      description: Update
+      description: Update package
+      parameters:
+      - description: package id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       requestBody:
         content:
           application/json:
