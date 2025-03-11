@@ -39,9 +39,11 @@ type PackageResponse struct {
 }
 
 type SmallPackageResponse struct {
-	ID          uint   `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ID          uint              `json:"id"`
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Price       float64           `json:"price"`
+	Category    *CategoryResponse `json:"category"`
 }
 
 type CreatePackageResponse struct {
@@ -97,5 +99,21 @@ func ToPackageMediaModel(media MediaPackageRequest) model.Media {
 func ToPackageMediaModels(media []MediaPackageRequest) []model.Media {
 	return lo.Map(media, func(m MediaPackageRequest, _ int) model.Media {
 		return ToPackageMediaModel(m)
+	})
+}
+
+func ToSmallPackageResponse(pkg model.Package) SmallPackageResponse {
+	return SmallPackageResponse{
+		ID:          pkg.ID,
+		Name:        pkg.Name,
+		Description: pkg.Description,
+		Price:       pkg.Price,
+		Category:    lo.EmptyableToPtr(ToCategoryResponse(pkg.Category)),
+	}
+}
+
+func ToSmallPackageResponses(packages []model.Package) []SmallPackageResponse {
+	return lo.Map(packages, func(pkg model.Package, _ int) SmallPackageResponse {
+		return ToSmallPackageResponse(pkg)
 	})
 }

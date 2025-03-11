@@ -40,7 +40,7 @@ func (h *Handler) getPackagesFromUserID(ID uint) ([]model.Package, error) {
 	}
 
 	packages := make([]model.Package, 0)
-	if err := h.store.DB.Where("photographer_id = ?", photographer.ID).Find(&packages).Error; err != nil {
+	if err := h.store.DB.Joins("Category").Where("photographer_id = ?", photographer.ID).Find(&packages).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apperror.BadRequest("packages not found", err)
 		}
