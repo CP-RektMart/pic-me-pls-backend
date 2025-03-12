@@ -70,12 +70,22 @@ UPDATE Photographers
 SET Citizen_Card_ID = 3
 WHERE User_ID = 5;
 
--- 5. Insert Packages
-INSERT INTO Packages (Photographer_ID, Name, Description, Price)
+-- 9. Insert Categories
+INSERT INTO Categories (Name, Description)
 VALUES
-(1, 'Sunset Photography', 'A collection of sunset images', 150.00),
-(2, 'Nature Wonders', 'Beautiful natural scenery', 200.00),
-(3, 'Urban Life', 'Capturing the essence of the city', 180.00);
+('Portrait', 'Packages focusing on portrait photography'),
+('Wedding', 'Packages for wedding photography'),
+('Product', 'Packages for product photography'),
+('Real Estate', 'Packages for real estate photography'),
+('Event', 'Packages for event photography'),
+('Sports', 'Packages for sports photography');
+
+-- 5. Insert Packages
+INSERT INTO Packages (Photographer_ID, Name, Description, Price, Category_ID)
+VALUES
+(1, 'Sunset Photography', 'A collection of sunset images', 150.00, 1),
+(2, 'Nature Wonders', 'Beautiful natural scenery', 200.00, 2),
+(3, 'Urban Life', 'Capturing the essence of the city', 180.00, 3);
 
 -- 6. Insert Tags
 INSERT INTO Tags (Package_ID, Name)
@@ -99,12 +109,6 @@ VALUES
 (1, 1, 4.5, 'Amazing!'),
 (2, 2, 5.0, 'Beautiful shots'),
 (3, 1, 4.0, 'Great urban photography');
-
--- 9. Insert Categories
-INSERT INTO Categories (Name, Description)
-VALUES
-('Nature', 'Packages related to nature and landscapes'),
-('City Life', 'Packages capturing city life');
 
 -- 10. Link Packages to Categories
 INSERT INTO Packages_Categories (Package_ID, Category_ID)

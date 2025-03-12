@@ -1059,6 +1059,11 @@ paths:
     get:
       description: Show all available packages with pagination
       parameters:
+      - description: Filter by package name
+        in: query
+        name: name
+        schema:
+          type: string
       - description: Page number
         in: query
         name: page
