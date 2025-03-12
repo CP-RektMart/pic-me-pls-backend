@@ -70,6 +70,10 @@ type UpdatePackageResponse struct {
 	Price       float64 `json:"price"`
 }
 
+type GetPackageByIDRequest struct {
+	ID uint `params:"id" validate:"required"`
+}
+
 func ToPackageResponse(Package model.Package) PackageResponse {
 	return PackageResponse{
 		ID:           Package.ID,
