@@ -10,7 +10,7 @@ DELETE FROM Users;
 DELETE FROM Citizen_Cards;
 DELETE FROM Categories;
 
-ALTER SEQUENCE Packages_id_seq RESTART WITH 1;
+ALTER SEQUENCE packages_id_seq RESTART WITH 1;
 ALTER SEQUENCE photographers_id_seq RESTART WITH 1;
 ALTER SEQUENCE users_id_seq RESTART WITH 1;
 ALTER SEQUENCE citizen_cards_id_seq RESTART WITH 1;
@@ -20,105 +20,88 @@ ALTER SEQUENCE reviews_id_seq RESTART WITH 1;
 ALTER SEQUENCE categories_id_seq RESTART WITH 1;
 ALTER SEQUENCE quotations_id_seq RESTART WITH 1;
 
--- 1. Insert Users
-INSERT INTO Users (Name, Email, Phone_Number, Profile_Picture_URL, Role)
+-- Insert Users
+INSERT INTO Users (name, email, phone_number, profile_picture_url, role, facebook, instagram, bank, account_no, bank_branch, created_at, updated_at)
 VALUES
-('User 1', 'user1@example.com', '1234567890', 'url1.jpg', 'Customer'),
-('User 2', 'user2@example.com', '2345678901', 'url2.jpg', 'Customer'),
-('User 3', 'user3@example.com', '3456789012', 'url3.jpg', 'Photographer'),
-('User 4', 'user4@example.com', '4567890123', 'url4.jpg', 'Photographer'),
-('User 5', 'user5@example.com', '5678901234', 'url5.jpg', 'Photographer'),
-('User 6', 'user6@example.com', '6789012345', 'url6.jpg', 'Photographer'),
-('User 7', 'user7@example.com', '7890123456', 'url7.jpg', 'Photographer'),
-('User 8', 'user8@example.com', '8901234567', 'url8.jpg', 'Photographer'),
-('User 9', 'user9@example.com', '9012345678', 'url9.jpg', 'Photographer'),
-('User 10', 'user10@example.com', '1123456789', 'url10.jpg', 'Photographer'),
-('User 11', 'user11@example.com', '2234567890', 'url11.jpg', 'Photographer'),
-('User 12', 'user12@example.com', '3345678901', 'url12.jpg', 'Photographer');
+('User 1', 'user1@example.com', '1234567890', 'https://cdn-icons-png.flaticon.com/512/10337/10337609.png', 'CUSTOMER', 'Fookbace', 'ig', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 2', 'user2@example.com', '2345678901', 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg', 'CUSTOMER', 'bookface', 'graminsta', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 3', 'user3@example.com', '3456789012', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'PHOTOGRAPHER', 'vlllqw sq', 'IG', 'BAY', '', 'branch', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 4', 'user4@example.com', '4567890123', 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg', 'PHOTOGRAPHER', 'face book', 'GI', 'KKP', '', 'bchnaf', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 5', 'user5@example.com', '5678901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- 2. Insert Photographers (only for Users with Role 'Photographer')
-INSERT INTO Photographers (User_ID, Is_Verified, Active_Status)
+-- Insert Citizen Cards
+INSERT INTO Citizen_Cards (citizen_id, laser_id, picture, expire_date, created_at, updated_at)
 VALUES
-(3,  true, true),
-(4,  true, true),
-(5, false, false);
+('1519999567819', 'LASER123', 'https://www.visa.com.vn/dam/VCOM/regional/ap/vietnam/global-elements/images/vn-visa-gold-card-498x280.png', '2026-12-31', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('4819999567819', 'LASER234', 'https://www.visa.com.vn/dam/VCOM/regional/ap/vietnam/global-elements/images/vn-visa-classic-card-498x280.png', '2027-11-30', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- 3. Insert Citizen Cards for Photographers
-INSERT INTO Citizen_Cards (Citizen_ID, Laser_ID, Picture, Expire_Date)
+-- Insert Photographers
+INSERT INTO Photographers (user_id, is_verified, active_status, citizen_card_id, created_at, updated_at)
 VALUES
-('1519999567819', 'LASER123', 'citizen3_pic.jpg', '2026-12-31'),
-('4819999567819', 'LASER234', 'citizen4_pic.jpg', '2027-11-30'),
-('3319999567819', 'LASER345', 'citizen5_pic.jpg', '2028-10-31'),
-('2219999567819', 'LASER456', 'citizen6_pic.jpg', '2029-09-30'),
-('7719999567819', 'LASER567', 'citizen7_pic.jpg', '2030-08-31'),
-('8819999567819', 'LASER678', 'citizen8_pic.jpg', '2031-07-31'),
-('9919999567819', 'LASER789', 'citizen9_pic.jpg', '2032-06-30'),
-('6619999567819', 'LASER890', 'citizen10_pic.jpg', '2033-05-31'),
-('5519999567819', 'LASER901', 'citizen11_pic.jpg', '2034-04-30'),
-('4419999567819', 'LASER012', 'citizen12_pic.jpg', '2035-03-31');
+(3, true, true, 1, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, true, true, 2, LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- 4. Link Citizen Cards to Photographers
-UPDATE Photographers
-SET Citizen_Card_ID = 1
-WHERE User_ID = 3;
-
-UPDATE Photographers
-SET Citizen_Card_ID = 2
-WHERE User_ID = 4;
-
-UPDATE Photographers
-SET Citizen_Card_ID = 3
-WHERE User_ID = 5;
-
--- 5. Insert Packages
-INSERT INTO Packages (Photographer_ID, Name, Description, Price)
+-- Insert Categories
+INSERT INTO Categories (name, description, created_at, updated_at)
 VALUES
-(1, 'Sunset Photography', 'A collection of sunset images', 150.00),
-(2, 'Nature Wonders', 'Beautiful natural scenery', 200.00),
-(3, 'Urban Life', 'Capturing the essence of the city', 180.00);
+('Wedding', 'Packages related to wedding photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Portrait', 'Packages related to portrait photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Event', 'Packages related to event photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Landscape', 'Packages related to landscape photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Sports', 'Packages related to sports photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Street', 'Packages related to street photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Astro', 'Packages related to astrophotography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Family', 'Packages related to family photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Underwater', 'Packages related to underwater photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Nature', 'Packages related to nature and landscapes', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- 6. Insert Tags
-INSERT INTO Tags (Package_ID, Name)
+-- Insert Packages
+INSERT INTO Packages (photographer_id, name, description, price, category_id, created_at, updated_at)
 VALUES
-(1, 'Sunset'),
-(1, 'Landscape'),
-(2, 'Nature'),
-(3, 'City');
+(1, 'Sunset Package', 'A collection of sunset images', 150.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 'Wedding Package', 'A collection of wedding images', 300.00, 1, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Nature Package', 'A collection of nature images', 200.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Portrait Package', 'A collection of portrait images', 250.00, 2, LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- 7. Insert Media
-INSERT INTO Media (Package_ID, Picture_URL)
+-- Insert Tags
+INSERT INTO Tags (package_id, name, created_at, updated_at)
 VALUES
-(1, 'https://example.com/sunset1.jpg'),
-(1, 'https://example.com/sunset2.jpg'),
-(2, 'https://example.com/nature1.jpg'),
-(3, 'https://example.com/city1.jpg');
+(1, 'Sunset', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 'Nature', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Wedding', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Portrait', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- 8. Insert Reviews
-INSERT INTO Reviews (Package_ID, Customer_ID, Rating, Comment)
+-- Insert Media
+INSERT INTO Media (package_id, picture_url, description, created_at, updated_at)
 VALUES
-(1, 1, 4.5, 'Amazing!'),
-(2, 2, 5.0, 'Beautiful shots'),
-(3, 1, 4.0, 'Great urban photography');
+(1, 'https://t4.ftcdn.net/jpg/01/04/78/75/360_F_104787586_63vz1PkylLEfSfZ08dqTnqJqlqdq0eXx.jpg', 'Sunset image', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 'https://media.istockphoto.com/id/1172427455/photo/beautiful-sunset-over-the-tropical-sea.jpg?s=612x612&w=0&k=20&c=i3R3cbE94hdu6PRWT7cQBStY_wknVzl2pFCjQppzTBg=', 'Sunset image 2', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://media.istockphoto.com/id/587197548/photo/beautiful-setting-for-outdoors-wedding-ceremony.jpg?s=612x612&w=0&k=20&c=E46nXAiNpnREvNNPUvc-4tQZhzdjJb6PSPasNFvNsOs=', 'Wedding image', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://media.istockphoto.com/id/1043755348/photo/romantic-wedding-ceremony.jpg?s=612x612&w=0&k=20&c=pXjKa-aTfh3oxYzc06HkYw19f-Ez9q-bPpElZmwlFKw=', 'Wedding image 2', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://media.istockphoto.com/id/681119612/photo/wedding-birthday-reception-decoration-chairs-tables-and-flowers.jpg?s=612x612&w=0&k=20&c=8K-WOBrUC9KrrQbuD8LwDgAH7g3KyEvbe1jOsfdsE6w=', 'Wedding image 3', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 'https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg?s=1024x1024&w=0&k=20&c=z8_rWaI8x4zApNEEG9DnWlGXyDIXe-OmsAyQ5fGPVV8=', 'Nature image', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, 'https://t4.ftcdn.net/jpg/05/23/62/91/360_F_523629123_RpAModBJXgCTPfilfYaCIbPaalFIjbvv.jpg', 'Portrait image', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- 9. Insert Categories
-INSERT INTO Categories (Name, Description)
+-- Insert Reviews
+INSERT INTO Reviews (package_id, customer_id, rating, comment, created_at, updated_at)
 VALUES
-('Nature', 'Packages related to nature and landscapes'),
-('City Life', 'Packages capturing city life');
+(1, 1, 4.5, 'Amazing!', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 5.0, 'Beautiful shots', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- 10. Link Packages to Categories
-INSERT INTO Packages_Categories (Package_ID, Category_ID)
+-- Link Packages to Categories
+INSERT INTO Packages_Categories (package_id, category_id)
 VALUES
 (1, 1),
-(2, 1),
-(3, 2);
+(2, 1);
 
--- 11. Insert Quotations
-INSERT INTO Quotations (Package_ID, Customer_ID, Photographer_ID, Status, Price, Description, from_date, to_date)
+-- Insert Quotations
+INSERT INTO Quotations (package_id, customer_id, photographer_id, status, price, description, from_date, to_date, created_at, updated_at)
 VALUES
-(1, 1, 1, 'pending', 200.00, 'Quotation for sunset photography', '2026-12-31', '2026-12-31'),
-(2, 2, 2, 'confirmed', 250.00, 'Nature photo session', '2026-12-31', '2026-12-31'),
-(3, 1, 3, 'paid', 300.00, 'City life photo package', '2026-12-31', '2026-12-31');
+(1, 1, 1, 'PENDING', 1500.00, 'I would like to book this package', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 2, 1, 'PAID', 540.00, 'I would like to book this package', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 1, 'PENDING', 1530.00, 'I would like to book this package', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 2, 'ACCEPTED', 6300.00, 'I would like to book this package', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 1, 2, 'CANCELLED', 300.00, 'I would like to book this package', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Verify the data
 SELECT * FROM Users;
