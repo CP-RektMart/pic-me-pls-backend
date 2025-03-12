@@ -15,7 +15,7 @@ import (
 // @Router      /api/v1/photographer/quotations [POST]
 // @Security    ApiKeyAuth
 // @Param       body  body  dto.CreateQuotationRequest  true  "Quotation details"
-// @Success     201   {object}  dto.HttpResponse[dto.QuotationResponse]
+// @Success     204
 // @Failure     400   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
 func (h *Handler) HandleCreateQuotation(c *fiber.Ctx) error {
@@ -37,7 +37,7 @@ func (h *Handler) HandleCreateQuotation(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to create quotation")
 	}
 
-	return c.SendStatus(fiber.StatusCreated)
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
 func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) error {

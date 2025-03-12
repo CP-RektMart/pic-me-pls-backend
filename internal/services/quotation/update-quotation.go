@@ -16,7 +16,7 @@ import (
 // @Security    ApiKeyAuth
 // @Param       id    path      uint                 		true  "Quotation ID"
 // @Param       body  body      dto.CreateQuotationRequest       true  "Quotation update details"
-// @Success     200
+// @Success     204
 // @Failure     400   {object}  dto.HttpError
 // @Failure     403   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
@@ -26,13 +26,11 @@ func (h *Handler) HandleUpdateQuotation(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	param := new(dto.UpdateQuotationRequest)
-	if err := c.ParamsParser(param); err != nil {
+	req := new(dto.UpdateQuotationRequest)
+	if err := c.ParamsParser(req); err != nil {
 		return apperror.BadRequest("invalid params", err)
 	}
 
-
-	req := new(dto.CreateQuotationRequest)
 	if err := c.BodyParser(req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
@@ -41,18 +39,18 @@ func (h *Handler) HandleUpdateQuotation(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err := h.UpdateQuotation(req, userID, param.QuotationID); err != nil {
+	if err := h.UpdateQuotation(req, userID); err != nil {
 		return errors.Wrap(err, "failed to create quotation")
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) UpdateQuotation(req *dto.CreateQuotationRequest, userID uint, quotationID string) (error) {
+func (h *Handler) UpdateQuotation(req *dto.UpdateQuotationRequest, userID uint) (error) {
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var quotation  model.Quotation
-		if  err := tx.First(&quotation, quotationID).Error; err != nil {
+		if  err := tx.First(&quotation, req.QuotationID).Error; err != nil {
 			return apperror.NotFound("quotation not found", err)
 		}
 
@@ -75,7 +73,7 @@ func (h *Handler) UpdateQuotation(req *dto.CreateQuotationRequest, userID uint, 
 			return apperror.NotFound("package not found", err)
 		}
 
-		if err := tx.Model(&quotation).Where("id = ?", quotationID).Updates(model.Quotation{
+		if err := tx.Model(&quotation).Where("id = ?", req.QuotationID).Updates(model.Quotation{
 			CustomerID:   req.CustomerID,
 			PackageID:    req.PackageID,
 			Description:  req.Description,

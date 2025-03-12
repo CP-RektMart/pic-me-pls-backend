@@ -1399,12 +1399,8 @@ paths:
         description: Quotation details
         required: true
       responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_QuotationResponse'
-          description: Created
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
@@ -1440,8 +1436,8 @@ paths:
         description: Quotation update details
         required: true
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
