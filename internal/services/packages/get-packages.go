@@ -15,6 +15,7 @@ import (
 // @Description  Show all available packages with pagination
 // @Tags         packages
 // @Router       /api/v1/packages [GET]
+// @Param 	 	 name	  query    string    	false  "Filter by package name"
 // @Param        page      query    int    	    false  "Page number"
 // @Param        pageSize  query    int    		false  "Page size"
 // @Param        minPrice  query    float64    	false  "Minimum price"
@@ -66,6 +67,11 @@ func (h *Handler) HandleGetAllPackages(c *fiber.Ctx) error {
 
 func (h *Handler) createfilterPackageQuery(req *dto.GetAllPackagesRequest) *gorm.DB {
 	query := h.store.DB.Model(&model.Package{})
+
+	if req.PackageName != "" {
+		query = query.Where("name ILIKE ?", "%"+req.PackageName+"%")
+	}
+
 	if req.MinPrice > 0 {
 		query = query.Where("price >= ?", req.MinPrice)
 	}

@@ -19,4 +19,3 @@ func NewHandler(store *database.Store, authMiddleware authentication.AuthMiddlew
 		validate:       validate,
 	}
 }
-
