@@ -150,6 +150,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.ObjectUploadResponse'
       type: object
+    dto.HttpResponse-dto_PackageResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PackageResponse'
+      type: object
     dto.HttpResponse-dto_QuotationResponse:
       properties:
         result:
@@ -590,8 +595,8 @@ paths:
         description: request body
         required: true
       responses:
-        "201":
-          description: Created
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
@@ -1140,6 +1145,38 @@ paths:
       summary: Get all packages
       tags:
       - packages
+  /api/v1/packages/{id}:
+    get:
+      description: Show package detail
+      parameters:
+      - description: package id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PackageResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: get package by id
+      tags:
+      - packages
   /api/v1/photographer/citizen-card:
     get:
       description: Get Photographer Citizen Card
@@ -1246,8 +1283,8 @@ paths:
         description: Media details
         required: true
       responses:
-        "201":
-          description: Created
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
@@ -1361,8 +1398,8 @@ paths:
         description: Package details
         required: true
       responses:
-        "201":
-          description: Created
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
