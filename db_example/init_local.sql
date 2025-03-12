@@ -23,11 +23,11 @@ ALTER SEQUENCE quotations_id_seq RESTART WITH 1;
 -- Insert Users
 INSERT INTO Users (name, email, phone_number, profile_picture_url, role, facebook, instagram, bank, account_no, bank_branch, created_at, updated_at)
 VALUES
-('User 1', 'user1@example.com', '1234567890', 'https://cdn-icons-png.flaticon.com/512/10337/10337609.png', 'CUSTOMER', 'Fookbace', 'ig', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 2', 'user2@example.com', '2345678901', 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg', 'CUSTOMER', 'bookface', 'graminsta', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 3', 'user3@example.com', '3456789012', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'PHOTOGRAPHER', 'vlllqw sq', 'IG', 'BAY', '', 'branch', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 4', 'user4@example.com', '4567890123', 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg', 'PHOTOGRAPHER', 'face book', 'GI', 'KKP', '', 'bchnaf', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 5', 'user5@example.com', '5678901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
+('User 1', 'user1@example.com', '0034567890', 'https://cdn-icons-png.flaticon.com/512/10337/10337609.png', 'CUSTOMER', 'Fookbace', 'ig', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 2', 'user2@example.com', '0045678901', 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg', 'CUSTOMER', 'bookface', 'graminsta', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 3', 'user3@example.com', '0056789012', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'PHOTOGRAPHER', 'vlllqw sq', 'IG', 'BAY', '', 'branch', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 4', 'user4@example.com', '0067890123', 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg', 'PHOTOGRAPHER', 'face book', 'GI', 'KKP', '', 'bchnaf', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 5', 'user5@example.com', '0078901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Insert Citizen Cards
 INSERT INTO Citizen_Cards (citizen_id, laser_id, picture, expire_date, created_at, updated_at)
