@@ -15,7 +15,7 @@ import (
 // @Router      /api/v1/photographer/quotations/{id} [PATCH]
 // @Security    ApiKeyAuth
 // @Param       id    path      uint                 		true  "Quotation ID"
-// @Param       body  body      dto.CreateQuotationRequest       true  "Quotation update details"
+// @Param       body  body      dto.UpdateQuotationRequest       true  "Quotation update details"
 // @Success     204
 // @Failure     400   {object}  dto.HttpError
 // @Failure     403   {object}  dto.HttpError

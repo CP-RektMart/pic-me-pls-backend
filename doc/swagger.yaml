@@ -467,6 +467,30 @@ components:
       required:
       - id
       type: object
+    dto.UpdateQuotationRequest:
+      properties:
+        customerId:
+          type: integer
+        description:
+          type: string
+        fromDate:
+          type: string
+        packageId:
+          type: integer
+        price:
+          type: number
+        quotationID:
+          type: string
+        toDate:
+          type: string
+      required:
+      - customerId
+      - fromDate
+      - packageId
+      - price
+      - quotationID
+      - toDate
+      type: object
     dto.UserResponse:
       properties:
         accountNo:
@@ -1059,6 +1083,11 @@ paths:
     get:
       description: Show all available packages with pagination
       parameters:
+      - description: Filter by package name
+        in: query
+        name: name
+        schema:
+          type: string
       - description: Page number
         in: query
         name: page
@@ -1432,7 +1461,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/dto.CreateQuotationRequest'
+              $ref: '#/components/schemas/dto.UpdateQuotationRequest'
         description: Quotation update details
         required: true
       responses:
