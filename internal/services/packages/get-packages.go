@@ -15,7 +15,7 @@ import (
 // @Description  Show all available packages with pagination
 // @Tags         packages
 // @Router       /api/v1/packages [GET]
-// @Param 	 	 name	  query    string    	false  "Filter by package name"
+// @Param 	 	 name	   query    string    	false  "Filter by package name"
 // @Param        page      query    int    	    false  "Page number"
 // @Param        pageSize  query    int    		false  "Page size"
 // @Param        minPrice  query    float64    	false  "Minimum price"
