@@ -47,8 +47,11 @@ func (h *Handler) HandleListQuotations(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.PaginationResponse[dto.QuotationResponse]]{
-		Result: *quotations,
+	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[dto.QuotationResponse]{
+		Page:      quotations.Page,
+		PageSize:  quotations.PageSize,
+		TotalPage: quotations.TotalPage,
+		Data:      quotations.Data,
 	})
 }
 
