@@ -467,6 +467,30 @@ components:
       required:
       - id
       type: object
+    dto.UpdateQuotationRequest:
+      properties:
+        customerId:
+          type: integer
+        description:
+          type: string
+        fromDate:
+          type: string
+        packageId:
+          type: integer
+        price:
+          type: number
+        quotationID:
+          type: string
+        toDate:
+          type: string
+      required:
+      - customerId
+      - fromDate
+      - packageId
+      - price
+      - quotationID
+      - toDate
+      type: object
     dto.UserResponse:
       properties:
         accountNo:
@@ -1404,12 +1428,8 @@ paths:
         description: Quotation details
         required: true
       responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_QuotationResponse'
-          description: Created
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
@@ -1441,12 +1461,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/dto.CreateQuotationRequest'
+              $ref: '#/components/schemas/dto.UpdateQuotationRequest'
         description: Quotation update details
         required: true
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
