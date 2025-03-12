@@ -14,7 +14,7 @@ import (
 // @Router			/api/v1/photographer/packages [POST]
 // @Security			ApiKeyAuth
 // @Param        		RequestBody 	body  dto.CreatePackageRequest  true  "Package details"
-// @Success			201
+// @Success			204
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreatePackage(c *fiber.Ctx) error {
@@ -42,7 +42,7 @@ func (h *Handler) HandleCreatePackage(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to create Package")
 	}
 
-	return c.SendStatus(fiber.StatusCreated)
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
 func (h *Handler) createPackage(req *dto.CreatePackageRequest, userID uint) error {

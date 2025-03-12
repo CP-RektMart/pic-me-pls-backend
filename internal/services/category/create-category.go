@@ -14,7 +14,7 @@ import (
 // @Router			/api/v1/admin/categories [POST]
 // @Security			ApiKeyAuth
 // @Param 			RequestBody 	body 	dto.CreateCategoryRequest 	true 	"request body"
-// @Success			201
+// @Success			204
 // @Failure			400	{object}	dto.HttpError
 // @Failure			401	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
