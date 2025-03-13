@@ -155,6 +155,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.PackageResponse'
       type: object
+    dto.HttpResponse-dto_PhotographerResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PhotographerResponse'
+      type: object
     dto.HttpResponse-dto_QuotationResponse:
       properties:
         result:
@@ -1567,6 +1572,44 @@ paths:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
       summary: Get All Photographers
+      tags:
+      - photographers
+  /api/v1/photographers/{id}:
+    get:
+      description: get photographer by id
+      parameters:
+      - description: photographer id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PhotographerResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: get photographer by id
       tags:
       - photographers
   /api/v1/quotations:
