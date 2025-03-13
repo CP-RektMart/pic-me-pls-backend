@@ -61,6 +61,7 @@ func (s *Server) RegisterRoutes(
 		// photographers
 		photographers := all.Group("/photographers")
 		photographers.Get("/", photographersHandler.HandleGetAllPhotographers)
+		photographers.Get("/:id", photographersHandler.HandlerGetPhotographerByID)
 
 		// quotations
 		quotations := all.Group("/quotations")

@@ -43,6 +43,10 @@ type PhotographerRequest struct {
 	Name string `query:"name" default:""`
 }
 
+type GetPhotographerByIDRequest struct {
+	ID uint `params:"id" validate:"required"`
+}
+
 func ToPhotographerResponse(photographer model.Photographer) PhotographerResponse {
 	return PhotographerResponse{
 		ID:                photographer.ID,
