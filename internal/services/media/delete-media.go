@@ -14,6 +14,7 @@ import (
 // @Tags			media
 // @Router			/api/v1/photographer/media/{mediaId} [DELETE]
 // @Security		ApiKeyAuth
+// @Param 	 		mediaId			path      string    	true  "media id"
 // @Param        	RequestBody 	body  dto.DeleteMediaRequest  true  "Media details"
 // @Success			204
 // @Failure			400	{object}	dto.HttpError
