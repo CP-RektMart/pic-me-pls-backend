@@ -14,7 +14,7 @@ import (
 // @Tags         	packages
 // @Router       	/api/v1/photographer/packages [GET]
 // @Security	 	ApiKeyAuth
-// @Success      	200    {object}  dto.HttpListResponse[dto.SmallPackageResponse]
+// @Success      	200    {object}  dto.HttpListResponse[dto.PackageResponse]
 // @Failure      	400    {object}  dto.HttpError
 // @Failure      	500    {object}  dto.HttpError
 func (h *Handler) HandlerListPhotographerPackages(c *fiber.Ctx) error {
@@ -28,8 +28,8 @@ func (h *Handler) HandlerListPhotographerPackages(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed fetch packages")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpListResponse[dto.SmallPackageResponse]{
-		Result: dto.ToSmallPackageResponses(packages),
+	return c.Status(fiber.StatusOK).JSON(dto.HttpListResponse[dto.PackageResponse]{
+		Result: dto.ToPackageResponses(packages),
 	})
 }
 
@@ -40,7 +40,14 @@ func (h *Handler) getPackagesFromUserID(ID uint) ([]model.Package, error) {
 	}
 
 	packages := make([]model.Package, 0)
-	if err := h.store.DB.Joins("Category").Where("photographer_id = ?", photographer.ID).Find(&packages).Error; err != nil {
+	if err := h.store.DB.
+		Preload("Media").
+		Preload("Tags").
+		Preload("Category").
+		Preload("Reviews").
+		Preload("Photographer.User").
+		Where("photographer_id = ?", photographer.ID).
+		Find(&packages).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apperror.BadRequest("packages not found", err)
 		}

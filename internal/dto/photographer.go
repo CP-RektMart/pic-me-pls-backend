@@ -45,7 +45,7 @@ type PhotographerRequest struct {
 
 func ToPhotographerResponse(photographer model.Photographer) PhotographerResponse {
 	return PhotographerResponse{
-		ID:                photographer.UserID,
+		ID:                photographer.ID,
 		Name:              photographer.User.Name,
 		Email:             photographer.User.Email,
 		PhoneNumber:       photographer.User.PhoneNumber,
