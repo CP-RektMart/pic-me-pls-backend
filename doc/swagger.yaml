@@ -117,11 +117,11 @@ components:
         error:
           type: string
       type: object
-    dto.HttpListResponse-dto_SmallPackageResponse:
+    dto.HttpListResponse-dto_PackageResponse:
       properties:
         result:
           items:
-            $ref: '#/components/schemas/dto.SmallPackageResponse'
+            $ref: '#/components/schemas/dto.PackageResponse'
           type: array
           uniqueItems: false
       type: object
@@ -1369,7 +1369,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpListResponse-dto_SmallPackageResponse'
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_PackageResponse'
           description: OK
         "400":
           content:
