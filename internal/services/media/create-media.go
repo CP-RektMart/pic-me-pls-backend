@@ -15,7 +15,7 @@ import (
 // @Router			/api/v1/photographer/media [POST]
 // @Security		ApiKeyAuth
 // @Param        	RequestBody 	body  dto.CreateMediaRequest  true  "Media details"
-// @Success			201
+// @Success			204
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreateMedia(c *fiber.Ctx) error {
@@ -37,7 +37,7 @@ func (h *Handler) HandleCreateMedia(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to create media")
 	}
 
-	return c.SendStatus(fiber.StatusCreated)
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
 func (h *Handler) createMedia(req *dto.CreateMediaRequest, userID uint) error {

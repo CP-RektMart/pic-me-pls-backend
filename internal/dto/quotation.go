@@ -24,7 +24,15 @@ type CancelQuotationRequest struct {
 }
 
 type UpdateQuotationRequest struct {
-	QuotationID string `params:"id"`
+	QuotationID string `params:"id" validate:"required"`
+
+	PackageID   uint    `json:"packageId" validate:"required"`
+	CustomerID  uint    `json:"customerId" validate:"required"`
+	Price       float64 `json:"price" validate:"required"`
+	Description string  `json:"description,omitempty"`
+
+	FromDate time.Time `json:"fromDate" validate:"required"`
+	ToDate   time.Time `json:"toDate" validate:"required"`
 }
 
 type CreateQuotationRequest struct {

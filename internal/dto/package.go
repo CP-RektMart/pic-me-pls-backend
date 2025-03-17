@@ -12,6 +12,7 @@ type MediaPackageRequest struct {
 
 type GetAllPackagesRequest struct {
 	Pagination     PaginationRequest
+	PackageName    string  `query:"name" default:""`
 	MinPrice       float64 `query:"minPrice" validate:"omitempty,min=0"`
 	MaxPrice       float64 `query:"maxPrice" validate:"omitempty,min=0"`
 	PhotographerID *uint   `query:"photographerId" validate:"omitempty"`
@@ -39,9 +40,11 @@ type PackageResponse struct {
 }
 
 type SmallPackageResponse struct {
-	ID          uint   `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ID          uint              `json:"id"`
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Price       float64           `json:"price"`
+	Category    *CategoryResponse `json:"category"`
 }
 
 type CreatePackageResponse struct {
@@ -65,6 +68,10 @@ type UpdatePackageResponse struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Price       float64 `json:"price"`
+}
+
+type GetPackageByIDRequest struct {
+	ID uint `params:"id" validate:"required"`
 }
 
 func ToPackageResponse(Package model.Package) PackageResponse {
@@ -97,5 +104,21 @@ func ToPackageMediaModel(media MediaPackageRequest) model.Media {
 func ToPackageMediaModels(media []MediaPackageRequest) []model.Media {
 	return lo.Map(media, func(m MediaPackageRequest, _ int) model.Media {
 		return ToPackageMediaModel(m)
+	})
+}
+
+func ToSmallPackageResponse(pkg model.Package) SmallPackageResponse {
+	return SmallPackageResponse{
+		ID:          pkg.ID,
+		Name:        pkg.Name,
+		Description: pkg.Description,
+		Price:       pkg.Price,
+		Category:    lo.EmptyableToPtr(ToCategoryResponse(pkg.Category)),
+	}
+}
+
+func ToSmallPackageResponses(packages []model.Package) []SmallPackageResponse {
+	return lo.Map(packages, func(pkg model.Package, _ int) SmallPackageResponse {
+		return ToSmallPackageResponse(pkg)
 	})
 }
