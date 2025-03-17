@@ -44,32 +44,32 @@ VALUES
 -- Insert Categories
 INSERT INTO Categories (name, description, created_at, updated_at)
 VALUES
-('Wedding', 'Packages related to wedding photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Portrait', 'Packages related to portrait photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Event', 'Packages related to event photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Landscape', 'Packages related to landscape photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Sports', 'Packages related to sports photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Street', 'Packages related to street photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Astro', 'Packages related to astrophotography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Family', 'Packages related to family photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Underwater', 'Packages related to underwater photography', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('Nature', 'Packages related to nature and landscapes', LOCALTIMESTAMP, LOCALTIMESTAMP);
+('Wedding', 'Capture the love, laughter, and lifetime vows in stunning detail.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Portrait', 'A timeless collection of personal and professional portraits.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Event', 'From birthdays to corporate galas—relive every special moment.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Landscape', 'Breathtaking vistas, majestic mountains, and serene countryside views.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Sports', 'High-speed action shots that freeze the thrill of the game.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Street', 'Raw and authentic snapshots of everyday life in motion.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Astro', 'Journey beyond the stars with stunning astrophotography.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Family', 'Cherish heartfelt family moments with beautifully composed images.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Underwater', 'Dive into the deep and capture marine wonders beneath the surface.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Nature', 'Reconnect with the beauty of the earth through vibrant nature photography.', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Insert Packages
 INSERT INTO Packages (photographer_id, name, description, price, category_id, created_at, updated_at)
 VALUES
-(1, 'Sunset Package', 'A collection of sunset images', 150.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
-(1, 'Wedding Package', 'A collection of wedding images', 300.00, 1, LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 'Nature Package', 'A collection of nature images', 200.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 'Portrait Package', 'A collection of portrait images', 250.00, 2, LOCALTIMESTAMP, LOCALTIMESTAMP);
+(1, 'Golden Hour Magic', 'Let the sun paint your memories with breathtaking sunset photography.', 150.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 'Ever After Wedding', 'Immortalize the happiest day of your life with a dreamy wedding shoot.', 300.00, 1, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Wilderness Wonders', 'Lose yourself in the raw beauty of nature through this immersive package.', 200.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Timeless Portraits', 'Classic and elegant portraits designed to make you look your best.', 250.00, 2, LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Insert Tags
 INSERT INTO Tags (package_id, name, created_at, updated_at)
 VALUES
-(1, 'Sunset', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 'Golden Hour', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (1, 'Nature', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 'Wedding', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 'Portrait', LOCALTIMESTAMP, LOCALTIMESTAMP);
+(2, 'Wedding Bliss', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Elegant Portraits', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Insert Media
 INSERT INTO Media (package_id, picture_url, description, created_at, updated_at)
@@ -85,8 +85,8 @@ VALUES
 -- Insert Reviews
 INSERT INTO Reviews (package_id, customer_id, rating, comment, created_at, updated_at)
 VALUES
-(1, 1, 4.5, 'Amazing!', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 2, 5.0, 'Beautiful shots', LOCALTIMESTAMP, LOCALTIMESTAMP);
+(1, 1, 4.5, 'Breathtaking colors and stunning shots! Worth every penny.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 5.0, 'Absolutely magical! Every moment was perfectly captured.', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Link Packages to Categories
 INSERT INTO Packages_Categories (package_id, category_id)
@@ -97,11 +97,11 @@ VALUES
 -- Insert Quotations
 INSERT INTO Quotations (package_id, customer_id, photographer_id, status, price, description, from_date, to_date, created_at, updated_at)
 VALUES
-(1, 1, 1, 'PENDING', 1500.00, 'I would like to book this package', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(3, 2, 2, 'PAID', 540.00, 'I would like to book this package', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 2, 1, 'PENDING', 1530.00, 'I would like to book this package', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 2, 1, 'ACCEPTED', 6300.00, 'I would like to book this package', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 1, 1, 'CANCELLED', 300.00, 'I would like to book this package', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
+(1, 1, 1, 'PENDING', 1500.00, 'Eager to capture the golden hour magic—let’s make this happen!', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 2, 2, 'PAID', 540.00, 'Excited to freeze this special moment in time—booking confirmed!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 1, 'PENDING', 1530.00, 'Looking forward to a timeless portrait session—can’t wait!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 1, 'ACCEPTED', 6300.00, 'All set for a stunning shoot—excited to bring our vision to life!', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 1, 1, 'CANCELLED', 300.00, 'Unfortunately, plans changed—hope to rebook soon!', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Verify the data
 SELECT * FROM Users;
