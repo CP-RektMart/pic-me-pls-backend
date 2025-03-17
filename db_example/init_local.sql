@@ -98,10 +98,10 @@ VALUES
 INSERT INTO Quotations (package_id, customer_id, photographer_id, status, price, description, from_date, to_date, created_at, updated_at)
 VALUES
 (1, 1, 1, 'PENDING', 1500.00, 'I would like to book this package', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(3, 2, 1, 'PAID', 540.00, 'I would like to book this package', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 2, 2, 'PAID', 540.00, 'I would like to book this package', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 2, 1, 'PENDING', 1530.00, 'I would like to book this package', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 2, 2, 'ACCEPTED', 6300.00, 'I would like to book this package', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 1, 2, 'CANCELLED', 300.00, 'I would like to book this package', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
+(2, 2, 1, 'ACCEPTED', 6300.00, 'I would like to book this package', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 1, 1, 'CANCELLED', 300.00, 'I would like to book this package', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Verify the data
 SELECT * FROM Users;
