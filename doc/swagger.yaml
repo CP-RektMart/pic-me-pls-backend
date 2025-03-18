@@ -85,6 +85,18 @@ components:
       - price
       - toDate
       type: object
+    dto.CreateReviewRequest:
+      properties:
+        comment:
+          type: string
+        id:
+          type: string
+        rating:
+          type: number
+      required:
+      - comment
+      - id
+      type: object
     dto.CustomerPublicResponse:
       properties:
         id:
@@ -1310,6 +1322,13 @@ paths:
   /api/v1/photographer/media/{mediaId}:
     delete:
       description: Delete media
+      parameters:
+      - description: media id
+        in: path
+        name: mediaId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1696,3 +1715,40 @@ paths:
       summary: Get Quotation By ID
       tags:
       - quotations
+  /customer/quotations/{id}/review:
+    post:
+      description: Create a review for a quotation.
+      parameters:
+      - description: Quotation ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreateReviewRequest'
+        description: Review details
+        required: true
+      responses:
+        "204":
+          description: Review created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create a review
+      tags:
+      - reviews

@@ -63,7 +63,7 @@ func main() {
 	photographersHandler := photographers.NewHandler(store, validate, authMiddleware)
 	citizencardHandler := citizencard.NewHandler(store, validate, authMiddleware)
 	packageHandler := packages.NewHandler(store, validate, authMiddleware)
-	reviewHandler := review.NewHandler(store, validate)
+	reviewHandler := review.NewHandler(store, validate, authMiddleware)
 	categoryHandler := category.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, validate)
 	objectHandler := objects.NewHandler(store, config.Storage)
