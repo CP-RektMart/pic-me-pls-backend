@@ -9,6 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary Create a review
+// @Description Create a review for a quotation.
+// @Tags reviews
+// @Router /customer/quotations/{id}/review [POST]
+// @Security    ApiKeyAuth
+// @Param id path string true "Quotation ID"
+// @Param review body dto.CreateReviewRequest true "Review details"
+// @Success 204 "Review created successfully"
+// @Failure     400   {object}  dto.HttpError
+// @Failure     500   {object}  dto.HttpError
 func (h *Handler) HandleCreateReview(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
