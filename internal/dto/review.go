@@ -32,7 +32,9 @@ func validRating(fl validator.FieldLevel) bool {
 }
 
 func RegisterValidations(validate *validator.Validate) {
-	validate.RegisterValidation("validRating", validRating)
+	if err := validate.RegisterValidation("validRating", validRating); err != nil {
+		panic("failed to register validation: " + err.Error())
+	}
 }
 
 func ToReviewResponse(review model.Review) ReviewResponse {

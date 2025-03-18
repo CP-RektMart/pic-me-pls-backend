@@ -33,7 +33,6 @@ func (h *Handler) HandleCreateReview(c *fiber.Ctx) error {
 	if err := c.BodyParser(&req); err != nil {
 		return apperror.BadRequest("invalid body 1", err)
 	}
-	// fmt.Println("Parsed Rating:", *req.Rating)
 
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid body 2", err)
@@ -58,9 +57,7 @@ func (h *Handler) createReview(req *dto.CreateReviewRequest, userID uint) error 
 			return apperror.NotFound("Qotation not found", err)
 		}
 
-		var review model.Review
-
-		review = model.Review{
+		review := model.Review{
 			PackageID:  quotation.PackageID,
 			CustomerID: customer.ID,
 			Rating:     *req.Rating,
