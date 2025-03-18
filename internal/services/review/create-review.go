@@ -54,7 +54,7 @@ func (h *Handler) createReview(req *dto.CreateReviewRequest, userID uint) error 
 
 		var quotation model.Quotation
 		if err := h.store.DB.Where("id = ?", req.ID).First(&quotation).Error; err != nil {
-			return apperror.NotFound("Qotation not found", err)
+			return apperror.NotFound("Quotation not found", err)
 		}
 
 		review := model.Review{
