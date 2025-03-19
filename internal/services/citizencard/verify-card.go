@@ -12,10 +12,10 @@ import (
 )
 
 // @Summary			Verify Citizen Card
-// @Description		Verify Photographer Citizen Card
+// @Description			Verify Photographer Citizen Card
 // @Tags			citizencard
 // @Router			/api/v1/photographer/citizen-card/verify [POST]
-// @Security		ApiKeyAuth
+// @Security			ApiKeyAuth
 // @Param 			RequestBody 	body 	dto.VerifyCitizenCardRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
 // @Failure			400	{object}	dto.HttpError
@@ -56,15 +56,13 @@ func (h *Handler) createCitizenCard(userID uint, imageURL, citizenID, laserID st
 	var citizenCard model.CitizenCard
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		// Find the photographer associated with the user
-		var photographer model.Photographer
-		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
-			return errors.Wrap(err, "Photographer not found for user")
+		// Check if photographer's citizen card is already verify
+		err := h.store.DB.Where("photographer_id = ?", userID).First(&citizenCard).Error
+		if err == nil {
+			return ErrAlreadyVerified
 		}
-
-		// Check if the photographer already has a CitizenCard
-		if photographer.CitizenCardID != nil {
-			return errors.Wrap(ErrAlreadyVerified, "Photographer already has a citizen card")
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.Wrap(err, "failed fetch citizen card")
 		}
 
 		// Create the CitizenCard using the request data
@@ -72,16 +70,22 @@ func (h *Handler) createCitizenCard(userID uint, imageURL, citizenID, laserID st
 		citizenCard.LaserID = laserID
 		citizenCard.Picture = imageURL
 		citizenCard.ExpireDate = expireDate
+		citizenCard.PhotographerID = userID
 
 		// Insert the CitizenCard into the database
 		if err := tx.Create(&citizenCard).Error; err != nil {
 			return errors.Wrap(err, "Error creating citizen card")
 		}
 
-		// Update the photographer's CitizenCardID with the new CitizenCard ID
-		photographer.CitizenCardID = &citizenCard.ID
-		if err := tx.Save(&photographer).Error; err != nil {
-			return errors.Wrap(err, "Error updating photographer with citizen card")
+		photographer := model.Photographer{
+			UserID: userID,
+			ActiveStatus: true,
+			IsVerified:   true,
+		}
+
+		// update photographer status
+		if err := tx.Model(&photographer).Updates(&photographer).Error; err != nil {
+			return errors.Wrap(err, "failed update photographer status")
 		}
 
 		return nil

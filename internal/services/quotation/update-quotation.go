@@ -59,7 +59,7 @@ func (h *Handler) UpdateQuotation(req *dto.UpdateQuotationRequest, userID uint) 
 			return apperror.NotFound( "Photographer not found for user", err)
 		}
 
-		if quotation.PhotographerID != photographer.ID {
+		if quotation.PhotographerID != photographer.UserID {
 			return apperror.Forbidden("you do not have permission to update this quotation", errors.Errorf("Not Permission"))
 		}
 

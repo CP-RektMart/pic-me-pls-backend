@@ -10,10 +10,10 @@ import (
 )
 
 // @Summary			Get Quotation By ID
-// @Description		Get Quotation By ID
+// @Description			Get Quotation By ID
 // @Tags			quotations
 // @Router			/api/v1/quotations/{id} [GET]
-// @Security		ApiKeyAuth
+// @Security			ApiKeyAuth
 // @Param 			id 	path 	uint 	true 	"quotaion id"
 // @Success			200	{object}	dto.HttpResponse[dto.QuotationResponse]
 // @Failure			400	{object}	dto.HttpError
@@ -35,8 +35,10 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 	if err := h.store.DB.
 		Preload("Package.Photographer").
 		Preload("Package.Media").
+		Preload("Package.Category").
 		Preload("Customer").
 		Preload("Photographer.User").
+		Preload("Photographer.Packages").
 		First(&quotation, req.QuotationID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("quotation not found", err)
@@ -48,19 +50,9 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 		return apperror.Forbidden("user not have permission", nil)
 	}
 
-	var packages []model.Package
-
-	photographerID := quotation.PhotographerID
-	if err := h.store.DB.Where("photographer_id = ?", photographerID).Find(&packages).Error; err != nil {
-		return apperror.NotFound("package not found", err)
-	}
-
-	quotation.Photographer.Packages = packages
-
 	response := dto.ToQuotationResponse(*quotation)
 
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.QuotationResponse]{
 		Result: response,
 	})
-
 }

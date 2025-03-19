@@ -10,10 +10,10 @@ import (
 )
 
 // @Summary			Get Citizen Card
-// @Description		Get Photographer Citizen Card
+// @Description			Get Photographer Citizen Card
 // @Tags			citizencard
 // @Router			/api/v1/photographer/citizen-card [GET]
-// @Security		ApiKeyAuth
+// @Security			ApiKeyAuth
 // @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
@@ -23,21 +23,9 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get user id from context")
 	}
 
-	var photographer model.Photographer
-	if err := h.store.DB.First(&photographer, "user_id = ?", userID).Error; err != nil {
-		return errors.Wrap(err, "Photographer not found for user")
-	}
-
-	if photographer.CitizenCardID == nil {
-		return apperror.NotFound("Citizen card is null", err)
-	}
-
-	var citizenCard model.CitizenCard
-	if err := h.store.DB.First(&citizenCard, "id = ?", photographer.CitizenCardID).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return apperror.NotFound("Citizen card not found", err)
-		}
-		return errors.Wrap(err, "Error finding citizen card")
+	citizenCard, err := h.getCitizenCard(userID)
+	if err != nil {
+		return errors.Wrap(err, "failed get citizen card")
 	}
 
 	citizenCardDTO := dto.CitizenCardResponse{
@@ -50,4 +38,15 @@ func (h *Handler) HandleGetCitizenCard(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.CitizenCardResponse]{
 		Result: citizenCardDTO,
 	})
+}
+
+func (h *Handler) getCitizenCard(photographerID uint) (*model.CitizenCard, error) {
+	var citizenCard model.CitizenCard
+	if err := h.store.DB.Where("photographer_id = ?", photographerID).First(&citizenCard).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, apperror.NotFound("citizen card not found", err)
+		}
+		return nil, errors.Wrap(err, "failed fetch citizen card")
+	}
+	return &citizenCard, nil
 }

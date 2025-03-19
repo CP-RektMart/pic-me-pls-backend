@@ -8,7 +8,7 @@ lint:
 	golangci-lint run
 
 start:
-	docker-compose up -d && air
+	docker-compose up -d && air	
 
 .PHONY:
 	server swagger start

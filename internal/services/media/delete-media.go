@@ -39,14 +39,14 @@ func (h *Handler) HandleDeleteMedia(c *fiber.Ctx) error {
 func (h *Handler) deleteMedia(mediaID uint, userID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var media model.Media
-		if err := h.store.DB.Preload("Package.Photographer").First(&media, "id = ?", mediaID).Error; err != nil {
+		if err := h.store.DB.Preload("Package").First(&media, "id = ?", mediaID).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return apperror.NotFound("Media not found", err)
 			}
 			return errors.Wrap(err, "Failed to get media")
 		}
 
-		if media.Package.Photographer.UserID != userID {
+		if media.Package.PhotographerID != userID {
 			return apperror.Forbidden("You are not allowed to delete this media", errors.New("unauthorized"))
 		}
 
