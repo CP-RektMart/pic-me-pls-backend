@@ -4,11 +4,22 @@ import (
 	"gorm.io/gorm"
 )
 
+type MessageType string
+
+const (
+	MessageTypeText      MessageType = "TEXT"
+	MessageTypeImage     MessageType = "IMAGE"
+	MessageTypeQuotation MessageType = "QUOTATION"
+	MessageTypePreview   MessageType = "PREVIEW"
+)
+
 type Message struct {
 	gorm.Model
-	SenderID   uint   `gorm:"not null"`
-	Sender     User   `gorm:"foreignKey:SenderID"`
-	ReceiverID uint   `gorm:"not null"`
-	Receiver   User   `gorm:"foreignKey:ReceiverID"`
-	Content    string `gorm:"not null"`
+	Type    MessageType `gorm:"not null"`
+	Content string      `gorm:"not null"`
+
+	SenderID   uint `gorm:"not null"`
+	ReceiverID uint `gorm:"not null"`
+	Sender     User `gorm:"foreignKey:SenderID"`
+	Receiver   User `gorm:"foreignKey:ReceiverID"`
 }
