@@ -4,6 +4,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/chat"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/customer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
@@ -14,6 +15,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
+	"github.com/gofiber/contrib/websocket"
 )
 
 func (s *Server) RegisterRoutes(
@@ -30,6 +32,7 @@ func (s *Server) RegisterRoutes(
 	quotationHandler *quotation.Handler,
 	mediaHandler *media.Handler,
 	customerHandler *customer.Handler,
+	chatHandler *chat.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -76,6 +79,11 @@ func (s *Server) RegisterRoutes(
 		// categories
 		categories := all.Group("/categories")
 		categories.Get("/", categoryHandler.HandleListCategory)
+
+		// chat
+		chat := all.Group("/chat")
+		chat.Use("/ws", authMiddleware.Auth, chatHandler.HandleWebsocket)
+		chat.Get("/ws", websocket.New(chatHandler.HandleRealTimeChat))
 	}
 
 	// customer
