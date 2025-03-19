@@ -11,6 +11,7 @@ const (
 	MessageTypeImage     MessageType = "IMAGE"
 	MessageTypeQuotation MessageType = "QUOTATION"
 	MessageTypePreview   MessageType = "PREVIEW"
+	MessageTypeError     MessageType = "ERROR"
 )
 
 type Message struct {
@@ -22,4 +23,13 @@ type Message struct {
 	ReceiverID uint `gorm:"not null"`
 	Sender     User `gorm:"foreignKey:SenderID"`
 	Receiver   User `gorm:"foreignKey:ReceiverID"`
+}
+
+func ValidateMessageType(msgType string) bool {
+	switch MessageType(msgType) {
+	case MessageTypeText, MessageTypeImage, MessageTypeQuotation, MessageTypePreview, MessageTypeError:
+		return true
+	default:
+		return false
+	}
 }

@@ -11,8 +11,11 @@ func New() *validator.Validate {
 	if err := validate.RegisterValidation("role", validateString(model.ValidateRole)); err != nil {
 		logger.Panic("failed to register role validation", err)
 	}
-	if err := (validate.RegisterValidation("provider", validateString(model.ValidateProvider))); err != nil {
+	if err := validate.RegisterValidation("provider", validateString(model.ValidateProvider)); err != nil {
 		logger.Panic("failed to register provider validation", err)
+	}
+	if err := validate.RegisterValidation("messageType", validateString(model.ValidateMessageType)); err != nil {
+		logger.Panic("failed to register messageType validation", err)
 	}
 
 	return validate

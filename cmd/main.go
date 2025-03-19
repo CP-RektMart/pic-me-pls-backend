@@ -54,6 +54,7 @@ func main() {
 
 	// services
 	jwtService := jwt.New(config.JWT, store.Cache)
+	chatSystem := chat.NewChatSystem(store)
 
 	// middlewares
 	authMiddleware := authentication.NewAuthMiddleware(jwtService)
@@ -71,7 +72,7 @@ func main() {
 	quotationHandler := quotation.NewHandler(store, authMiddleware, validate)
 	mediaHandler := media.NewHandler(store, validate, authMiddleware)
 	customerHandler := customer.NewHandler(store, validate)
-	chatHandler := chat.NewHandler(store, authMiddleware)
+	chatHandler := chat.NewHandler(store, authMiddleware, chatSystem, validate)
 
 	server.RegisterDocs()
 

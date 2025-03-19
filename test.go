@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
@@ -21,7 +22,7 @@ func main() {
 
 	// Connect to the WebSocket server
 	header := http.Header{}
-	header.Add("Authorization", "Bearer "+ *accessToken)
+	header.Add("Authorization", "Bearer "+*accessToken)
 
 	conn, _, err := websocket.DefaultDialer.Dial(serverURL, header)
 	if err != nil {
@@ -46,7 +47,14 @@ func main() {
 	fmt.Println("Enter messages (Ctrl+C to exit):")
 	for scanner.Scan() {
 		text := scanner.Text()
-		err := conn.WriteMessage(websocket.TextMessage, []byte(text))
+		tokens := strings.Split(text, " ")
+		msg := fmt.Sprintf(`{
+			"receiverId": %s,
+			"type": "TEXT",
+			"content": "%s"
+		}`, tokens[0], tokens[1])
+
+		err := conn.WriteMessage(websocket.TextMessage, []byte(msg))
 		if err != nil {
 			log.Println("Write error:", err)
 			break
