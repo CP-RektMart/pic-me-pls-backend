@@ -45,17 +45,12 @@ func (h *Handler) HandleCreatePackage(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) createPackage(req *dto.CreatePackageRequest, userID uint) error {
-	var photographer model.Photographer
-	if err := h.store.DB.Where("user_id = ?", userID).First(&photographer).Error; err != nil {
-		return errors.Wrap(err, "Failed fetch photographer")
-	}
-
+func (h *Handler) createPackage(req *dto.CreatePackageRequest, photographerID uint) error {
 	newPackage := &model.Package{
 		Name:           req.Name,
 		Description:    req.Description,
 		Price:          req.Price,
-		PhotographerID: photographer.ID,
+		PhotographerID: photographerID,
 		CategoryID:     req.CategoryID,
 		Media:          dto.ToPackageMediaModels(req.Media),
 	}

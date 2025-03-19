@@ -23,7 +23,7 @@ func (h *Handler) HandlerListPhotographerPackages(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed get userID from context")
 	}
 
-	packages, err := h.getPackagesFromUserID(userID)
+	packages, err := h.getPhotographerPackages(userID)
 	if err != nil {
 		return errors.Wrap(err, "failed fetch packages")
 	}
@@ -33,12 +33,7 @@ func (h *Handler) HandlerListPhotographerPackages(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) getPackagesFromUserID(ID uint) ([]model.Package, error) {
-	var photographer model.Photographer
-	if err := h.store.DB.Where("user_id = ?", ID).First(&photographer).Error; err != nil {
-		return nil, errors.Wrap(err, "failed fetch photographer")
-	}
-
+func (h *Handler) getPhotographerPackages(photographerID uint) ([]model.Package, error) {
 	packages := make([]model.Package, 0)
 	if err := h.store.DB.
 		Preload("Media").
@@ -46,7 +41,7 @@ func (h *Handler) getPackagesFromUserID(ID uint) ([]model.Package, error) {
 		Preload("Category").
 		Preload("Reviews").
 		Preload("Photographer.User").
-		Where("photographer_id = ?", photographer.ID).
+		Where("photographer_id = ?", photographerID).
 		Find(&packages).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apperror.BadRequest("packages not found", err)

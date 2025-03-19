@@ -40,38 +40,33 @@ func (h *Handler) HandleCreateQuotation(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, userID uint) error {
-	var newQuotation model.Quotation
-
+func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, photographerID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		newQuotation = model.Quotation{
-			CustomerID:  req.CustomerID,
-			PackageID:   req.PackageID,
-			Description: req.Description,
-			Price:       req.Price,
-			FromDate:    req.FromDate,
-			ToDate:      req.ToDate,
-			Status:      model.QuotationPending,
+		newQuotation := model.Quotation{
+			CustomerID:     req.CustomerID,
+			PackageID:      req.PackageID,
+			Description:    req.Description,
+			Price:          req.Price,
+			FromDate:       req.FromDate,
+			ToDate:         req.ToDate,
+			Status:         model.QuotationPending,
+			PhotographerID: photographerID,
 		}
 
 		var customer model.User
 		if err := tx.First(&customer, req.CustomerID).Error; err != nil {
 			return apperror.NotFound("customer not found", err)
 		}
-		newQuotation.Customer = customer
 
 		var targetPackage model.Package
 		if err := tx.First(&targetPackage, req.PackageID).Error; err != nil {
 			return apperror.NotFound("package not found", err)
 		}
-		newQuotation.Package = targetPackage
 
 		var photographer model.Photographer
-		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
-			return apperror.NotFound("Photographer not found for user", err)
+		if err := tx.First(&photographer, photographerID).Error; err != nil {
+			return apperror.NotFound("Photographer not found", err)
 		}
-		newQuotation.Photographer = photographer
-		newQuotation.PhotographerID = photographer.ID
 
 		if err := tx.Create(&newQuotation).Error; err != nil {
 			return errors.Wrap(err, "failed to create quotation")

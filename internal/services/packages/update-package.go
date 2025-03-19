@@ -44,18 +44,18 @@ func (h *Handler) HandleUpdatePackage(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) updatePackage(req *dto.UpdatePackageRequest, packageID uint, userID uint) error {
+func (h *Handler) updatePackage(req *dto.UpdatePackageRequest, packageID uint, photographerID uint) error {
 	var pkg model.Package
 
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		if err := h.store.DB.Preload("Photographer").First(&pkg, packageID).Error; err != nil {
+		if err := h.store.DB.First(&pkg, packageID).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return apperror.NotFound("Package not found", err)
 			}
 			return errors.Wrap(err, "Failed to get package")
 		}
 
-		if pkg.Photographer.UserID != userID {
+		if pkg.PhotographerID != photographerID {
 			return apperror.Forbidden("You are not allowed to update this package", errors.New("FORBIDDEN"))
 		}
 
