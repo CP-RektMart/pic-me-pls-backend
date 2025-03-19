@@ -8,7 +8,7 @@ type Package struct {
 	Description string
 	Price       float64 `gorm:"not null"`
 
-	CategoryID uint
+	CategoryID *uint
 	Category   Category
 
 	PhotographerID uint         `gorm:"not null"`

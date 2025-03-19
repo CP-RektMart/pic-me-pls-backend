@@ -102,12 +102,12 @@ func (h *Handler) listPhotographerQuotations(req dto.PaginationRequest, userID u
 		Preload("Package.Media").
 		Preload("Customer").
 		Preload("Photographer.User").
-		Where("photographer_id = ?", photographer.ID).Find(&quotations).Error; err != nil {
+		Where("photographer_id = ?", photographer.UserID).Find(&quotations).Error; err != nil {
 		return nil, errors.Wrap(err, "failed getting quotations")
 	}
 
 	var count int64
-	if err := h.store.DB.Model(&model.Quotation{}).Where("photographer_id = ?", photographer.ID).Count(&count).Error; err != nil {
+	if err := h.store.DB.Model(&model.Quotation{}).Where("photographer_id = ?", photographer.UserID).Count(&count).Error; err != nil {
 		return nil, errors.Wrap(err, "failed counting quotaions")
 	}
 	totalPage := (int(count) + pageSize - 1) / pageSize

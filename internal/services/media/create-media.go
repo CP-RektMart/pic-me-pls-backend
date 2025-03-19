@@ -40,17 +40,17 @@ func (h *Handler) HandleCreateMedia(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) createMedia(req *dto.CreateMediaRequest, userID uint) error {
+func (h *Handler) createMedia(req *dto.CreateMediaRequest, photographerID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var pkg model.Package
-		if err := h.store.DB.Preload("Photographer").First(&pkg, "id = ?", req.PackageID).Error; err != nil {
+		if err := h.store.DB.First(&pkg, req.PackageID).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return apperror.NotFound("Package not found", err)
 			}
 			return errors.Wrap(err, "failed to get package")
 		}
 
-		if pkg.Photographer.UserID != userID {
+		if pkg.PhotographerID != photographerID {
 			return apperror.Forbidden("You are not allowed to create media in this package", errors.New("unauthorized"))
 		}
 

@@ -44,17 +44,18 @@ func (h *Handler) HandleUpdateMedia(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) updateMedia(req *dto.UpdateMediaRequest, mediaID uint, userID uint) error {
+func (h *Handler) updateMedia(req *dto.UpdateMediaRequest, mediaID uint, photographerID uint) error {
 	var media model.Media
+
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		if err := h.store.DB.Preload("Package.Photographer").First(&media, "id = ?", mediaID).Error; err != nil {
+		if err := h.store.DB.Preload("Package").First(&media, mediaID).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return apperror.NotFound("Media not found", err)
 			}
 			return errors.Wrap(err, "Failed to get media")
 		}
 
-		if media.Package.Photographer.UserID != userID {
+		if media.Package.PhotographerID != photographerID {
 			return apperror.Forbidden("You are not allowed to update this media", errors.New("unauthorized"))
 		}
 

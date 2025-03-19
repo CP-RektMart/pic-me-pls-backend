@@ -12,10 +12,10 @@ import (
 )
 
 // @Summary			Reverify Citizen Card
-// @Description		Reverify Photographer Citizen Card
+// @Description			Reverify Photographer Citizen Card
 // @Tags			citizencard
 // @Router			/api/v1/photographer/citizen-card/reverify [PATCH]
-// @Security		ApiKeyAuth
+// @Security			ApiKeyAuth
 // @Param 			RequestBody 	body 	dto.ReVerifyCitizenCardRequest 	true 	"request request"
 // @Success			200	{object}	dto.HttpResponse[dto.CitizenCardResponse]
 // @Failure			400	{object}	dto.HttpError
@@ -63,52 +63,36 @@ func (h *Handler) HandleReVerifyCard(c *fiber.Ctx) error {
 }
 
 func (h *Handler) updateCitizenCard(userID uint, imageURL, citizenID, laserID string, expireDate time.Time) (*model.CitizenCard, string, error) {
-	var updatedCitizenCard model.CitizenCard
+	var citizencard model.CitizenCard
 	oldImageURL := ""
 
-	err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		var photographer model.Photographer
-		if err := tx.First(&photographer, "user_id = ?", userID).Error; err != nil {
-			return errors.Wrap(err, "Photographer not found for user")
+	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
+		// Check if photographer's citizen card is already verify
+		if err := h.store.DB.Where("photographer_id = ?", userID).First(&citizencard).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return ErrNoExistingCitizenCard
+			}
+			return errors.Wrap(err, "failed fetching citizen card")
 		}
 
-		if photographer.CitizenCardID == nil {
-			return errors.Wrap(ErrNoExistingCitizenCard, "No existing citizen card found for the photographer")
-		}
+		oldImageURL = citizencard.Picture
 
-		var existingCitizenCard model.CitizenCard
-		if err := tx.First(&existingCitizenCard, "id = ?", *photographer.CitizenCardID).Error; err != nil {
-			return errors.Wrap(err, "Error finding existing citizen card")
-		}
+		citizencard.CitizenID = citizenID
+		citizencard.Picture = imageURL
+		citizencard.LaserID = laserID
+		citizencard.ExpireDate = expireDate
 
-		oldImageURL = existingCitizenCard.Picture
-
-		existingCitizenCard.CitizenID = citizenID
-		existingCitizenCard.Picture = imageURL
-		existingCitizenCard.LaserID = laserID
-		existingCitizenCard.ExpireDate = expireDate
-
-		if err := tx.Save(&existingCitizenCard).Error; err != nil {
+		if err := tx.Save(&citizencard).Error; err != nil {
 			return errors.Wrap(err, "Error updating existing citizen card")
 		}
 
-		updatedCitizenCard = existingCitizenCard
-
-		// Update the photographer's CitizenCardID if necessary
-		photographer.CitizenCardID = &updatedCitizenCard.ID
-		if err := tx.Save(&photographer).Error; err != nil {
-			return errors.Wrap(err, "Error updating photographer with citizen card")
-		}
-
 		return nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		if errors.Is(err, ErrNoExistingCitizenCard) {
 			return nil, "", apperror.BadRequest("no existing citizen card found", err)
 		}
 		return nil, "", errors.Wrap(err, "Error updating citizen card")
 	}
 
-	return &updatedCitizenCard, oldImageURL, nil
+	return &citizencard, oldImageURL, nil
 }

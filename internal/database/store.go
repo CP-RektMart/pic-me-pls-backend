@@ -48,6 +48,7 @@ func New(ctx context.Context, pgConfig pglib.Config, rdConfig rdlib.Config, stor
 
 func (s *Store) migrate() {
 	log.Println("Running migrations...")
+
 	if err := s.DB.AutoMigrate(
 		&model.User{},
 		&model.Photographer{},
@@ -62,5 +63,6 @@ func (s *Store) migrate() {
 	); err != nil {
 		logger.Panic("failed to migrate database", slog.Any("error", err))
 	}
+	
 	log.Println("Migrations complete!")
 }

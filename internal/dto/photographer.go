@@ -49,7 +49,7 @@ type GetPhotographerByIDRequest struct {
 
 func ToPhotographerResponse(photographer model.Photographer) PhotographerResponse {
 	return PhotographerResponse{
-		ID:                photographer.ID,
+		ID:                photographer.UserID,
 		Name:              photographer.User.Name,
 		Email:             photographer.User.Email,
 		PhoneNumber:       photographer.User.PhoneNumber,
