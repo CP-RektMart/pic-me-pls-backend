@@ -5,6 +5,7 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/cockroachdb/errors"
 )
 
 type ChatSystem struct {
@@ -40,12 +41,18 @@ func (c *ChatSystem) Logout(userID uint) {
 	}
 }
 
-func (c *ChatSystem) SendMessage(message model.Message) {
+func (c *ChatSystem) SendMessage(message model.Message) error {
 	receiverID := message.ReceiverID
+
+	if err := c.store.DB.Create(&message).Error; err != nil {
+		return errors.Wrap(err, "failed inserting message to database")
+	}
 
 	if c.IsUserExist(receiverID) {
 		c.clients[receiverID] <- message
 	}
+
+	return nil
 }
 
 func (c *ChatSystem) IsUserExist(userID uint) bool {

@@ -60,8 +60,21 @@ func (h *Handler) receiveRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, 
 				}
 				continue
 			}
+			if userID == message.ReceiverID {
+				logger.Error("receiverID is same as userID")
+				if err := h.sendErrorMessage(c, "receiverID is same as userID"); err != nil {
+					logger.Error("failed sending error", err)
+				}
+				continue
+			}
 
-			h.chatSystem.SendMessage(dto.ToMessageModel(userID, message))
+			if err := h.chatSystem.SendMessage(dto.ToMessageModel(userID, message)); err != nil {
+				logger.Error("failed sending message", err)
+				if err := h.sendErrorMessage(c, "internal error"); err != nil {
+					logger.Error("failed sending error", err)
+				}
+				continue
+			}
 		}
 	}
 }
