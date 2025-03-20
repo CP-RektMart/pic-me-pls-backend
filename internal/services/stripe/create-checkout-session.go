@@ -40,10 +40,10 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error retrieving quotation")
 	}
 
-	// Ensure quotation is in "PENDING" status
-	// if quotation.Status != model.QuotationStatusPending {
-	// 	return apperror.BadRequest("Quotation must be in PENDING status to create checkout session", nil)
-	// }
+	// Ensure quotation is in "CONFIRM" status
+	if quotation.Status != model.QuotationConfirm {
+		return apperror.BadRequest("Quotation is not in confirm status", nil)
+	}
 
 	// Stripe configuration
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
@@ -63,9 +63,10 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 				Quantity: stripe.Int64(1),
 			},
 		},
-		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL:        stripe.String(fmt.Sprintf("https://mock.com/payment-success?quotation_id=%d", quotation.ID)),
-		CancelURL:         stripe.String("https://mcok.com/payment-cancel"),
+		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL: stripe.String(fmt.Sprintf("https://youtu.be/msrYwLVfjKA?si=qElKIvljqsvN-xHU?quotation_id=%d", quotation.ID)),
+		// CancelURL:         stripe.String("https://bruh.com/payment-cancel"),
+		CancelURL:         stripe.String("https://youtu.be/ntgg0ZUmaX8?si=cmqfDUEAbWxwxl0V"),
 		ClientReferenceID: stripe.String(fmt.Sprintf("%d", quotation.ID)),
 	}
 
