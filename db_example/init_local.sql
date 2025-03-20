@@ -1,17 +1,16 @@
 -- Reset the database for testing
-DELETE FROM Quotations;
-DELETE FROM Reviews;
-DELETE FROM Media;
 DELETE FROM Tags;
+DELETE FROM Reviews;
+DELETE FROM Citizen_Cards;
+DELETE FROM Quotations;
+DELETE FROM Media;
 DELETE FROM Packages_Categories;
 DELETE FROM Packages;
+DELETE FROM Categories;
 DELETE FROM Photographers;
 DELETE FROM Users;
-DELETE FROM Citizen_Cards;
-DELETE FROM Categories;
 
 ALTER SEQUENCE packages_id_seq RESTART WITH 1;
-ALTER SEQUENCE photographers_id_seq RESTART WITH 1;
 ALTER SEQUENCE users_id_seq RESTART WITH 1;
 ALTER SEQUENCE citizen_cards_id_seq RESTART WITH 1;
 ALTER SEQUENCE tags_id_seq RESTART WITH 1;
@@ -29,17 +28,17 @@ VALUES
 ('User 4', 'user4@example.com', '0067890123', 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg', 'PHOTOGRAPHER', 'face book', 'GI', 'KKP', '', 'bchnaf', LOCALTIMESTAMP, LOCALTIMESTAMP),
 ('User 5', 'user5@example.com', '0078901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- Insert Citizen Cards
-INSERT INTO Citizen_Cards (citizen_id, laser_id, picture, expire_date, created_at, updated_at)
-VALUES
-('1519999567819', 'LASER123', 'https://www.visa.com.vn/dam/VCOM/regional/ap/vietnam/global-elements/images/vn-visa-gold-card-498x280.png', '2026-12-31', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('4819999567819', 'LASER234', 'https://www.visa.com.vn/dam/VCOM/regional/ap/vietnam/global-elements/images/vn-visa-classic-card-498x280.png', '2027-11-30', LOCALTIMESTAMP, LOCALTIMESTAMP);
-
 -- Insert Photographers
-INSERT INTO Photographers (user_id, is_verified, active_status, citizen_card_id, created_at, updated_at)
+INSERT INTO Photographers (user_id, is_verified, active_status, created_at, updated_at)
 VALUES
-(3, true, true, 1, LOCALTIMESTAMP, LOCALTIMESTAMP),
-(4, true, true, 2, LOCALTIMESTAMP, LOCALTIMESTAMP);
+(3, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Citizen Cards
+INSERT INTO Citizen_Cards (citizen_id, laser_id, photographer_id, picture, expire_date, created_at, updated_at)
+VALUES
+('1519999567819', 'LASER123', 3, 'https://www.visa.com.vn/dam/VCOM/regional/ap/vietnam/global-elements/images/vn-visa-gold-card-498x280.png', '2026-12-31', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('4819999567819', 'LASER234', 4, 'https://www.visa.com.vn/dam/VCOM/regional/ap/vietnam/global-elements/images/vn-visa-classic-card-498x280.png', '2027-11-30', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Insert Categories
 INSERT INTO Categories (name, description, created_at, updated_at)
@@ -58,10 +57,10 @@ VALUES
 -- Insert Packages
 INSERT INTO Packages (photographer_id, name, description, price, category_id, created_at, updated_at)
 VALUES
-(1, 'Golden Hour Magic', 'Let the sun paint your memories with breathtaking sunset photography.', 150.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
-(1, 'Ever After Wedding', 'Immortalize the happiest day of your life with a dreamy wedding shoot.', 300.00, 1, LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 'Wilderness Wonders', 'Lose yourself in the raw beauty of nature through this immersive package.', 200.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 'Timeless Portraits', 'Classic and elegant portraits designed to make you look your best.', 250.00, 2, LOCALTIMESTAMP, LOCALTIMESTAMP);
+(3, 'Golden Hour Magic', 'Let the sun paint your memories with breathtaking sunset photography.', 150.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 'Ever After Wedding', 'Immortalize the happiest day of your life with a dreamy wedding shoot.', 300.00, 1, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, 'Wilderness Wonders', 'Lose yourself in the raw beauty of nature through this immersive package.', 200.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, 'Timeless Portraits', 'Classic and elegant portraits designed to make you look your best.', 250.00, 2, LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Insert Tags
 INSERT INTO Tags (package_id, name, created_at, updated_at)
@@ -97,11 +96,11 @@ VALUES
 -- Insert Quotations
 INSERT INTO Quotations (package_id, customer_id, photographer_id, status, price, description, from_date, to_date, created_at, updated_at)
 VALUES
-(1, 1, 1, 'PENDING', 1500.00, 'Eager to capture the golden hour magic—let’s make this happen!', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(3, 2, 2, 'PAID', 540.00, 'Excited to freeze this special moment in time—booking confirmed!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 2, 1, 'PENDING', 1530.00, 'Looking forward to a timeless portrait session—can’t wait!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 2, 1, 'ACCEPTED', 6300.00, 'All set for a stunning shoot—excited to bring our vision to life!', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 1, 1, 'CANCELLED', 300.00, 'Unfortunately, plans changed—hope to rebook soon!', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
+(1, 1, 3, 'PENDING', 1500.00, 'Eager to capture the golden hour magic—let’s make this happen!', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 2, 4, 'PAID', 540.00, 'Excited to freeze this special moment in time—booking confirmed!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 3, 'PENDING', 1530.00, 'Looking forward to a timeless portrait session—can’t wait!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 3, 'ACCEPTED', 6300.00, 'All set for a stunning shoot—excited to bring our vision to life!', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 1, 3, 'CANCELLED', 300.00, 'Unfortunately, plans changed—hope to rebook soon!', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Verify the data
 SELECT * FROM Users;
@@ -116,9 +115,9 @@ SELECT * FROM Packages_Categories;
 SELECT * FROM Quotations;
 
 -- Query packages including package details, photographerID, userID, username 
-select p.name as Package_Name, p.description as Package_Description, p.price as Package_Price, ph.id as Photographer_ID,
+select p.name as Package_Name, p.description as Package_Description, p.price as Package_Price, ph.user_id as Photographer_ID,
 u.id as User_ID, u.name as userName from Packages as p
-join photographers as ph on p.photographer_id = ph.id
+join photographers as ph on p.photographer_id = ph.user_id
 join users as u on u.id = ph.user_id;
 
 -- -- Query quotations including quotations, photographer_username, customer_username
@@ -135,5 +134,5 @@ SELECT
 FROM quotations AS q
 JOIN packages AS p ON p.id = q.package_id
 JOIN users AS u1 ON u1.id = q.customer_id
-JOIN photographers AS ph ON ph.id = q.photographer_id
+JOIN photographers AS ph ON ph.user_id = q.photographer_id
 JOIN users AS u2 ON u2.id = ph.user_id;
