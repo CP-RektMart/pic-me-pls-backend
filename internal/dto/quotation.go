@@ -76,3 +76,7 @@ func ToQuotationResponses(quotations []model.Quotation) []QuotationResponse {
 		return ToQuotationResponse(quotation)
 	})
 }
+
+type CheckoutSessionResponse struct {
+	CheckoutURL string `json:"checkout_url"`
+}
