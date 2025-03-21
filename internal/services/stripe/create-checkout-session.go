@@ -14,22 +14,12 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary      Create Stripe Checkout Session
-// @Description  Generates a Stripe checkout session for a quotation
-// @Tags         stripe
-// @Router       /api/v1/stripe/checkout/{id} [post]
-// @Param        id   path  int  true  "Quotation ID"
-// @Success      200  {object}  dto.CheckoutSessionResponse
-// @Failure      400  {object}  dto.HttpError
-// @Failure      500  {object}  dto.HttpError
 func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
-	// Parse quotation ID from URL params
 	var req dto.GetQuotationRequest
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("Invalid request parameters", err)
 	}
 
-	// Retrieve quotation from DB
 	var quotation model.Quotation
 	if err := h.store.DB.Preload("Customer").Preload("Package").
 		Where("id = ?", req.QuotationID).
@@ -40,7 +30,6 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Error retrieving quotation")
 	}
 
-	// Ensure quotation is in "CONFIRM" status
 	if quotation.Status != model.QuotationConfirm {
 		return apperror.BadRequest("Quotation is not in confirm status", nil)
 	}
@@ -48,7 +37,6 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 	frontEndUrl := os.Getenv("FRONTEND_URL")
 
-	// Create Stripe checkout session
 	params := &stripe.CheckoutSessionParams{
 		PaymentMethodTypes: stripe.StringSlice([]string{"card"}),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{

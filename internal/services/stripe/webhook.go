@@ -11,16 +11,11 @@ import (
 	"github.com/stripe/stripe-go/v78/webhook"
 )
 
-// HandleStripeWebhook updates quotation status when payment is successful
 func (h *Handler) HandleStripeWebhook(c *fiber.Ctx) error {
-	// Read the request body
 	payload := c.Body()
-
-	// Get Stripe signature from headers
 	signatureHeader := c.Get("Stripe-Signature")
 	secret := os.Getenv("STRIPE_WEBHOOK_SECRET")
 
-	// Verify webhook signature
 	event, err := webhook.ConstructEventWithOptions(
 		payload,
 		signatureHeader,
@@ -34,7 +29,6 @@ func (h *Handler) HandleStripeWebhook(c *fiber.Ctx) error {
 		return apperror.BadRequest("Invalid webhook signature", err)
 	}
 
-	// Handle successful payment
 	if event.Type == "checkout.session.completed" {
 		clientReferenceID, ok := event.Data.Object["client_reference_id"].(string)
 		if !ok {
@@ -47,7 +41,6 @@ func (h *Handler) HandleStripeWebhook(c *fiber.Ctx) error {
 			return apperror.BadRequest("Invalid quotation ID", err)
 		}
 
-		// Update quotation status in database
 		if err := h.store.DB.Model(&model.Quotation{}).
 			Where("id = ?", quotationID).
 			Update("status", model.QuotationPaid).Error; err != nil {
