@@ -9,6 +9,16 @@ components:
         name:
           type: string
       type: object
+    dto.ChatResponse:
+      properties:
+        messages:
+          items:
+            $ref: '#/components/schemas/dto.RealTimeMessageResponse'
+          type: array
+          uniqueItems: false
+        user:
+          $ref: '#/components/schemas/dto.PublicUserResponse'
+      type: object
     dto.CitizenCardResponse:
       properties:
         citizenId:
@@ -128,6 +138,14 @@ components:
       properties:
         error:
           type: string
+      type: object
+    dto.HttpListResponse-dto_ChatResponse:
+      properties:
+        result:
+          items:
+            $ref: '#/components/schemas/dto.ChatResponse'
+          type: array
+          uniqueItems: false
       type: object
     dto.HttpListResponse-dto_PackageResponse:
       properties:
@@ -345,6 +363,26 @@ components:
         profilePictureUrl:
           type: string
       type: object
+    dto.PublicUserResponse:
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
+        role:
+          type: string
+          x-enum-varnames:
+          - UserRoleUnknown
+          - UserRoleAdmin
+          - UserRolePhotographer
+          - UserRoleCustomer
+      type: object
     dto.QuotationResponse:
       properties:
         customer:
@@ -376,6 +414,19 @@ components:
           type: string
         laserId:
           type: string
+      type: object
+    dto.RealTimeMessageResponse:
+      properties:
+        content:
+          type: string
+        id:
+          type: integer
+        receiverId:
+          type: integer
+        senderId:
+          type: integer
+        type:
+          $ref: '#/components/schemas/model.MessageType'
       type: object
     dto.RefreshTokenRequest:
       properties:
@@ -573,6 +624,14 @@ components:
       - imageUrl
       - laserId
       type: object
+    model.MessageType:
+      type: string
+      x-enum-varnames:
+      - MessageTypeText
+      - MessageTypeImage
+      - MessageTypeQuotation
+      - MessageTypePreview
+      - MessageTypeError
     model.QuotationStatus:
       type: string
       x-enum-varnames:
@@ -864,6 +923,39 @@ paths:
       summary: list category
       tags:
       - categories
+  /api/v1/chats:
+    get:
+      description: list all chats for each individual user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_ChatResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: list all chats
+      tags:
+      - chat
   /api/v1/customer/quotations/{id}/cancel:
     patch:
       description: cancelled quotaion

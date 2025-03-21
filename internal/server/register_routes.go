@@ -81,9 +81,10 @@ func (s *Server) RegisterRoutes(
 		categories.Get("/", categoryHandler.HandleListCategory)
 
 		// chat
-		chat := all.Group("/chat")
+		chat := all.Group("/chats")
 		chat.Use("/ws", authMiddleware.Auth, chatHandler.HandleWebsocket)
 		chat.Get("/ws", websocket.New(chatHandler.HandleRealTimeChat))
+		chat.Get("/", authMiddleware.Auth, chatHandler.HandleListMessages)
 	}
 
 	// customer

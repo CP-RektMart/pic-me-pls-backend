@@ -18,7 +18,7 @@ func main() {
 	flag.Parse()
 
 	// Define WebSocket server URL
-	serverURL := "ws://localhost:8000/api/v1/chat/ws"
+	serverURL := "ws://localhost:8000/api/v1/chats/ws"
 
 	// Connect to the WebSocket server
 	header := http.Header{}
