@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/chatsystem"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/gofiber/contrib/websocket"
@@ -37,13 +38,11 @@ func (h *Handler) receiveRealtimeMessage(c *websocket.Conn, userID uint) {
 	}
 }
 
-func (h *Handler) sendRealtimeMessage(c *websocket.Conn, userID uint, client *Client) {
-	var msg string
-
+func (h *Handler) sendRealtimeMessage(c *websocket.Conn, userID uint, client *chatsystem.Client) {
 	select {
 	case <-client.Terminate:
 		break
-	case msg = <-client.Message:
+	case msg := <-client.Message:
 		if err := c.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 			logger.Error("failed sending message", err)
 			logger.Info("closing connection...")

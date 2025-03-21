@@ -1,4 +1,4 @@
-package chat
+package chatsystem
 
 import (
 	"encoding/json"
@@ -23,19 +23,19 @@ type Client struct {
 	Terminate chan bool
 }
 
-type ChatSystem struct {
+type Server struct {
 	clients map[uint]*Client
 	store   *database.Store
 }
 
 var (
-	instance *ChatSystem
+	instance *Server
 	once     sync.Once
 )
 
-func NewChatSystem(store *database.Store) *ChatSystem {
+func NewServer(store *database.Store) *Server {
 	once.Do(func() {
-		instance = &ChatSystem{
+		instance = &Server{
 			clients: make(map[uint]*Client),
 			store:   store,
 		}
@@ -44,7 +44,7 @@ func NewChatSystem(store *database.Store) *ChatSystem {
 	return instance
 }
 
-func (c *ChatSystem) Register(userID uint) *Client {
+func (c *Server) Register(userID uint) *Client {
 	client := Client{
 		Message:   make(chan string),
 		Terminate: make(chan bool),
@@ -53,14 +53,14 @@ func (c *ChatSystem) Register(userID uint) *Client {
 	return &client
 }
 
-func (c *ChatSystem) Logout(userID uint) {
+func (c *Server) Logout(userID uint) {
 	if c.IsUserExist(userID) {
 		c.clients[userID].Terminate <- true
 		delete(c.clients, userID)
 	}
 }
 
-func (c *ChatSystem) SendMessage(senderID uint, msg string) {
+func (c *Server) SendMessage(senderID uint, msg string) {
 	var msgReq dto.RealTimeMessageRequest
 	if err := json.Unmarshal([]byte(msg), &msgReq); err != nil {
 		logger.Error("Failed Unmarshal json", slog.Any("error", err))
@@ -91,14 +91,14 @@ func (c *ChatSystem) SendMessage(senderID uint, msg string) {
 	c.sendMessage(EventMessage, msgModel.ReceiverID, string(json))
 }
 
-func (c *ChatSystem) sendMessage(event EventType, receiverID uint, msg string) {
+func (c *Server) sendMessage(event EventType, receiverID uint, msg string) {
 	msg = fmt.Sprintf("%s %s", event, msg)
 	if c.IsUserExist(receiverID) {
 		c.clients[receiverID].Message <- msg
 	}
 }
 
-func (c *ChatSystem) IsUserExist(userID uint) bool {
+func (c *Server) IsUserExist(userID uint) bool {
 	_, ok := c.clients[userID]
 	return ok
 }

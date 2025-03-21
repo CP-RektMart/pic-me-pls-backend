@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/chatsystem"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/config"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
@@ -54,7 +55,7 @@ func main() {
 
 	// services
 	jwtService := jwt.New(config.JWT, store.Cache)
-	chatSystem := chat.NewChatSystem(store)
+	chatSystem := chatsystem.NewServer(store)
 
 	// middlewares
 	authMiddleware := authentication.NewAuthMiddleware(jwtService)
