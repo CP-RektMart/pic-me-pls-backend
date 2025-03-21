@@ -11,7 +11,6 @@ const (
 	MessageTypeImage     MessageType = "IMAGE"
 	MessageTypeQuotation MessageType = "QUOTATION"
 	MessageTypePreview   MessageType = "PREVIEW"
-	MessageTypeError     MessageType = "ERROR"
 )
 
 type Message struct {
@@ -27,7 +26,7 @@ type Message struct {
 
 func ValidateMessageType(msgType string) bool {
 	switch MessageType(msgType) {
-	case MessageTypeText, MessageTypeImage, MessageTypeQuotation, MessageTypePreview, MessageTypeError:
+	case MessageTypeText, MessageTypeImage, MessageTypeQuotation, MessageTypePreview:
 		return true
 	default:
 		return false

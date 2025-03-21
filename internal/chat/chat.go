@@ -9,6 +9,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
+	"github.com/go-playground/validator/v10"
 )
 
 type EventType string
@@ -24,8 +25,9 @@ type Client struct {
 }
 
 type Server struct {
-	clients map[uint]*Client
-	store   *database.Store
+	clients  map[uint]*Client
+	store    *database.Store
+	validate *validator.Validate
 }
 
 var (
@@ -33,11 +35,12 @@ var (
 	once     sync.Once
 )
 
-func NewServer(store *database.Store) *Server {
+func NewServer(store *database.Store, validate *validator.Validate) *Server {
 	once.Do(func() {
 		instance = &Server{
-			clients: make(map[uint]*Client),
-			store:   store,
+			store:    store,
+			validate: validate,
+			clients:  make(map[uint]*Client),
 		}
 	})
 
@@ -66,6 +69,13 @@ func (c *Server) SendMessage(senderID uint, msg string) {
 		logger.Error("Failed Unmarshal json", slog.Any("error", err))
 		c.sendMessage(EventError, senderID, "invalid message")
 		return
+	}
+
+	if err := c.validate.Struct(msgReq); err != nil {
+		logger.Error("Failed validate message request", slog.Any("error", err))
+		c.sendMessage(EventError, senderID, "invalid message")
+		return
+
 	}
 
 	msgModel := dto.ToMessageModel(senderID, msgReq)

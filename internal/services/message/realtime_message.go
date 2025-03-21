@@ -1,6 +1,9 @@
 package message
 
 import (
+	"log/slog"
+	"sync"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/chat"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
@@ -8,8 +11,6 @@ import (
 )
 
 func (h *Handler) HandleRealTimeMessages(c *websocket.Conn) {
-	defer c.Close()
-
 	jwtEntity, ok := c.Locals(jwtEntityKey).(jwt.JWTentity)
 	if !ok {
 		logger.Error("failed receive userID from jwtEntity")
@@ -18,15 +19,23 @@ func (h *Handler) HandleRealTimeMessages(c *websocket.Conn) {
 
 	client := h.chatSystem.Register(jwtEntity.ID)
 
-	go h.receiveRealtimeMessage(c, jwtEntity.ID)
-	go h.sendRealtimeMessage(c, jwtEntity.ID, client)
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	go h.receiveRealtimeMessage(&wg, c, jwtEntity.ID)
+	go h.sendRealtimeMessage(&wg, c, jwtEntity.ID, client)
+
+	wg.Wait()
+	c.Close()
 }
 
-func (h *Handler) receiveRealtimeMessage(c *websocket.Conn, userID uint) {
+func (h *Handler) receiveRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, userID uint) {
+	defer wg.Done()
+
 	for {
 		mt, msg, err := c.ReadMessage()
 		if err != nil {
-			logger.Error("failed receiving message", err)
+			logger.Error("failed receiving message", slog.Any("error", err))
 			logger.Info("closing connection...")
 			h.chatSystem.Logout(userID)
 			break
@@ -38,16 +47,20 @@ func (h *Handler) receiveRealtimeMessage(c *websocket.Conn, userID uint) {
 	}
 }
 
-func (h *Handler) sendRealtimeMessage(c *websocket.Conn, userID uint, client *chat.Client) {
-	select {
-	case <-client.Terminate:
-		break
-	case msg := <-client.Message:
-		if err := c.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
-			logger.Error("failed sending message", err)
-			logger.Info("closing connection...")
-			h.chatSystem.Logout(userID)
-			break
+func (h *Handler) sendRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, userID uint, client *chat.Client) {
+	defer wg.Done()
+
+	for {
+		select {
+		case <-client.Terminate:
+			return
+		case msg := <-client.Message:
+			if err := c.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
+				logger.Error("failed sending message", slog.Any("error", err))
+				logger.Info("closing connection...")
+				h.chatSystem.Logout(userID)
+				return
+			}
 		}
 	}
 }

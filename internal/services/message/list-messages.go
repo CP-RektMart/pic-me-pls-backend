@@ -12,8 +12,8 @@ import (
 
 // @Summary      list all chats
 // @Description  list all chats for each individual user
-// @Tags         chat
-// @Router       /api/v1/chats [GET]
+// @Tags         message
+// @Router       /api/v1/messages [GET]
 // @Security	 ApiKeyAuth
 // @Success      200    {object}  dto.HttpListResponse[dto.ChatResponse]
 // @Failure      401    {object}  dto.HttpError

@@ -633,7 +633,6 @@ components:
       - MessageTypeImage
       - MessageTypeQuotation
       - MessageTypePreview
-      - MessageTypeError
     model.QuotationStatus:
       type: string
       x-enum-varnames:
@@ -925,52 +924,6 @@ paths:
       summary: list category
       tags:
       - categories
-  /api/v1/chats:
-    get:
-      description: list all chats for each individual user
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpListResponse-dto_ChatResponse'
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: list all chats
-      tags:
-      - chat
-  /api/v1/chats/ws:
-    get:
-      description: Establish a WebSocket connection for real-time communication
-      responses:
-        "101":
-          description: Switching Protocols
-        "400":
-          description: Bad Request
-      security:
-      - ApiKeyAuth: []
-      summary: connect to websocket
-      tags:
-      - chat
   /api/v1/customer/quotations/{id}/cancel:
     patch:
       description: cancelled quotaion
@@ -1149,6 +1102,52 @@ paths:
       summary: Update me
       tags:
       - user
+  /api/v1/messages:
+    get:
+      description: list all chats for each individual user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_ChatResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: list all chats
+      tags:
+      - message
+  /api/v1/messages/ws:
+    get:
+      description: Establish a WebSocket connection for real-time communication
+      responses:
+        "101":
+          description: Switching Protocols
+        "400":
+          description: Bad Request
+      security:
+      - ApiKeyAuth: []
+      summary: connect to websocket
+      tags:
+      - message
   /api/v1/objects:
     delete:
       description: Delete image

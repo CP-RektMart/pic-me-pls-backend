@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/config"
 	"github.com/gorilla/websocket"
 )
 
@@ -16,9 +17,10 @@ var accessToken = flag.String("acc", "", "access token")
 
 func main() {
 	flag.Parse()
+	config := config.Load()
 
 	// Define WebSocket server URL
-	serverURL := "ws://localhost:8000/api/v1/chats/ws"
+	serverURL := fmt.Sprintf("ws://localhost:%d/api/v1/messages/ws", config.Server.Port)
 
 	// Connect to the WebSocket server
 	header := http.Header{}
