@@ -2,6 +2,7 @@ package stripe
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -54,7 +55,7 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
 				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
-					Currency: stripe.String("usd"),
+					Currency: stripe.String("thb"),
 					ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
 						Name: stripe.String(quotation.Package.Name),
 					},
@@ -63,10 +64,9 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 				Quantity: stripe.Int64(1),
 			},
 		},
-		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL: stripe.String(fmt.Sprintf("https://youtu.be/msrYwLVfjKA?si=qElKIvljqsvN-xHU?quotation_id=%d", quotation.ID)),
-		// CancelURL:         stripe.String("https://bruh.com/payment-cancel"),
-		CancelURL:         stripe.String("https://youtu.be/ntgg0ZUmaX8?si=cmqfDUEAbWxwxl0V"),
+		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL:        stripe.String(fmt.Sprintf("http://localhost:5000/id=%d", quotation.ID)),
+		CancelURL:         stripe.String("http://localhost:5000/cancel"),
 		ClientReferenceID: stripe.String(fmt.Sprintf("%d", quotation.ID)),
 	}
 
@@ -74,6 +74,8 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 	if err != nil {
 		return apperror.Internal("Failed to create Stripe session", err)
 	}
+
+	log.Printf("Stripe session created: %s\n", session.ID)
 
 	// Return checkout session response
 	return c.Status(fiber.StatusOK).JSON(dto.CheckoutSessionResponse{
