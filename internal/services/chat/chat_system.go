@@ -18,8 +18,13 @@ const (
 	EventMessage EventType = "MESSAGE"
 )
 
+type Client struct {
+	Message   chan string
+	Terminate chan bool
+}
+
 type ChatSystem struct {
-	clients map[uint]chan string
+	clients map[uint]*Client
 	store   *database.Store
 }
 
@@ -31,7 +36,7 @@ var (
 func NewChatSystem(store *database.Store) *ChatSystem {
 	once.Do(func() {
 		instance = &ChatSystem{
-			clients: make(map[uint]chan string),
+			clients: make(map[uint]*Client),
 			store:   store,
 		}
 	})
@@ -39,14 +44,18 @@ func NewChatSystem(store *database.Store) *ChatSystem {
 	return instance
 }
 
-func (c *ChatSystem) Register(userID uint) chan string {
-	channel := make(chan string)
-	c.clients[userID] = channel
-	return channel
+func (c *ChatSystem) Register(userID uint) *Client {
+	client := Client{
+		Message:   make(chan string),
+		Terminate: make(chan bool),
+	}
+	c.clients[userID] = &client
+	return &client
 }
 
 func (c *ChatSystem) Logout(userID uint) {
 	if c.IsUserExist(userID) {
+		c.clients[userID].Terminate <- true
 		delete(c.clients, userID)
 	}
 }
@@ -85,7 +94,7 @@ func (c *ChatSystem) SendMessage(senderID uint, msg string) {
 func (c *ChatSystem) sendMessage(event EventType, receiverID uint, msg string) {
 	msg = fmt.Sprintf("%s %s", event, msg)
 	if c.IsUserExist(receiverID) {
-		c.clients[receiverID] <- msg
+		c.clients[receiverID].Message <- msg
 	}
 }
 

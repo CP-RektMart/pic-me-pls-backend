@@ -1,8 +1,6 @@
 package chat
 
 import (
-	"sync"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/gofiber/contrib/websocket"
@@ -17,26 +15,19 @@ func (h *Handler) HandleRealTimeChat(c *websocket.Conn) {
 		return
 	}
 
-	ch := h.chatSystem.Register(jwtEntity.ID)
+	client := h.chatSystem.Register(jwtEntity.ID)
 
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go h.receiveRealtimeMessage(&wg, c, jwtEntity.ID)
-	go h.sendRealtimeMessage(&wg, c, ch)
-
-	wg.Wait()
-	h.chatSystem.Logout(jwtEntity.ID)
+	go h.receiveRealtimeMessage(c, jwtEntity.ID)
+	go h.sendRealtimeMessage(c, jwtEntity.ID, client)
 }
 
-func (h *Handler) receiveRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, userID uint) {
-	defer wg.Done()
-
+func (h *Handler) receiveRealtimeMessage(c *websocket.Conn, userID uint) {
 	for {
 		mt, msg, err := c.ReadMessage()
 		if err != nil {
 			logger.Error("failed receiving message", err)
 			logger.Info("closing connection...")
+			h.chatSystem.Logout(userID)
 			break
 		}
 
@@ -46,15 +37,17 @@ func (h *Handler) receiveRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, 
 	}
 }
 
-func (h *Handler) sendRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, ch chan string) {
-	defer wg.Done()
+func (h *Handler) sendRealtimeMessage(c *websocket.Conn, userID uint, client *Client) {
+	var msg string
 
-	for {
-		msg := <-ch
-
+	select {
+	case <-client.Terminate:
+		break
+	case msg = <-client.Message:
 		if err := c.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 			logger.Error("failed sending message", err)
 			logger.Info("closing connection...")
+			h.chatSystem.Logout(userID)
 			break
 		}
 	}
