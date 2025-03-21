@@ -132,7 +132,7 @@ func (s *Server) RegisterRoutes(
 	// stripe
 	{
 		stripe := v1.Group("/stripe")
-		stripe.Post("/checkout/:id", stripeHandler.HandleCreateCheckoutSession)
+		stripe.Post("/checkout/quotations/:id", stripeHandler.HandleCreateCheckoutSession)
 		stripe.Post("/webhook", stripeHandler.HandleStripeWebhook)
 	}
 }

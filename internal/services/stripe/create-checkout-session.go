@@ -23,15 +23,14 @@ import (
 // @Failure      400  {object}  dto.HttpError
 // @Failure      500  {object}  dto.HttpError
 func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
-	var req dto.GetQuotationRequest
+	var req dto.CreateCheckoutSessionQuotationRequest
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("Invalid request parameters", err)
 	}
 
 	var quotation model.Quotation
 	if err := h.store.DB.Preload("Customer").Preload("Package").
-		Where("id = ?", req.QuotationID).
-		First(&quotation).Error; err != nil {
+		First(&quotation, req.QuotationID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("Quotation not found", err)
 		}
@@ -61,7 +60,7 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 		},
 		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),
 		SuccessURL:        stripe.String(fmt.Sprintf("%s/quotation/%d/payment/%s", frontEndUrl, quotation.ID, "{CHECKOUT_SESSION_ID}")),
-		CancelURL:         stripe.String(fmt.Sprintf("%s/cancel", frontEndUrl)),
+		CancelURL:         stripe.String(fmt.Sprintf("%s/quotation/%d/payment/cancel", frontEndUrl, quotation.ID)),
 		ClientReferenceID: stripe.String(fmt.Sprintf("%d", quotation.ID)),
 	}
 

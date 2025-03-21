@@ -2,11 +2,11 @@ package stripe
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
+	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stripe/stripe-go/v78/webhook"
 )
@@ -38,7 +38,7 @@ func (h *Handler) HandleStripeWebhook(c *fiber.Ctx) error {
 		var quotationID int
 		_, err := fmt.Sscanf(clientReferenceID, "%d", &quotationID)
 		if err != nil {
-			return apperror.BadRequest("Invalid quotation ID", err)
+			return apperror.BadRequest("Invalid clientReference ID", err)
 		}
 
 		if err := h.store.DB.Model(&model.Quotation{}).
@@ -47,7 +47,7 @@ func (h *Handler) HandleStripeWebhook(c *fiber.Ctx) error {
 			return apperror.Internal("Failed to update quotation status", err)
 		}
 
-		log.Printf("Quotation %d marked as PAID (Stripe Session: %s)", quotationID, event.Data.Object["id"].(string))
+		logger.Info("Quotation marked as PAID", "quotationID", quotationID, "stripeSessionID", event.Data.Object["id"].(string))
 	}
 
 	return c.SendStatus(fiber.StatusOK)

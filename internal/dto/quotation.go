@@ -23,6 +23,10 @@ type CancelQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
+type CreateCheckoutSessionQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
 type UpdateQuotationRequest struct {
 	QuotationID string `params:"id" validate:"required"`
 
