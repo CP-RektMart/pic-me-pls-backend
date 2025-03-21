@@ -9,7 +9,9 @@ import (
 const jwtEntityKey = "jwtEntityKey"
 
 // @Summary      connect to websocket
-// @Description  Establish a WebSocket connection for real-time communication
+// @Description  Establish a WebSocket connection for real-time communication. 
+// @Description  The message from a server will be in a format of "[EVENT] [MESSAGE]" which [EVENT] can be "ERROR" or "MESSAGE". 
+// @Description  If [EVENT] is error, [MESSAGE] will be a string of error message ,otherwise it will be a dto.RealTimeMessageResponse 
 // @Tags         message
 // @Router       /api/v1/messages/ws [GET]
 // @Security	 ApiKeyAuth
