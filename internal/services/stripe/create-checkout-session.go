@@ -2,7 +2,6 @@ package stripe
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -46,8 +45,8 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 		return apperror.BadRequest("Quotation is not in confirm status", nil)
 	}
 
-	// Stripe configuration
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+	frontEndUrl := os.Getenv("FRONTEND_URL")
 
 	// Create Stripe checkout session
 	params := &stripe.CheckoutSessionParams{
@@ -65,8 +64,8 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 			},
 		},
 		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL:        stripe.String(fmt.Sprintf("http://localhost:5000/id=%d", quotation.ID)),
-		CancelURL:         stripe.String("http://localhost:5000/cancel"),
+		SuccessURL:        stripe.String(fmt.Sprintf("%s/quotation/%d/payment/%s", frontEndUrl, quotation.ID, "{CHECKOUT_SESSION_ID}")),
+		CancelURL:         stripe.String(fmt.Sprintf("%s/cancel", frontEndUrl)),
 		ClientReferenceID: stripe.String(fmt.Sprintf("%d", quotation.ID)),
 	}
 
@@ -75,9 +74,6 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 		return apperror.Internal("Failed to create Stripe session", err)
 	}
 
-	log.Printf("Stripe session created: %s\n", session.ID)
-
-	// Return checkout session response
 	return c.Status(fiber.StatusOK).JSON(dto.CheckoutSessionResponse{
 		CheckoutURL: session.URL,
 	})

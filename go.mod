@@ -13,6 +13,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/samber/lo v1.49.1
+	github.com/stripe/stripe-go/v78 v78.12.0
 	github.com/supabase-community/storage-go v0.7.0
 	github.com/supabase-community/supabase-go v0.0.4
 	github.com/swaggo/swag v1.16.4
@@ -66,7 +67,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
-	github.com/stripe/stripe-go/v78 v78.12.0 // indirect
 	github.com/supabase-community/functions-go v0.0.0-20220927045802-22373e6cb51d // indirect
 	github.com/supabase-community/gotrue-go v1.2.0 // indirect
 	github.com/supabase-community/postgrest-go v0.0.11 // indirect
