@@ -23,3 +23,12 @@ type Message struct {
 	Sender     User `gorm:"foreignKey:SenderID"`
 	Receiver   User `gorm:"foreignKey:ReceiverID"`
 }
+
+func ValidateMessageType(msgType string) bool {
+	switch MessageType(msgType) {
+	case MessageTypeText, MessageTypeImage, MessageTypeQuotation, MessageTypePreview:
+		return true
+	default:
+		return false
+	}
+}
