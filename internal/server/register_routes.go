@@ -4,7 +4,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/chat"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/customer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
@@ -27,12 +26,11 @@ func (s *Server) RegisterRoutes(
 	packagesHandler *packages.Handler,
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
-	messageHandler *message.Handler,
 	objectsHandler *objects.Handler,
 	quotationHandler *quotation.Handler,
 	mediaHandler *media.Handler,
 	customerHandler *customer.Handler,
-	chatHandler *chat.Handler,
+	messageHandler *message.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -82,9 +80,9 @@ func (s *Server) RegisterRoutes(
 
 		// chat
 		chat := all.Group("/chats")
-		chat.Use("/ws", authMiddleware.Auth, chatHandler.HandleWebsocket)
-		chat.Get("/ws", websocket.New(chatHandler.HandleRealTimeChat))
-		chat.Get("/", authMiddleware.Auth, chatHandler.HandleListMessages)
+		chat.Use("/ws", authMiddleware.Auth, messageHandler.HandleWebsocket)
+		chat.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
+		chat.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
 	}
 
 	// customer

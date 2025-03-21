@@ -1,4 +1,4 @@
-package chat
+package message
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
@@ -55,7 +55,7 @@ func (h *Handler) toChatResponse(userID uint, messages []model.Message) []dto.Ch
 		} else {
 			talker = msg.Receiver
 		}
-		
+
 		chat, ok := chats[talker.ID]
 		if !ok {
 			chats[talker.ID] = &dto.ChatResponse{

@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/chatsystem"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/chat"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/config"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
@@ -15,7 +15,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/chat"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/customer"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/media"
@@ -55,7 +54,7 @@ func main() {
 
 	// services
 	jwtService := jwt.New(config.JWT, store.Cache)
-	chatSystem := chatsystem.NewServer(store)
+	chat := chat.NewServer(store)
 
 	// middlewares
 	authMiddleware := authentication.NewAuthMiddleware(jwtService)
@@ -68,12 +67,11 @@ func main() {
 	packageHandler := packages.NewHandler(store, validate, authMiddleware)
 	reviewHandler := review.NewHandler(store, validate, authMiddleware)
 	categoryHandler := category.NewHandler(store, validate)
-	messageHandler := message.NewHandler(store, validate)
 	objectHandler := objects.NewHandler(store, config.Storage)
 	quotationHandler := quotation.NewHandler(store, authMiddleware, validate)
 	mediaHandler := media.NewHandler(store, validate, authMiddleware)
 	customerHandler := customer.NewHandler(store, validate)
-	chatHandler := chat.NewHandler(store, authMiddleware, chatSystem, validate)
+	messageHandler := message.NewHandler(store, authMiddleware, chat, validate)
 
 	server.RegisterDocs()
 
@@ -87,12 +85,11 @@ func main() {
 		packageHandler,
 		reviewHandler,
 		categoryHandler,
-		messageHandler,
 		objectHandler,
 		quotationHandler,
 		mediaHandler,
 		customerHandler,
-		chatHandler,
+		messageHandler,
 	)
 
 	server.Start(ctx, stop)

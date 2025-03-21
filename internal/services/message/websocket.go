@@ -1,4 +1,4 @@
-package chat
+package message
 
 import (
 	"github.com/cockroachdb/errors"

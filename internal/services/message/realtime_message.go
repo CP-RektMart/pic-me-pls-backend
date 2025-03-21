@@ -1,13 +1,13 @@
-package chat
+package message
 
 import (
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/chatsystem"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/chat"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
 	"github.com/gofiber/contrib/websocket"
 )
 
-func (h *Handler) HandleRealTimeChat(c *websocket.Conn) {
+func (h *Handler) HandleRealTimeMessages(c *websocket.Conn) {
 	defer c.Close()
 
 	jwtEntity, ok := c.Locals(jwtEntityKey).(jwt.JWTentity)
@@ -38,7 +38,7 @@ func (h *Handler) receiveRealtimeMessage(c *websocket.Conn, userID uint) {
 	}
 }
 
-func (h *Handler) sendRealtimeMessage(c *websocket.Conn, userID uint, client *chatsystem.Client) {
+func (h *Handler) sendRealtimeMessage(c *websocket.Conn, userID uint, client *chat.Client) {
 	select {
 	case <-client.Terminate:
 		break
