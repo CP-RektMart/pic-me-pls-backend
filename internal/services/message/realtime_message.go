@@ -17,7 +17,7 @@ func (h *Handler) HandleRealTimeMessages(c *websocket.Conn) {
 		return
 	}
 
-	client := h.chatSystem.Register(jwtEntity.ID)
+	client := h.chatService.Register(jwtEntity.ID)
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -37,12 +37,12 @@ func (h *Handler) receiveRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, 
 		if err != nil {
 			logger.Error("failed receiving message", slog.Any("error", err))
 			logger.Info("closing connection...")
-			h.chatSystem.Logout(userID)
+			h.chatService.Logout(userID)
 			break
 		}
 
 		if mt == websocket.TextMessage {
-			h.chatSystem.SendMessage(userID, string(msg))
+			h.chatService.SendMessage(userID, string(msg))
 		}
 	}
 }
@@ -58,7 +58,7 @@ func (h *Handler) sendRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, use
 			if err := c.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 				logger.Error("failed sending message", slog.Any("error", err))
 				logger.Info("closing connection...")
-				h.chatSystem.Logout(userID)
+				h.chatService.Logout(userID)
 				return
 			}
 		}

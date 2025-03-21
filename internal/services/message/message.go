@@ -8,14 +8,14 @@ import (
 
 type Handler struct {
 	store          *database.Store
-	chatSystem     *chat.Server
+	chatService    *chat.Server
 	authentication authentication.AuthMiddleware
 }
 
-func NewHandler(store *database.Store, authentication authentication.AuthMiddleware, chatSystem *chat.Server) *Handler {
+func NewHandler(store *database.Store, authentication authentication.AuthMiddleware, chatService *chat.Server) *Handler {
 	return &Handler{
 		store:          store,
-		chatSystem:     chatSystem,
+		chatService:    chatService,
 		authentication: authentication,
 	}
 }

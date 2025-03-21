@@ -57,7 +57,7 @@ func (c *Server) Register(userID uint) *Client {
 }
 
 func (c *Server) Logout(userID uint) {
-	if c.IsUserExist(userID) {
+	if c.isUserExist(userID) {
 		c.clients[userID].Terminate <- true
 		delete(c.clients, userID)
 	}
@@ -103,12 +103,12 @@ func (c *Server) SendMessage(senderID uint, msg string) {
 
 func (c *Server) sendMessage(event EventType, receiverID uint, msg string) {
 	msg = fmt.Sprintf("%s %s", event, msg)
-	if c.IsUserExist(receiverID) {
+	if c.isUserExist(receiverID) {
 		c.clients[receiverID].Message <- msg
 	}
 }
 
-func (c *Server) IsUserExist(userID uint) bool {
+func (c *Server) isUserExist(userID uint) bool {
 	_, ok := c.clients[userID]
 	return ok
 }
