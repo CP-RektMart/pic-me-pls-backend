@@ -1,6 +1,10 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"time"
+
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+)
 
 type RealTimeMessageRequest struct {
 	Type       model.MessageType `json:"type" validate:"required,messageType"`
@@ -14,6 +18,7 @@ type RealTimeMessageResponse struct {
 	Content    string            `json:"content"`
 	ReceiverID uint              `json:"receiverId"`
 	SenderID   uint              `json:"senderId"`
+	SendedAt   time.Time         `json:"sendedAt"`
 }
 
 func ToMessageModel(senderID uint, message RealTimeMessageRequest) model.Message {
@@ -32,5 +37,6 @@ func ToRealTimeMessageResponse(message model.Message) RealTimeMessageResponse {
 		Content:    message.Content,
 		SenderID:   message.SenderID,
 		ReceiverID: message.ReceiverID,
+		SendedAt:   message.CreatedAt,
 	}
 }
