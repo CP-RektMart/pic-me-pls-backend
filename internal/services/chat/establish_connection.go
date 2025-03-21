@@ -8,6 +8,13 @@ import (
 
 const jwtEntityKey = "jwtEntityKey"
 
+// @Summary      connect to websocket
+// @Description  Establish a WebSocket connection for real-time communication
+// @Tags         chat
+// @Router       /api/v1/chats/ws [GET]
+// @Security	 ApiKeyAuth
+// @Success      101    "Switching Protocols"
+// @Failure      400
 func (h *Handler) HandleWebsocket(c *fiber.Ctx) error {
 	if websocket.IsWebSocketUpgrade(c) {
 		jwtEntity, err := h.authentication.GetJWTEntityFromContext(c.UserContext())

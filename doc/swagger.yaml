@@ -423,6 +423,8 @@ components:
           type: integer
         receiverId:
           type: integer
+        sendedAt:
+          type: string
         senderId:
           type: integer
         type:
@@ -954,6 +956,19 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: list all chats
+      tags:
+      - chat
+  /api/v1/chats/ws:
+    get:
+      description: Establish a WebSocket connection for real-time communication
+      responses:
+        "101":
+          description: Switching Protocols
+        "400":
+          description: Bad Request
+      security:
+      - ApiKeyAuth: []
+      summary: connect to websocket
       tags:
       - chat
   /api/v1/customer/quotations/{id}/cancel:
