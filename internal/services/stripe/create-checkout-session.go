@@ -2,7 +2,6 @@ package stripe
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
@@ -41,11 +40,10 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 		return apperror.BadRequest("Quotation is not in confirm status", nil)
 	}
 
-	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
-	frontEndUrl := os.Getenv("FRONTEND_URL")
+	stripe.Key = h.stripeConfig.SecretKey
+	frontEndUrl := h.frontendUrl
 
 	params := &stripe.CheckoutSessionParams{
-		PaymentMethodTypes: stripe.StringSlice([]string{"card"}),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
 				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{

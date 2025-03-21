@@ -2,7 +2,6 @@ package stripe
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -14,7 +13,7 @@ import (
 func (h *Handler) HandleStripeWebhook(c *fiber.Ctx) error {
 	payload := c.Body()
 	signatureHeader := c.Get("Stripe-Signature")
-	secret := os.Getenv("STRIPE_WEBHOOK_SECRET")
+	secret := h.stripeConfig.WebhookSecret
 
 	event, err := webhook.ConstructEventWithOptions(
 		payload,
