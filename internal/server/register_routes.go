@@ -84,7 +84,7 @@ func (s *Server) RegisterRoutes(
 
 		// packages
 		packages := customer.Group("/packages")
-		packages.Get("/:id/reviews", packagesHandler.HandleGetPackageReviews)
+		packages.Get("/:packageId/reviews", packagesHandler.HandleGetPackageReviews)
 
 		// quotations
 		quotations := customer.Group("/quotations")

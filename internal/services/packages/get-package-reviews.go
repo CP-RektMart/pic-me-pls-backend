@@ -8,13 +8,21 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// @Summary      get package reviews by package id
+// @Description  Show reviews of a package
+// @Tags         packages
+// @Router       /api/v1/customer/packages/:packageID/reviews [GET]
+// @Param        packageID  path    uint     true  "package id"
+// @Success      200    {object}  dto.HttpListResponse[dto.ReviewResponse]
+// @Failure      400    {object}  dto.HttpError
+// @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetPackageReviews(c *fiber.Ctx) error {
 	req := new(dto.GetReviewsByPackageIDRequest)
 	if err := c.ParamsParser(req); err != nil {
 		return apperror.BadRequest("invalid params", err)
 	}
 
-	reviews, err := h.getReviewsByPackageByID(req.ID)
+	reviews, err := h.getReviewsByPackageByID(req.packageID)
 	if err != nil {
 		return errors.Wrap(err, "failed get reviews")
 	}

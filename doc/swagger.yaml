@@ -137,6 +137,14 @@ components:
           type: array
           uniqueItems: false
       type: object
+    dto.HttpListResponse-dto_ReviewResponse:
+      properties:
+        result:
+          items:
+            $ref: '#/components/schemas/dto.ReviewResponse'
+          type: array
+          uniqueItems: false
+      type: object
     dto.HttpResponse-PaginationResponse[dto_CategoryResponse]:
       properties:
         result:
@@ -864,6 +872,38 @@ paths:
       summary: list category
       tags:
       - categories
+  /api/v1/customer/packages/:packageID/reviews:
+    get:
+      description: Show reviews of a package
+      parameters:
+      - description: package id
+        in: path
+        name: packageID
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_ReviewResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: get package reviews by package id
+      tags:
+      - packages
   /api/v1/customer/quotations/{id}/cancel:
     patch:
       description: cancelled quotaion
