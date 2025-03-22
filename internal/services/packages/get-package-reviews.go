@@ -22,7 +22,7 @@ func (h *Handler) HandleGetPackageReviews(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid params", err)
 	}
 
-	reviews, err := h.getReviewsByPackageByID(req.packageID)
+	reviews, err := h.getReviewsByPackageByID(req.PackageID)
 	if err != nil {
 		return errors.Wrap(err, "failed get reviews")
 	}
