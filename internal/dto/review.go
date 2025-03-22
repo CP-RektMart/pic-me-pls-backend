@@ -12,6 +12,10 @@ type CreateReviewRequest struct {
 	Comment string   `json:"comment" validate:"required"`
 }
 
+type GetReviewsByPackageIDRequest struct {
+	ID uint `params:"id" validate:"required"`
+}
+
 type ReviewResponse struct {
 	ID       uint             `json:"id"`
 	Rating   *float64         `json:"rating"`
