@@ -82,6 +82,10 @@ func (s *Server) RegisterRoutes(
 	{
 		customer := v1.Group("/customer", authMiddleware.AuthCustomer)
 
+		// packages
+		packages := customer.Group("/packages")
+		packages.Get("/:id/reviews", packagesHandler.HandleGetPackageReviews)
+
 		// quotations
 		quotations := customer.Group("/quotations")
 		quotations.Patch("/:id/confirm", quotationHandler.HandlerConfirmQuotation)
