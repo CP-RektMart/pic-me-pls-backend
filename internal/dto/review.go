@@ -13,6 +13,7 @@ type CreateReviewRequest struct {
 }
 
 type GetReviewsByPackageIDRequest struct {
+	PaginationRequest
 	PackageID uint `params:"packageId" validate:"required"`
 }
 
