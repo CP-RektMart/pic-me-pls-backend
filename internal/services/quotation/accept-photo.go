@@ -1,8 +1,6 @@
 package quotation
 
 import (
-	"fmt"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -11,9 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func (h *Handler) HandlerAcceptPhoto(c *fiber.Ctx) error {
+// @Summary			accept preview photo
+// @Description		accept preview photo
+// @Tags			quotations
+// @Router			/api/v1/customer/photo/preview/:quotationId/accept [PATCH]
+// @Security		ApiKeyAuth
+// @Param 			quotation id 	path 	uint 	true 	"quotaion id"
+// @Success			204
+// @Failure			401	{object}	dto.HttpError
+// @Failure			403	{object}	dto.HttpError
+// @Failure			404	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 
-	fmt.Println("================HandlerAcceptPhoto\n====================")
+func (h *Handler) HandlerAcceptPhoto(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed get user id from context")

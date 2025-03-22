@@ -580,6 +580,7 @@ components:
       - QuotationConfirm
       - QuotationCancelled
       - QuotationPaid
+      - QuotationAccepted
     model.UserRole:
       type: string
       x-enum-varnames:
