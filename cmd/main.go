@@ -23,6 +23,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/validator"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
@@ -70,6 +71,7 @@ func main() {
 	quotationHandler := quotation.NewHandler(store, authMiddleware, validate)
 	mediaHandler := media.NewHandler(store, validate, authMiddleware)
 	customerHandler := customer.NewHandler(store, validate)
+	stripeHandler := stripe.NewHandler(store, validate, authMiddleware, config.Stripe, config.FrontendURL)
 
 	server.RegisterDocs()
 
@@ -88,6 +90,7 @@ func main() {
 		quotationHandler,
 		mediaHandler,
 		customerHandler,
+		stripeHandler,
 	)
 
 	server.Start(ctx, stop)
