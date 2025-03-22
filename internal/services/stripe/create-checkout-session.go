@@ -27,6 +27,11 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 		return apperror.BadRequest("Invalid request parameters", err)
 	}
 
+	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
+	if err != nil {
+		return errors.Wrap(err, "Failed to get user ID from context")
+	}
+
 	var quotation model.Quotation
 	if err := h.store.DB.Preload("Customer").Preload("Package").
 		First(&quotation, req.QuotationID).Error; err != nil {
@@ -34,6 +39,10 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 			return apperror.NotFound("Quotation not found", err)
 		}
 		return errors.Wrap(err, "Error retrieving quotation")
+	}
+
+	if quotation.CustomerID != userID {
+		return apperror.Forbidden("You can only create a checkout session for your own quotations", nil)
 	}
 
 	if quotation.Status != model.QuotationConfirm {
@@ -57,8 +66,8 @@ func (h *Handler) HandleCreateCheckoutSession(c *fiber.Ctx) error {
 			},
 		},
 		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL:        stripe.String(fmt.Sprintf("%s/quotation/%d/payment/%s", frontEndUrl, quotation.ID, "{CHECKOUT_SESSION_ID}")),
-		CancelURL:         stripe.String(fmt.Sprintf("%s/quotation/%d/payment/cancel", frontEndUrl, quotation.ID)),
+		SuccessURL:        stripe.String(fmt.Sprintf("%s/quotation/%d?payment=success", frontEndUrl, quotation.ID)),
+		CancelURL:         stripe.String(fmt.Sprintf("%s/quotation/%d?payment=cancel", frontEndUrl, quotation.ID)),
 		ClientReferenceID: stripe.String(fmt.Sprintf("%d", quotation.ID)),
 	}
 

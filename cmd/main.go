@@ -71,7 +71,7 @@ func main() {
 	quotationHandler := quotation.NewHandler(store, authMiddleware, validate)
 	mediaHandler := media.NewHandler(store, validate, authMiddleware)
 	customerHandler := customer.NewHandler(store, validate)
-	stripeHandler := stripe.NewHandler(store, validate, config.Stripe, config.FrontendURL)
+	stripeHandler := stripe.NewHandler(store, validate, authMiddleware, config.Stripe, config.FrontendURL)
 
 	server.RegisterDocs()
 
