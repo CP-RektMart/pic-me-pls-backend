@@ -12,7 +12,7 @@ import (
 // @Summary			accept preview photo
 // @Description		accept preview photo
 // @Tags			quotations
-// @Router			/api/v1/customer/photo/preview/:quotationId/accept [PATCH]
+// @Router			/api/v1/customer/photo/preview/{id}/accept [PATCH]
 // @Security		ApiKeyAuth
 // @Param 			quotation id 	path 	uint 	true 	"quotaion id"
 // @Success			204
@@ -20,7 +20,6 @@ import (
 // @Failure			403	{object}	dto.HttpError
 // @Failure			404	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
-
 func (h *Handler) HandlerAcceptPhoto(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
