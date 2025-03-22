@@ -87,6 +87,9 @@ func (s *Server) RegisterRoutes(
 		quotations.Patch("/:id/confirm", quotationHandler.HandlerConfirmQuotation)
 		quotations.Patch("/:id/cancel", quotationHandler.HandlerCancelQuotation)
 		quotations.Post("/:id/review", reviewHandler.HandleCreateReview)
+
+		photo := customer.Group("/photo")
+		photo.Patch("/preview/:id/accept", quotationHandler.HandlerAcceptPhoto)
 	}
 
 	// photographer

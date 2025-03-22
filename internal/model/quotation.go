@@ -25,6 +25,7 @@ const QuotationPending QuotationStatus = "PENDING"
 const QuotationConfirm QuotationStatus = "CONFIRMED"
 const QuotationCancelled QuotationStatus = "CANCELLED"
 const QuotationPaid QuotationStatus = "PAID"
+const QuotationAccepted QuotationStatus = "ACCEPTED"
 
 type Quotation struct {
 	gorm.Model
