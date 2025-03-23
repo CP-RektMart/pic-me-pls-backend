@@ -9,6 +9,7 @@ components:
         name:
           type: string
       type: object
+<<<<<<< HEAD
     dto.ChatResponse:
       properties:
         messages:
@@ -18,6 +19,12 @@ components:
           uniqueItems: false
         user:
           $ref: '#/components/schemas/dto.PublicUserResponse'
+=======
+    dto.CheckoutSessionResponse:
+      properties:
+        checkout_url:
+          type: string
+>>>>>>> main
       type: object
     dto.CitizenCardResponse:
       properties:
@@ -152,6 +159,14 @@ components:
         result:
           items:
             $ref: '#/components/schemas/dto.PackageResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    dto.HttpListResponse-dto_ReviewResponse:
+      properties:
+        result:
+          items:
+            $ref: '#/components/schemas/dto.ReviewResponse'
           type: array
           uniqueItems: false
       type: object
@@ -924,6 +939,38 @@ paths:
       summary: list category
       tags:
       - categories
+  /api/v1/customer/packages/:packageID/reviews:
+    get:
+      description: Show reviews of a package
+      parameters:
+      - description: package id
+        in: path
+        name: packageID
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_ReviewResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: get package reviews by package id
+      tags:
+      - packages
   /api/v1/customer/quotations/{id}/cancel:
     patch:
       description: cancelled quotaion
@@ -1824,6 +1871,38 @@ paths:
       summary: Get Quotation By ID
       tags:
       - quotations
+  /api/v1/stripe/checkout/{id}:
+    post:
+      description: Generates a Stripe checkout session for a quotation
+      parameters:
+      - description: Quotation ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.CheckoutSessionResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: Create Stripe Checkout Session
+      tags:
+      - stripe
   /customer/quotations/{id}/review:
     post:
       description: Create a review for a quotation.

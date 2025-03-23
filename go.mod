@@ -15,6 +15,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/samber/lo v1.49.1
+	github.com/stripe/stripe-go/v78 v78.12.0
 	github.com/supabase-community/storage-go v0.7.0
 	github.com/supabase-community/supabase-go v0.0.4
 	github.com/swaggo/swag v1.16.4

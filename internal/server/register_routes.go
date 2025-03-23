@@ -13,6 +13,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
 	"github.com/gofiber/contrib/websocket"
 )
@@ -31,6 +32,7 @@ func (s *Server) RegisterRoutes(
 	mediaHandler *media.Handler,
 	customerHandler *customer.Handler,
 	messageHandler *message.Handler,
+	stripeHandler *stripe.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -73,6 +75,7 @@ func (s *Server) RegisterRoutes(
 		packages := all.Group("/packages")
 		packages.Get("/", packagesHandler.HandleGetAllPackages)
 		packages.Get("/:id", packagesHandler.HandleGetPackageByID)
+		packages.Get("/:packageId/reviews", packagesHandler.HandleGetPackageReviews)
 
 		// categories
 		categories := all.Group("/categories")
@@ -136,5 +139,12 @@ func (s *Server) RegisterRoutes(
 		categories.Post("/", categoryHandler.HandleCreateCategory)
 		categories.Patch("/:id", categoryHandler.HandleUpdateCategory)
 		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
+	}
+
+	// stripe
+	{
+		stripe := v1.Group("/stripe")
+		stripe.Post("/checkout/quotations/:id", authMiddleware.AuthCustomer, stripeHandler.HandleCreateCheckoutSession)
+		stripe.Post("/webhook", stripeHandler.HandleStripeWebhook)
 	}
 }
