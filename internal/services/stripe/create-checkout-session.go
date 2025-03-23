@@ -16,7 +16,7 @@ import (
 // @Summary      Create Stripe Checkout Session
 // @Description  Generates a Stripe checkout session for a quotation
 // @Tags         stripe
-// @Router       /api/v1/stripe/checkout/{id} [post]
+// @Router       /api/v1/stripe/checkout/quotations/{id} [post]
 // @Param        id   path  int  true  "Quotation ID"
 // @Success      200  {object}  dto.CheckoutSessionResponse
 // @Failure      400  {object}  dto.HttpError

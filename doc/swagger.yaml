@@ -1962,7 +1962,7 @@ paths:
       summary: Get Quotation By ID
       tags:
       - quotations
-  /api/v1/stripe/checkout/{id}:
+  /api/v1/stripe/checkout/quotations/{id}:
     post:
       description: Generates a Stripe checkout session for a quotation
       parameters:
