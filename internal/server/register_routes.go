@@ -13,6 +13,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
 )
 
@@ -30,6 +31,7 @@ func (s *Server) RegisterRoutes(
 	quotationHandler *quotation.Handler,
 	mediaHandler *media.Handler,
 	customerHandler *customer.Handler,
+	stripeHandler *stripe.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -125,5 +127,12 @@ func (s *Server) RegisterRoutes(
 		categories.Post("/", categoryHandler.HandleCreateCategory)
 		categories.Patch("/:id", categoryHandler.HandleUpdateCategory)
 		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
+	}
+
+	// stripe
+	{
+		stripe := v1.Group("/stripe")
+		stripe.Post("/checkout/quotations/:id", authMiddleware.AuthCustomer, stripeHandler.HandleCreateCheckoutSession)
+		stripe.Post("/webhook", stripeHandler.HandleStripeWebhook)
 	}
 }
