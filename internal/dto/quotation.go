@@ -12,7 +12,7 @@ type AcceptQuotationRequest struct {
 }
 
 type AcceptPhotoRequest struct {
-	QuotationID string `params:"quotationId"`
+	QuotationID string `params:"id"`
 }
 
 type GetQuotationRequest struct {
