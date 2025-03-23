@@ -29,11 +29,11 @@ func (h *Handler) HandleCreatePreviewPhoto(c *fiber.Ctx) error {
 
 	quotation, err := h.CreatePreviewPhoto(&req)
 	if err != nil {
-		errors.Wrap(err, "failed to create preview photo")
+		return errors.Wrap(err, "failed to create preview photo")
 	}
 
 	if err := h.SetStatusSubmitted(quotation); err != nil {
-		errors.Wrap(err, "failed to set status to submitted")
+		return errors.Wrap(err, "failed to set status to submitted")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
