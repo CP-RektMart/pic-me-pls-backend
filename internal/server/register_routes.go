@@ -118,7 +118,7 @@ func (s *Server) RegisterRoutes(
 		quotations := photographer.Group("/quotations")
 		quotations.Post("/", quotationHandler.HandleCreateQuotation)
 		quotations.Patch("/:id", quotationHandler.HandleUpdateQuotation)
-		quotations.Post(":id/preview", quotationHandler.HandleCreatePreview)
+		quotations.Post(":id/preview", quotationHandler.HandleCreatePreviewPhoto)
 	}
 
 	// admin
