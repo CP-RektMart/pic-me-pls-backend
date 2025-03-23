@@ -593,6 +593,7 @@ components:
       - QuotationConfirm
       - QuotationCancelled
       - QuotationPaid
+      - QuotationPreviewPhotoSubmitted
     model.UserRole:
       type: string
       x-enum-varnames:
@@ -1594,6 +1595,55 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update a quotation
+      tags:
+      - quotations
+  /api/v1/photographer/quotations/{id}/preview:
+    patch:
+      description: submit preview photo and set status to submitted
+      parameters:
+      - description: quotaion id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        description: link
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: submit preview photo
       tags:
       - quotations
   /api/v1/photographers:

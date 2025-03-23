@@ -9,6 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary			submit preview photo
+// @Description		submit preview photo and set status to submitted
+// @Tags			quotations
+// @Router			/api/v1/photographer/quotations/{id}/preview [PATCH]
+// @Security		ApiKeyAuth
+// @Param 			quotation id 	path 	uint 	true 	"quotaion id"
+// @Param 			link 		body 	string 	true 	"link"
+// @Success			204
+// @Failure			401	{object}	dto.HttpError
+// @Failure			403	{object}	dto.HttpError
+// @Failure			404	{object}	dto.HttpError
+// @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleCreatePreviewPhoto(c *fiber.Ctx) error {
 	var req dto.CreatePreviewPhotoRequest
 	if err := c.BodyParser(&req); err != nil {
