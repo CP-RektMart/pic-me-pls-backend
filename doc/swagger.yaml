@@ -9,10 +9,22 @@ components:
         name:
           type: string
       type: object
+<<<<<<< HEAD
+    dto.ChatResponse:
+      properties:
+        messages:
+          items:
+            $ref: '#/components/schemas/dto.RealTimeMessageResponse'
+          type: array
+          uniqueItems: false
+        user:
+          $ref: '#/components/schemas/dto.PublicUserResponse'
+=======
     dto.CheckoutSessionResponse:
       properties:
         checkout_url:
           type: string
+>>>>>>> main
       type: object
     dto.CitizenCardResponse:
       properties:
@@ -133,6 +145,14 @@ components:
       properties:
         error:
           type: string
+      type: object
+    dto.HttpListResponse-dto_ChatResponse:
+      properties:
+        result:
+          items:
+            $ref: '#/components/schemas/dto.ChatResponse'
+          type: array
+          uniqueItems: false
       type: object
     dto.HttpListResponse-dto_PackageResponse:
       properties:
@@ -358,6 +378,26 @@ components:
         profilePictureUrl:
           type: string
       type: object
+    dto.PublicUserResponse:
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
+        role:
+          type: string
+          x-enum-varnames:
+          - UserRoleUnknown
+          - UserRoleAdmin
+          - UserRolePhotographer
+          - UserRoleCustomer
+      type: object
     dto.QuotationResponse:
       properties:
         customer:
@@ -389,6 +429,21 @@ components:
           type: string
         laserId:
           type: string
+      type: object
+    dto.RealTimeMessageResponse:
+      properties:
+        content:
+          type: string
+        id:
+          type: integer
+        receiverId:
+          type: integer
+        sendedAt:
+          type: string
+        senderId:
+          type: integer
+        type:
+          $ref: '#/components/schemas/model.MessageType'
       type: object
     dto.RefreshTokenRequest:
       properties:
@@ -586,6 +641,13 @@ components:
       - imageUrl
       - laserId
       type: object
+    model.MessageType:
+      type: string
+      x-enum-varnames:
+      - MessageTypeText
+      - MessageTypeImage
+      - MessageTypeQuotation
+      - MessageTypePreview
     model.QuotationStatus:
       type: string
       x-enum-varnames:
@@ -1087,6 +1149,55 @@ paths:
       summary: Update me
       tags:
       - user
+  /api/v1/messages:
+    get:
+      description: list all chats for each individual user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_ChatResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: list all chats
+      tags:
+      - message
+  /api/v1/messages/ws:
+    get:
+      description: |-
+        Establish a WebSocket connection for real-time communication.
+        The message from a server will be in a format of "[EVENT] [MESSAGE]" which [EVENT] can be "ERROR" or "MESSAGE".
+        If [EVENT] is error, [MESSAGE] will be a string of error message ,otherwise it will be a dto.RealTimeMessageResponse
+      responses:
+        "101":
+          description: Switching Protocols
+        "400":
+          description: Bad Request
+      security:
+      - ApiKeyAuth: []
+      summary: connect to websocket
+      tags:
+      - message
   /api/v1/objects:
     delete:
       description: Delete image
