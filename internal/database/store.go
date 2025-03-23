@@ -60,9 +60,10 @@ func (s *Store) migrate() {
 		&model.Quotation{},
 		&model.Review{},
 		&model.CitizenCard{},
+		&model.Preview{},
 	); err != nil {
 		logger.Panic("failed to migrate database", slog.Any("error", err))
 	}
-	
+
 	log.Println("Migrations complete!")
 }

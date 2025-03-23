@@ -125,9 +125,11 @@ func (s *Server) RegisterRoutes(
 		media.Patch("/:mediaId", mediaHandler.HandleUpdateMedia)
 		media.Delete("/:mediaId", mediaHandler.HandleDeleteMedia)
 
+		// quotations
 		quotations := photographer.Group("/quotations")
 		quotations.Post("/", quotationHandler.HandleCreateQuotation)
 		quotations.Patch("/:id", quotationHandler.HandleUpdateQuotation)
+		quotations.Post(":id/preview", quotationHandler.HandleCreatePreviewPhoto)
 	}
 
 	// admin
