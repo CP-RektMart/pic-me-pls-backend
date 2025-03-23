@@ -11,6 +11,10 @@ type AcceptQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
+type AcceptPhotoRequest struct {
+	QuotationID string `params:"id"`
+}
+
 type GetQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
