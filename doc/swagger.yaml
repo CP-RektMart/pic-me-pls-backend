@@ -9,6 +9,21 @@ components:
         name:
           type: string
       type: object
+    dto.ChatResponse:
+      properties:
+        messages:
+          items:
+            $ref: '#/components/schemas/dto.RealTimeMessageResponse'
+          type: array
+          uniqueItems: false
+        user:
+          $ref: '#/components/schemas/dto.PublicUserResponse'
+      type: object
+    dto.CheckoutSessionResponse:
+      properties:
+        checkout_url:
+          type: string
+      type: object
     dto.CitizenCardResponse:
       properties:
         citizenId:
@@ -129,11 +144,27 @@ components:
         error:
           type: string
       type: object
+    dto.HttpListResponse-dto_ChatResponse:
+      properties:
+        result:
+          items:
+            $ref: '#/components/schemas/dto.ChatResponse'
+          type: array
+          uniqueItems: false
+      type: object
     dto.HttpListResponse-dto_PackageResponse:
       properties:
         result:
           items:
             $ref: '#/components/schemas/dto.PackageResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    dto.HttpListResponse-dto_ReviewResponse:
+      properties:
+        result:
+          items:
+            $ref: '#/components/schemas/dto.ReviewResponse'
           type: array
           uniqueItems: false
       type: object
@@ -345,6 +376,26 @@ components:
         profilePictureUrl:
           type: string
       type: object
+    dto.PublicUserResponse:
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
+        role:
+          type: string
+          x-enum-varnames:
+          - UserRoleUnknown
+          - UserRoleAdmin
+          - UserRolePhotographer
+          - UserRoleCustomer
+      type: object
     dto.QuotationResponse:
       properties:
         customer:
@@ -376,6 +427,21 @@ components:
           type: string
         laserId:
           type: string
+      type: object
+    dto.RealTimeMessageResponse:
+      properties:
+        content:
+          type: string
+        id:
+          type: integer
+        receiverId:
+          type: integer
+        sendedAt:
+          type: string
+        senderId:
+          type: integer
+        type:
+          $ref: '#/components/schemas/model.MessageType'
       type: object
     dto.RefreshTokenRequest:
       properties:
@@ -573,6 +639,13 @@ components:
       - imageUrl
       - laserId
       type: object
+    model.MessageType:
+      type: string
+      x-enum-varnames:
+      - MessageTypeText
+      - MessageTypeImage
+      - MessageTypeQuotation
+      - MessageTypePreview
     model.QuotationStatus:
       type: string
       x-enum-varnames:
@@ -580,7 +653,11 @@ components:
       - QuotationConfirm
       - QuotationCancelled
       - QuotationPaid
+<<<<<<< HEAD
       - QuotationAccepted
+=======
+      - QuotationPreviewPhotoSubmitted
+>>>>>>> main
     model.UserRole:
       type: string
       x-enum-varnames:
@@ -865,6 +942,7 @@ paths:
       summary: list category
       tags:
       - categories
+<<<<<<< HEAD
   /api/v1/customer/photo/preview/{id}/accept:
     patch:
       description: accept preview photo
@@ -872,17 +950,37 @@ paths:
       - description: quotaion id
         in: path
         name: id
+=======
+  /api/v1/customer/packages/:packageID/reviews:
+    get:
+      description: Show reviews of a package
+      parameters:
+      - description: package id
+        in: path
+        name: packageID
+>>>>>>> main
         required: true
         schema:
           type: integer
       responses:
+<<<<<<< HEAD
         "204":
           description: No Content
         "401":
+=======
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_ReviewResponse'
+          description: OK
+        "400":
+>>>>>>> main
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
+<<<<<<< HEAD
           description: Unauthorized
         "403":
           content:
@@ -896,17 +994,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Not Found
+=======
+          description: Bad Request
+>>>>>>> main
         "500":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
+<<<<<<< HEAD
       security:
       - ApiKeyAuth: []
       summary: accept preview photo
       tags:
       - quotations
+=======
+      summary: get package reviews by package id
+      tags:
+      - packages
+>>>>>>> main
   /api/v1/customer/quotations/{id}/cancel:
     patch:
       description: cancelled quotaion
@@ -1085,6 +1192,55 @@ paths:
       summary: Update me
       tags:
       - user
+  /api/v1/messages:
+    get:
+      description: list all chats for each individual user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_ChatResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: list all chats
+      tags:
+      - message
+  /api/v1/messages/ws:
+    get:
+      description: |-
+        Establish a WebSocket connection for real-time communication.
+        The message from a server will be in a format of "[EVENT] [MESSAGE]" which [EVENT] can be "ERROR" or "MESSAGE".
+        If [EVENT] is error, [MESSAGE] will be a string of error message ,otherwise it will be a dto.RealTimeMessageResponse
+      responses:
+        "101":
+          description: Switching Protocols
+        "400":
+          description: Bad Request
+      security:
+      - ApiKeyAuth: []
+      summary: connect to websocket
+      tags:
+      - message
   /api/v1/objects:
     delete:
       description: Delete image
@@ -1594,6 +1750,55 @@ paths:
       summary: Update a quotation
       tags:
       - quotations
+  /api/v1/photographer/quotations/{id}/preview:
+    patch:
+      description: submit preview photo and set status to submitted
+      parameters:
+      - description: quotaion id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        description: link
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: submit preview photo
+      tags:
+      - quotations
   /api/v1/photographers:
     get:
       description: Retrieve a paginated list of photographers, optionally filtered
@@ -1758,6 +1963,38 @@ paths:
       summary: Get Quotation By ID
       tags:
       - quotations
+  /api/v1/stripe/checkout/{id}:
+    post:
+      description: Generates a Stripe checkout session for a quotation
+      parameters:
+      - description: Quotation ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.CheckoutSessionResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: Create Stripe Checkout Session
+      tags:
+      - stripe
   /customer/quotations/{id}/review:
     post:
       description: Create a review for a quotation.

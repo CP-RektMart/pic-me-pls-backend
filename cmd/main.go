@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/chat"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/config"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
@@ -23,6 +24,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/validator"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
@@ -53,6 +55,7 @@ func main() {
 
 	// services
 	jwtService := jwt.New(config.JWT, store.Cache)
+	chatService := chat.NewServer(store, validate)
 
 	// middlewares
 	authMiddleware := authentication.NewAuthMiddleware(jwtService)
@@ -65,11 +68,12 @@ func main() {
 	packageHandler := packages.NewHandler(store, validate, authMiddleware)
 	reviewHandler := review.NewHandler(store, validate, authMiddleware)
 	categoryHandler := category.NewHandler(store, validate)
-	messageHandler := message.NewHandler(store, validate)
 	objectHandler := objects.NewHandler(store, config.Storage)
 	quotationHandler := quotation.NewHandler(store, authMiddleware, validate)
 	mediaHandler := media.NewHandler(store, validate, authMiddleware)
 	customerHandler := customer.NewHandler(store, validate)
+	messageHandler := message.NewHandler(store, authMiddleware, chatService)
+	stripeHandler := stripe.NewHandler(store, validate, authMiddleware, config.Stripe, config.FrontendURL)
 
 	server.RegisterDocs()
 
@@ -83,11 +87,12 @@ func main() {
 		packageHandler,
 		reviewHandler,
 		categoryHandler,
-		messageHandler,
 		objectHandler,
 		quotationHandler,
 		mediaHandler,
 		customerHandler,
+		messageHandler,
+		stripeHandler,
 	)
 
 	server.Start(ctx, stop)

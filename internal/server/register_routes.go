@@ -13,7 +13,9 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
+	"github.com/gofiber/contrib/websocket"
 )
 
 func (s *Server) RegisterRoutes(
@@ -25,11 +27,12 @@ func (s *Server) RegisterRoutes(
 	packagesHandler *packages.Handler,
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
-	messageHandler *message.Handler,
 	objectsHandler *objects.Handler,
 	quotationHandler *quotation.Handler,
 	mediaHandler *media.Handler,
 	customerHandler *customer.Handler,
+	messageHandler *message.Handler,
+	stripeHandler *stripe.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -72,15 +75,26 @@ func (s *Server) RegisterRoutes(
 		packages := all.Group("/packages")
 		packages.Get("/", packagesHandler.HandleGetAllPackages)
 		packages.Get("/:id", packagesHandler.HandleGetPackageByID)
+		packages.Get("/:packageId/reviews", packagesHandler.HandleGetPackageReviews)
 
 		// categories
 		categories := all.Group("/categories")
 		categories.Get("/", categoryHandler.HandleListCategory)
+
+		// messages
+		message := all.Group("/messages")
+		message.Use("/ws", authMiddleware.Auth, messageHandler.HandleWebsocket)
+		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
+		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
 	}
 
 	// customer
 	{
 		customer := v1.Group("/customer", authMiddleware.AuthCustomer)
+
+		// packages
+		packages := customer.Group("/packages")
+		packages.Get("/:id/reviews", packagesHandler.HandleGetPackageReviews)
 
 		// quotations
 		quotations := customer.Group("/quotations")
@@ -114,9 +128,11 @@ func (s *Server) RegisterRoutes(
 		media.Patch("/:mediaId", mediaHandler.HandleUpdateMedia)
 		media.Delete("/:mediaId", mediaHandler.HandleDeleteMedia)
 
+		// quotations
 		quotations := photographer.Group("/quotations")
 		quotations.Post("/", quotationHandler.HandleCreateQuotation)
 		quotations.Patch("/:id", quotationHandler.HandleUpdateQuotation)
+		quotations.Post(":id/preview", quotationHandler.HandleCreatePreviewPhoto)
 	}
 
 	// admin
@@ -128,5 +144,12 @@ func (s *Server) RegisterRoutes(
 		categories.Post("/", categoryHandler.HandleCreateCategory)
 		categories.Patch("/:id", categoryHandler.HandleUpdateCategory)
 		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
+	}
+
+	// stripe
+	{
+		stripe := v1.Group("/stripe")
+		stripe.Post("/checkout/quotations/:id", authMiddleware.AuthCustomer, stripeHandler.HandleCreateCheckoutSession)
+		stripe.Post("/webhook", stripeHandler.HandleStripeWebhook)
 	}
 }

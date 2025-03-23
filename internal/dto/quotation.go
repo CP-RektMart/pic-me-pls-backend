@@ -27,6 +27,10 @@ type CancelQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
+type CreateCheckoutSessionQuotationRequest struct {
+	QuotationID string `params:"id"`
+}
+
 type UpdateQuotationRequest struct {
 	QuotationID string `params:"id" validate:"required"`
 
@@ -79,4 +83,8 @@ func ToQuotationResponses(quotations []model.Quotation) []QuotationResponse {
 	return lo.Map(quotations, func(quotation model.Quotation, _ int) QuotationResponse {
 		return ToQuotationResponse(quotation)
 	})
+}
+
+type CheckoutSessionResponse struct {
+	CheckoutURL string `json:"checkout_url"`
 }
