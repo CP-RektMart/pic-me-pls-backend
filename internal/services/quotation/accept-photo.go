@@ -12,7 +12,7 @@ import (
 // @Summary			accept preview photo
 // @Description		accept preview photo
 // @Tags			quotations
-// @Router			/api/v1/customer/photo/preview/{id}/accept [PATCH]
+// @Router			/api/v1/customer/quotations/{id}/accept [PATCH]
 // @Security		ApiKeyAuth
 // @Param 			quotation id 	path 	uint 	true 	"quotaion id"
 // @Success			204
