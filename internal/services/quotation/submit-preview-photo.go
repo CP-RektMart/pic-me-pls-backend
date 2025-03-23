@@ -9,20 +9,26 @@ import (
 	"gorm.io/gorm"
 )
 
-func (h *Handler) HandleCreatePreview(c *fiber.Ctx) error {
-	var req dto.CreatePreviewRequest
+func (h *Handler) HandleCreatePreviewPhoto(c *fiber.Ctx) error {
+	var req dto.CreatePreviewPhotoRequest
 	if err := c.BodyParser(&req); err != nil {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err := h.CreatePreviewPhoto(req); err != nil {
-		return errors.Wrap(err, "failed to create preview photo")
+	quotation, err := h.CreatePreviewPhoto(&req)
+	if err != nil {
+		errors.Wrap(err, "failed to create preview photo")
+	}
+
+	if err := h.SetStatusSubmitted(quotation); err != nil {
+		errors.Wrap(err, "failed to set status to submitted")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) CreatePreviewPhoto(req dto.CreatePreviewRequest) error {
+func (h *Handler) CreatePreviewPhoto(req *dto.CreatePreviewPhotoRequest) (*model.Quotation, error) {
+	var quotation model.Quotation
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		link := req.Link
 		quotationID := req.QuotationID
@@ -32,7 +38,6 @@ func (h *Handler) CreatePreviewPhoto(req dto.CreatePreviewRequest) error {
 			QuotationID: quotationID,
 		}
 
-		var quotation model.Quotation
 		if err := tx.Where("id = ?", quotationID).First(&quotation).Error; err != nil {
 			return apperror.NotFound("quotation not found", err)
 		}
@@ -44,7 +49,16 @@ func (h *Handler) CreatePreviewPhoto(req dto.CreatePreviewRequest) error {
 
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "failed to create preview photo")
+		return nil, errors.Wrap(err, "failed to create preview photo")
+	}
+
+	return &quotation, nil
+}
+
+func (h *Handler) SetStatusSubmitted(quotation *model.Quotation) error {
+	quotation.Status = model.QuotationPreviewPhotoSubmitted
+	if err := h.store.DB.Save(&quotation).Error; err != nil {
+		return errors.Wrap(err, "failed to set status to submitted")
 	}
 
 	return nil
