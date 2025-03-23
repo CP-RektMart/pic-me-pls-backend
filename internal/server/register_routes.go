@@ -74,6 +74,7 @@ func (s *Server) RegisterRoutes(
 		packages := all.Group("/packages")
 		packages.Get("/", packagesHandler.HandleGetAllPackages)
 		packages.Get("/:id", packagesHandler.HandleGetPackageByID)
+		packages.Get("/:packageId/reviews", packagesHandler.HandleGetPackageReviews)
 
 		// categories
 		categories := all.Group("/categories")
