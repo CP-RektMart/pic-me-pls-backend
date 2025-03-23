@@ -15,6 +15,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
+	"github.com/gofiber/contrib/websocket"
 )
 
 func (s *Server) RegisterRoutes(
@@ -26,11 +27,11 @@ func (s *Server) RegisterRoutes(
 	packagesHandler *packages.Handler,
 	reviewHandler *review.Handler,
 	categoryHandler *category.Handler,
-	messageHandler *message.Handler,
 	objectsHandler *objects.Handler,
 	quotationHandler *quotation.Handler,
 	mediaHandler *media.Handler,
 	customerHandler *customer.Handler,
+	messageHandler *message.Handler,
 	stripeHandler *stripe.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
@@ -79,11 +80,21 @@ func (s *Server) RegisterRoutes(
 		// categories
 		categories := all.Group("/categories")
 		categories.Get("/", categoryHandler.HandleListCategory)
+
+		// messages
+		message := all.Group("/messages")
+		message.Use("/ws", authMiddleware.Auth, messageHandler.HandleWebsocket)
+		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
+		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
 	}
 
 	// customer
 	{
 		customer := v1.Group("/customer", authMiddleware.AuthCustomer)
+
+		// packages
+		packages := customer.Group("/packages")
+		packages.Get("/:id/reviews", packagesHandler.HandleGetPackageReviews)
 
 		// quotations
 		quotations := customer.Group("/quotations")
