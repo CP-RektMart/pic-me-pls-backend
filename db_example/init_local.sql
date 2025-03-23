@@ -22,11 +22,16 @@ ALTER SEQUENCE quotations_id_seq RESTART WITH 1;
 -- Insert Users
 INSERT INTO Users (name, email, phone_number, profile_picture_url, role, facebook, instagram, bank, account_no, bank_branch, created_at, updated_at)
 VALUES
-('User 1', 'user1@example.com', '0034567890', 'https://cdn-icons-png.flaticon.com/512/10337/10337609.png', 'CUSTOMER', 'Fookbace', 'ig', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 2', 'user2@example.com', '0045678901', 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg', 'CUSTOMER', 'bookface', 'graminsta', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 3', 'user3@example.com', '0056789012', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'PHOTOGRAPHER', 'vlllqw sq', 'IG', 'BAY', '', 'branch', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 4', 'user4@example.com', '0067890123', 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg', 'PHOTOGRAPHER', 'face book', 'GI', 'KKP', '', 'bchnaf', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 5', 'user5@example.com', '0078901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
+-- ('User 1', 'user1@example.com', '0034567890', 'https://cdn-icons-png.flaticon.com/512/10337/10337609.png', 'CUSTOMER', 'Fookbace', 'ig', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+-- ('User 2', 'user2@example.com', '0045678901', 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg', 'CUSTOMER', 'bookface', 'graminsta', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+-- ('User 3', 'user3@example.com', '0056789012', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'PHOTOGRAPHER', 'vlllqw sq', 'IG', 'BAY', '', 'branch', LOCALTIMESTAMP, LOCALTIMESTAMP),
+-- ('User 4', 'user4@example.com', '0067890123', 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg', 'PHOTOGRAPHER', 'face book', 'GI', 'KKP', '', 'bchnaf', LOCALTIMESTAMP, LOCALTIMESTAMP),
+-- ('User 5', 'user5@example.com', '0078901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
+('Chanatip K.', 'chanatipzaza2003@gmail.com', '0034567890', 'https://cdn-icons-png.flaticon.com/512/10337/10337609.png', 'CUSTOMER', 'Fookbace', 'ig', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Chula Student', '6530075721@student.chula.ac.th', '0045678901', 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg', 'CUSTOMER', 'bookface', 'graminsta', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('CK fastwork', 'chanatip.kowsurat@gmail.com', '0056789012', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'PHOTOGRAPHER', 'vlllqw sq', 'IG', 'BAY', '', 'branch', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Colin Arnold', 'bm54336@benchama.ac.th', '0067890123', 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg', 'PHOTOGRAPHER', 'face book', 'GI', 'KKP', '', 'bchnaf', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('CP RektMartBoy', 'cprektmart@gmail.com', '0078901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Insert Photographers
 INSERT INTO Photographers (user_id, is_verified, active_status, created_at, updated_at)
@@ -78,6 +83,12 @@ VALUES
 (2, 'https://media.istockphoto.com/id/587197548/photo/beautiful-setting-for-outdoors-wedding-ceremony.jpg?s=612x612&w=0&k=20&c=E46nXAiNpnREvNNPUvc-4tQZhzdjJb6PSPasNFvNsOs=', 'Wedding image', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 'https://media.istockphoto.com/id/1043755348/photo/romantic-wedding-ceremony.jpg?s=612x612&w=0&k=20&c=pXjKa-aTfh3oxYzc06HkYw19f-Ez9q-bPpElZmwlFKw=', 'Wedding image 2', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 'https://media.istockphoto.com/id/681119612/photo/wedding-birthday-reception-decoration-chairs-tables-and-flowers.jpg?s=612x612&w=0&k=20&c=8K-WOBrUC9KrrQbuD8LwDgAH7g3KyEvbe1jOsfdsE6w=', 'Wedding image 3', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://www.brides.com/thmb/fJSfAbT8DxJs4dW79wcWZEQZgJs=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/must-take-wedding-photos-bride-groom-walk-clary-prfeiffer-photography-0723-primary-b4221bcb1a2b43e6b0820a8c3e3bce52.jpg', 'Wedding image 4', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://shanelongphotography.com/wp-content/uploads/sites/6499/2020/08/Must-Have-Getting-Ready-Photos-for-your-Wedding-Day_0009-1200x800.jpg', 'Wedding image 5', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY9k8tEDwjHdMPEfNLyRt5hXVCvLHDh0RVwA&s', 'Wedding image 6', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://media.istockphoto.com/id/497039777/photo/wedding-setting.jpg?s=612x612&w=0&k=20&c=uHwz_57iBRVXrUPacCiLTuTPYyZS1az9GA0sCDeMP5U=', 'Wedding image 7', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://media.istockphoto.com/id/635724952/photo/beautiful-wedding-set-up-in-the-garden.jpg?s=612x612&w=0&k=20&c=Lw50dSR-fSrVgu9L9qvfNQ56EamHHHvne49rYH9KAI8=', 'Wedding image 8', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDVfkX8Tz9aitPbl0qteliRs8TgMGjKv6snw&s', 'Wedding image 9', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (3, 'https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg?s=1024x1024&w=0&k=20&c=z8_rWaI8x4zApNEEG9DnWlGXyDIXe-OmsAyQ5fGPVV8=', 'Nature image', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (4, 'https://t4.ftcdn.net/jpg/05/23/62/91/360_F_523629123_RpAModBJXgCTPfilfYaCIbPaalFIjbvv.jpg', 'Portrait image', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
@@ -85,7 +96,10 @@ VALUES
 INSERT INTO Reviews (package_id, customer_id, rating, comment, created_at, updated_at)
 VALUES
 (1, 1, 4.5, 'Breathtaking colors and stunning shots! Worth every penny.', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 2, 5.0, 'Absolutely magical! Every moment was perfectly captured.', LOCALTIMESTAMP, LOCALTIMESTAMP);
+(1, 1, 2.5, '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 1, 5.0, 'Absolutely magical! Every moment was perfectly captured.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 3.5, 'Greate experience!', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 0.5, 'I do not like this package', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Link Packages to Categories
 INSERT INTO Packages_Categories (package_id, category_id)
