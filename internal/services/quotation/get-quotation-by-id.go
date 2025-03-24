@@ -15,7 +15,7 @@ import (
 // @Router			/api/v1/quotations/{id} [GET]
 // @Security			ApiKeyAuth
 // @Param 			id 	path 	uint 	true 	"quotaion id"
-// @Success			200	{object}	dto.HttpResponse[dto.QuotationResponse]
+// @Success			200	{object}	dto.HttpResponse[dto.GetQuotationResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
@@ -39,6 +39,7 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 		Preload("Customer").
 		Preload("Photographer.User").
 		Preload("Photographer.Packages").
+		Preload("Previews").
 		First(&quotation, req.QuotationID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("quotation not found", err)
@@ -50,9 +51,7 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 		return apperror.Forbidden("user not have permission", nil)
 	}
 
-	response := dto.ToQuotationResponse(*quotation)
-
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.QuotationResponse]{
-		Result: response,
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.GetQuotationResponse]{
+		Result: dto.ToGetQuotationResponse(*quotation),
 	})
 }

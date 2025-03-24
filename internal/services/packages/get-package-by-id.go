@@ -24,7 +24,7 @@ func (h *Handler) HandleGetPackageByID(c *fiber.Ctx) error {
 	}
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid path params", err)
-	}
+	}	
 
 	pkg, err := h.getPackageByID(req.ID)
 	if err != nil {

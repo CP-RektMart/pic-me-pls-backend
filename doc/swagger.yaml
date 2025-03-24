@@ -79,6 +79,16 @@ components:
       - name
       - price
       type: object
+    dto.CreatePreviewPhotoRequest:
+      properties:
+        link:
+          type: string
+        quotationId:
+          type: integer
+      required:
+      - link
+      - quotationId
+      type: object
     dto.CreateQuotationRequest:
       properties:
         customerId:
@@ -139,6 +149,32 @@ components:
         mediaID:
           type: integer
       type: object
+    dto.GetQuotationResponse:
+      properties:
+        customer:
+          $ref: '#/components/schemas/dto.UserResponse'
+        description:
+          type: string
+        fromDate:
+          type: string
+        id:
+          type: integer
+        package:
+          $ref: '#/components/schemas/dto.PackageResponse'
+        photographer:
+          $ref: '#/components/schemas/dto.PhotographerResponse'
+        previews:
+          items:
+            $ref: '#/components/schemas/dto.ListPreviewResponse'
+          type: array
+          uniqueItems: false
+        price:
+          type: number
+        status:
+          $ref: '#/components/schemas/model.QuotationStatus'
+        toDate:
+          type: string
+      type: object
     dto.HttpError:
       properties:
         error:
@@ -183,6 +219,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.CustomerPublicResponse'
       type: object
+    dto.HttpResponse-dto_GetQuotationResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.GetQuotationResponse'
+      type: object
     dto.HttpResponse-dto_LoginResponse:
       properties:
         result:
@@ -203,11 +244,6 @@ components:
         result:
           $ref: '#/components/schemas/dto.PhotographerResponse'
       type: object
-    dto.HttpResponse-dto_QuotationResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.QuotationResponse'
-      type: object
     dto.HttpResponse-dto_RegisterResponse:
       properties:
         result:
@@ -222,6 +258,15 @@ components:
       properties:
         result:
           $ref: '#/components/schemas/dto.UserResponse'
+      type: object
+    dto.ListPreviewResponse:
+      properties:
+        id:
+          type: integer
+        link:
+          type: string
+        quotationId:
+          type: integer
       type: object
     dto.LoginRequest:
       properties:
@@ -413,7 +458,14 @@ components:
         price:
           type: number
         status:
-          $ref: '#/components/schemas/model.QuotationStatus'
+          type: string
+          x-enum-varnames:
+          - QuotationPending
+          - QuotationConfirm
+          - QuotationCancelled
+          - QuotationPaid
+          - QuotationAccepted
+          - QuotationPreviewPhotoSubmitted
         toDate:
           type: string
       type: object
@@ -1787,7 +1839,7 @@ paths:
       tags:
       - quotations
   /api/v1/photographer/quotations/{id}/preview:
-    patch:
+    post:
       description: submit preview photo and set status to submitted
       parameters:
       - description: quotaion id
@@ -1798,10 +1850,10 @@ paths:
           type: integer
       requestBody:
         content:
-          text/plain:
+          application/json:
             schema:
-              type: string
-        description: link
+              $ref: '#/components/schemas/dto.CreatePreviewPhotoRequest'
+        description: preview details
         required: true
       responses:
         "204":
@@ -1968,7 +2020,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_QuotationResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_GetQuotationResponse'
           description: OK
         "400":
           content:
