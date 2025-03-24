@@ -79,6 +79,16 @@ components:
       - name
       - price
       type: object
+    dto.CreatePreviewPhotoRequest:
+      properties:
+        link:
+          type: string
+        quotationId:
+          type: integer
+      required:
+      - link
+      - quotationId
+      type: object
     dto.CreateQuotationRequest:
       properties:
         customerId:
@@ -1750,7 +1760,7 @@ paths:
       tags:
       - quotations
   /api/v1/photographer/quotations/{id}/preview:
-    patch:
+    post:
       description: submit preview photo and set status to submitted
       parameters:
       - description: quotaion id
@@ -1761,10 +1771,10 @@ paths:
           type: integer
       requestBody:
         content:
-          text/plain:
+          application/json:
             schema:
-              type: string
-        description: link
+              $ref: '#/components/schemas/dto.CreatePreviewPhotoRequest'
+        description: preview details
         required: true
       responses:
         "204":
