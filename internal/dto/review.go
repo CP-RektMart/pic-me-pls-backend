@@ -8,8 +8,8 @@ import (
 
 type CreateReviewRequest struct {
 	ID      string   `params:"id" validate:"required"`
-	Rating  *float64 `json:"rating" validate:"validRating"`
-	Comment string   `json:"comment" validate:"required"`
+	Rating  *float64 `json:"rating" validate:"validRating,gte=0.0,lte=5.0,required"`
+	Comment string   `json:"comment"`
 }
 
 type GetReviewsByPackageIDRequest struct {
