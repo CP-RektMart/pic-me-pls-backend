@@ -12,10 +12,10 @@ import (
 // @Summary			submit preview photo
 // @Description		submit preview photo and set status to submitted
 // @Tags			quotations
-// @Router			/api/v1/photographer/quotations/{id}/preview [PATCH]
+// @Router			/api/v1/photographer/quotations/{id}/preview [POST]
 // @Security		ApiKeyAuth
 // @Param 			quotation id 	path 	uint 	true 	"quotaion id"
-// @Param 			link 		body 	string 	true 	"link"
+// @Param       	body  body  dto.CreatePreviewPhotoRequest  true  "preview details"
 // @Success			204
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
