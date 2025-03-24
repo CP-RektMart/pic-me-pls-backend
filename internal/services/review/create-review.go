@@ -12,7 +12,7 @@ import (
 // @Summary Create a review
 // @Description Create a review for a quotation.
 // @Tags reviews
-// @Router /customer/quotations/{id}/review [POST]
+// @Router /api/v1/customer/quotations/{id}/review [POST]
 // @Security    ApiKeyAuth
 // @Param id path string true "Quotation ID"
 // @Param review body dto.CreateReviewRequest true "Review details"

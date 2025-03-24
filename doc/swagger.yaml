@@ -109,8 +109,8 @@ components:
         rating:
           type: number
       required:
-      - comment
       - id
+      - rating
       type: object
     dto.CustomerPublicResponse:
       properties:
@@ -1097,6 +1097,43 @@ paths:
       summary: confirm quotation
       tags:
       - quotations
+  /api/v1/customer/quotations/{id}/review:
+    post:
+      description: Create a review for a quotation.
+      parameters:
+      - description: Quotation ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreateReviewRequest'
+        description: Review details
+        required: true
+      responses:
+        "204":
+          description: Review created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create a review
+      tags:
+      - reviews
   /api/v1/customers/{id}:
     get:
       description: Get customer public profile
@@ -1994,40 +2031,3 @@ paths:
       summary: Create Stripe Checkout Session
       tags:
       - stripe
-  /customer/quotations/{id}/review:
-    post:
-      description: Create a review for a quotation.
-      parameters:
-      - description: Quotation ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreateReviewRequest'
-        description: Review details
-        required: true
-      responses:
-        "204":
-          description: Review created successfully
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Create a review
-      tags:
-      - reviews
