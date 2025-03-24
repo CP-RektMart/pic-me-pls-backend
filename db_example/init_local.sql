@@ -96,11 +96,17 @@ VALUES
 -- Insert Quotations
 INSERT INTO Quotations (package_id, customer_id, photographer_id, status, price, description, from_date, to_date, created_at, updated_at)
 VALUES
-(1, 1, 3, 'PENDING', 1500.00, 'Eager to capture the golden hour magic—let’s make this happen!', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 1, 3, 'SUBMIT', 1500.00, 'Eager to capture the golden hour magic—let’s make this happen!', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (3, 2, 4, 'PAID', 540.00, 'Excited to freeze this special moment in time—booking confirmed!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 2, 3, 'PENDING', 1530.00, 'Looking forward to a timeless portrait session—can’t wait!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 2, 3, 'CONFIRMED', 6300.00, 'All set for a stunning shoot—excited to bring our vision to life!', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 1, 3, 'CANCELLED', 300.00, 'Unfortunately, plans changed—hope to rebook soon!', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Previews
+INSERT INTO Previews (quotation_id, link) 
+VALUES
+(1, 'img1.link'),
+(1, 'img2.link')
 
 -- Verify the data
 SELECT * FROM Users;
