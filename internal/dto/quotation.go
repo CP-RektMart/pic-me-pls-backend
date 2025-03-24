@@ -65,6 +65,34 @@ type QuotationResponse struct {
 	ToDate       time.Time             `json:"toDate"`
 }
 
+type GetQuotationResponse struct {
+	ID           uint                  `json:"id"`
+	Package      PackageResponse       `json:"package,omitempty"`
+	Customer     UserResponse          `json:"customer,omitempty"`
+	Photographer PhotographerResponse  `json:"photographer,omitempty"`
+	Status       model.QuotationStatus `json:"status"`
+	Price        float64               `json:"price"`
+	Description  string                `json:"description"`
+	FromDate     time.Time             `json:"fromDate"`
+	ToDate       time.Time             `json:"toDate"`
+	Previews     []ListPreviewResponse `json:"previews,omitempty"`
+}
+
+func ToGetQuotationResponse(quotation model.Quotation) GetQuotationResponse {
+	return GetQuotationResponse{
+		ID:           quotation.ID,
+		Package:      ToPackageResponse(quotation.Package),
+		Customer:     ToUserResponse(quotation.Customer),
+		Photographer: ToPhotographerResponse(quotation.Photographer),
+		Status:       quotation.Status,
+		Price:        quotation.Price,
+		Description:  quotation.Description,
+		FromDate:     quotation.FromDate,
+		ToDate:       quotation.ToDate,
+		Previews:     ToListPreviewResponses(quotation.Previews),
+	}
+}
+
 func ToQuotationResponse(quotation model.Quotation) QuotationResponse {
 	return QuotationResponse{
 		ID:           quotation.ID,
