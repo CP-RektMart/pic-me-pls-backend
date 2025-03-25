@@ -991,7 +991,7 @@ paths:
       summary: list category
       tags:
       - categories
-  /api/v1/customer/packages/:packageID/reviews:
+  /api/v1/customer/packages/{packageID}/reviews:
     get:
       description: Show reviews of a package
       parameters:
