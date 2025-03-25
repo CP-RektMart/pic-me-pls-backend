@@ -15,7 +15,7 @@ import (
 // @Router			/api/v1/quotations/{id} [GET]
 // @Security			ApiKeyAuth
 // @Param 			id 	path 	uint 	true 	"quotaion id"
-// @Success			200	{object}	dto.HttpResponse[dto.QuotationResponse]
+// @Success			200	{object}	dto.HttpResponse[dto.GetQuotationResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
