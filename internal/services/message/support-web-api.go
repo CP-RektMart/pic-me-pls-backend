@@ -7,6 +7,6 @@ func (h *Handler) HandleSupportWebAPI(c *fiber.Ctx) error {
 	if header != "" {
 		c.Request().Header.Set("Authorization", "Bearer "+header)
 	}
-	println(c.Get("Authorization"))
+	
 	return c.Next()
 }
