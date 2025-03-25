@@ -14,7 +14,7 @@ import (
 // @Tags         packages
 // @Router       /api/v1/packages/{packageID}/reviews [GET]
 // @Param        packageID  path    uint     true  "package id"
-// @Success      200    {object}  dto.HttpListResponse[dto.ReviewResponse]
+// @Success      200    {object}  dto.PaginationResponse[dto.ReviewResponse]
 // @Failure      400    {object}  dto.HttpError
 // @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetPackageReviews(c *fiber.Ctx) error {
