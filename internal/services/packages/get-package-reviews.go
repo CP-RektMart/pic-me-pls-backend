@@ -12,7 +12,7 @@ import (
 // @Summary      get package reviews by package id
 // @Description  Show reviews of a package
 // @Tags         packages
-// @Router       /api/v1/customer/packages/{packageID}/reviews [GET]
+// @Router       /api/v1/packages/{packageID}/reviews [GET]
 // @Param        packageID  path    uint     true  "package id"
 // @Success      200    {object}  dto.HttpListResponse[dto.ReviewResponse]
 // @Failure      400    {object}  dto.HttpError
