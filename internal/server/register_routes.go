@@ -83,7 +83,7 @@ func (s *Server) RegisterRoutes(
 
 		// messages
 		message := all.Group("/messages")
-		message.Use("/ws", authMiddleware.Auth, messageHandler.HandleWebsocket)
+		message.Use("/ws", messageHandler.HandleSupportWebAPI, authMiddleware.Auth, messageHandler.HandleWebsocket)
 		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
 		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
 	}
