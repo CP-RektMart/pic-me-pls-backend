@@ -196,14 +196,6 @@ components:
           type: array
           uniqueItems: false
       type: object
-    dto.HttpListResponse-dto_ReviewResponse:
-      properties:
-        result:
-          items:
-            $ref: '#/components/schemas/dto.ReviewResponse'
-          type: array
-          uniqueItems: false
-      type: object
     dto.HttpResponse-PaginationResponse[dto_CategoryResponse]:
       properties:
         result:
@@ -390,6 +382,20 @@ components:
         data:
           items:
             $ref: '#/components/schemas/dto.PhotographerResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
+      type: object
+    dto.PaginationResponse-dto_ReviewResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.ReviewResponse'
           type: array
           uniqueItems: false
         page:
@@ -1464,7 +1470,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpListResponse-dto_ReviewResponse'
+                $ref: '#/components/schemas/dto.PaginationResponse-dto_ReviewResponse'
           description: OK
         "400":
           content:
