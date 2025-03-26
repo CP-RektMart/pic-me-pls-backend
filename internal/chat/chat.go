@@ -8,7 +8,9 @@ import (
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/logger"
+	"github.com/cockroachdb/errors"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -63,7 +65,7 @@ func (c *Server) Logout(userID uint) {
 	}
 }
 
-func (c *Server) SendMessage(senderID uint, msg string) {
+func (c *Server) SendRawString(senderID uint, msg string) {
 	var msgReq dto.RealTimeMessageRequest
 	if err := json.Unmarshal([]byte(msg), &msgReq); err != nil {
 		logger.Error("Failed Unmarshal json", slog.Any("error", err))
@@ -99,6 +101,21 @@ func (c *Server) SendMessage(senderID uint, msg string) {
 	}
 
 	c.sendMessage(EventMessage, msgModel.ReceiverID, string(json))
+}
+
+func (c *Server) SendMessageModel(msg model.Message) error {
+	if err := c.store.DB.Create(&msg).Error; err != nil {
+		return errors.Wrap(err, "failed save massage record to database")
+	}
+
+	json, err := json.Marshal(dto.ToRealTimeMessageResponse(msg))
+	if err != nil {
+		return errors.Wrap(err, "failed Marshal to json")
+	}
+
+	c.sendMessage(EventMessage, msg.ReceiverID, string(json))
+
+	return nil
 }
 
 func (c *Server) sendMessage(event EventType, receiverID uint, msg string) {

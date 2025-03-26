@@ -39,6 +39,15 @@ type PackageResponse struct {
 	Category     *CategoryResponse    `json:"category"`
 }
 
+type QuotationMessagePackageResponse struct {
+	ID          uint              `json:"id"`
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Price       float64           `json:"price"`
+	Tags        []TagResponse     `json:"tags"`
+	Category    *CategoryResponse `json:"category"`
+}
+
 type SmallPackageResponse struct {
 	ID          uint              `json:"id"`
 	Name        string            `json:"name"`
@@ -121,4 +130,15 @@ func ToSmallPackageResponses(packages []model.Package) []SmallPackageResponse {
 	return lo.Map(packages, func(pkg model.Package, _ int) SmallPackageResponse {
 		return ToSmallPackageResponse(pkg)
 	})
+}
+
+func ToQuotationMessagePackageResponse(pkg model.Package) QuotationMessagePackageResponse {
+	return QuotationMessagePackageResponse{
+		ID:          pkg.ID,
+		Name:        pkg.Name,
+		Description: pkg.Description,
+		Price:       pkg.Price,
+		Tags:        ToTagResponses(pkg.Tags),
+		Category:    lo.EmptyableToPtr(ToCategoryResponse(pkg.Category)),
+	}
 }
