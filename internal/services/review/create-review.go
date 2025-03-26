@@ -9,14 +9,14 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary Create a review
+// @Summary 	Create a review
 // @Description Create a review for a quotation.
-// @Tags reviews
-// @Router /api/v1/customer/quotations/{quotationId}/review [POST]
+// @Tags 		reviews
+// @Router 		/api/v1/customer/quotations/{quotationId}/review [POST]
 // @Security    ApiKeyAuth
-// @Param quoationId path string true "Quotation ID"
-// @Param review body dto.CreateReviewRequest true "Review details"
-// @Success 204 "Review created successfully"
+// @Param 		quotationId 	path 		uint 					true "Quotation ID"
+// @Param 		review 			body 		dto.CreateReviewRequest true "Review details"
+// @Success 	204 			"Review created successfully"
 // @Failure     400   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
 func (h *Handler) HandleCreateReview(c *fiber.Ctx) error {
@@ -58,10 +58,11 @@ func (h *Handler) createReview(req *dto.CreateReviewRequest, userID uint) error 
 		}
 
 		review := model.Review{
-			PackageID:  quotation.PackageID,
-			CustomerID: customer.ID,
-			Rating:     *req.Rating,
-			Comment:    req.Comment,
+			PackageID:   quotation.PackageID,
+			CustomerID:  customer.ID,
+			QuotationID: quotation.ID,
+			Rating:      *req.Rating,
+			Comment:     req.Comment,
 		}
 
 		if err := h.store.DB.Create(&review).Error; err != nil {

@@ -115,7 +115,7 @@ components:
         comment:
           type: string
         quotationID:
-          type: integer
+          type: string
         rating:
           type: number
       required:
@@ -148,16 +148,6 @@ components:
       properties:
         mediaID:
           type: integer
-      type: object
-    dto.DeleteReviewRequest:
-      properties:
-        id:
-          type: integer
-        quotationID:
-          type: integer
-      required:
-      - id
-      - quotationID
       type: object
     dto.GetQuotationResponse:
       properties:
@@ -552,6 +542,8 @@ components:
           $ref: '#/components/schemas/dto.CustomerResponse'
         id:
           type: integer
+        isEdited:
+          type: boolean
         rating:
           type: number
       type: object
@@ -654,7 +646,7 @@ components:
         id:
           type: integer
         quotationID:
-          type: integer
+          type: string
         rating:
           type: number
       required:
@@ -1153,10 +1145,10 @@ paths:
       parameters:
       - description: Quotation ID
         in: path
-        name: quoationId
+        name: quotationId
         required: true
         schema:
-          type: string
+          type: integer
       requestBody:
         content:
           application/json:
@@ -1184,7 +1176,7 @@ paths:
       summary: Create a review
       tags:
       - reviews
-  /api/v1/customer/quotations/{quotationId}/reviews/{id}:
+  /api/v1/customer/quotations/{quotationId}/review/{id}:
     delete:
       description: Delete a review from a quotation.
       parameters:
@@ -1193,20 +1185,13 @@ paths:
         name: quotationId
         required: true
         schema:
-          type: string
+          type: integer
       - description: ID
         in: path
         name: id
         required: true
         schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.DeleteReviewRequest'
-        description: Review details
-        required: true
+          type: integer
       responses:
         "204":
           description: Review Deleted successfully
@@ -1235,13 +1220,13 @@ paths:
         name: quotationId
         required: true
         schema:
-          type: string
+          type: integer
       - description: ID
         in: path
         name: id
         required: true
         schema:
-          type: string
+          type: integer
       requestBody:
         content:
           application/json:
