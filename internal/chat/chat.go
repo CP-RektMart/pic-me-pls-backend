@@ -101,6 +101,7 @@ func (c *Server) SendRawString(senderID uint, msg string) {
 	}
 
 	c.sendMessage(EventMessage, msgModel.ReceiverID, string(json))
+	c.sendMessage(EventMessage, msgModel.SenderID, string(json))
 }
 
 func (c *Server) SendMessageModel(msg model.Message) error {
@@ -114,6 +115,7 @@ func (c *Server) SendMessageModel(msg model.Message) error {
 	}
 
 	c.sendMessage(EventMessage, msg.ReceiverID, string(json))
+	c.sendMessage(EventMessage, msg.SenderID, string(json))
 
 	return nil
 }
