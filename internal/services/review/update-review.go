@@ -12,10 +12,10 @@ import (
 // @Summary 		Update a review
 // @Description 	Update a review for a quotation.
 // @Tags 			reviews
-// @Router 			/api/v1/customer/quotations/{quotationId}/reviews/{id} [PATCH]
+// @Router 			/api/v1/customer/quotations/{quotationId}/review/{id} [PATCH]
 // @Security    	ApiKeyAuth
-// @Param 			quotationId path string true "Quotation ID"
-// @Param 			id 			path string true "ID"
+// @Param 			quotationId path uint true "Quotation ID"
+// @Param 			id 			path uint true "ID"
 // @Param 			review 		body 		dto.UpdateReviewRequest true "Review details"
 // @Success 		204 			"Review Updated successfully"
 // @Failure     	400   {object}  dto.HttpError

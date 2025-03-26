@@ -20,8 +20,8 @@ type UpdateReviewRequest struct {
 }
 
 type DeleteReviewRequest struct {
-	ID          uint `params:"id" validate:"required"`
-	QuotationID uint `param:"quotationId" validate:"required"`
+	ID          uint   `params:"id" validate:"required"`
+	QuotationID string `param:"quotationId" validate:"required"`
 }
 
 type GetReviewsByPackageIDRequest struct {
@@ -34,6 +34,7 @@ type ReviewResponse struct {
 	Rating   *float64         `json:"rating"`
 	Comment  string           `json:"comment"`
 	Customer CustomerResponse `json:"customer"`
+	IsEdited bool             `json:"isEdited"`
 }
 
 func validRating(fl validator.FieldLevel) bool {
@@ -60,6 +61,7 @@ func ToReviewResponse(review model.Review) ReviewResponse {
 		Rating:   &review.Rating,
 		Comment:  review.Comment,
 		Customer: ToCustomerResponse(review.Customer),
+		IsEdited: review.IsEdited,
 	}
 }
 
