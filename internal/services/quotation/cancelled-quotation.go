@@ -10,11 +10,11 @@ import (
 )
 
 // @Summary			cancelled quotation
-// @Description			cancelled quotaion
+// @Description			cancelled quotation
 // @Tags			quotations
 // @Router			/api/v1/customer/quotations/{id}/cancel [PATCH]
 // @Security			ApiKeyAuth
-// @Param 			quotation id 	path 	uint 	true 	"quotaion id"
+// @Param 			quotation id 	path 	uint 	true 	"quotation id"
 // @Success			204
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError

@@ -7,9 +7,21 @@ import (
 )
 
 type CreateReviewRequest struct {
-	ID      string   `params:"id" validate:"required"`
-	Rating  *float64 `json:"rating" validate:"validRating,gte=0.0,lte=5.0,required"`
-	Comment string   `json:"comment"`
+	QuotationID uint     `params:"quotationId" validate:"required"`
+	Rating      *float64 `json:"rating" validate:"validRating,gte=0.0,lte=5.0,required"`
+	Comment     string   `json:"comment"`
+}
+
+type UpdateReviewRequest struct {
+	ID          uint     `params:"id" validate:"required"`
+	QuotationID uint     `param:"quotationId" validate:"required"`
+	Rating      *float64 `json:"rating" validate:"omitempty,validRating,gte=0.0,lte=5.0"`
+	Comment     string   `json:"comment"`
+}
+
+type DeleteReviewRequest struct {
+	ID          uint `params: "id" validate: "required"`
+	QuotationID uint `param:"quotationId" validate:"required"`
 }
 
 type GetReviewsByPackageIDRequest struct {

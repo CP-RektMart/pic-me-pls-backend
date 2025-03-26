@@ -14,7 +14,7 @@ import (
 // @Tags			quotations
 // @Router			/api/v1/photographer/quotations/{id}/preview [POST]
 // @Security		ApiKeyAuth
-// @Param 			quotation id 	path 	uint 	true 	"quotaion id"
+// @Param 			quotation id 	path 	uint 	true 	"quotation id"
 // @Param       	body  body  dto.CreatePreviewPhotoRequest  true  "preview details"
 // @Success			204
 // @Failure			401	{object}	dto.HttpError
