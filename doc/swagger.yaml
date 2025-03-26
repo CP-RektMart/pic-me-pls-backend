@@ -170,6 +170,8 @@ components:
           uniqueItems: false
         price:
           type: number
+        review:
+          $ref: '#/components/schemas/dto.ReviewResponse'
         status:
           $ref: '#/components/schemas/model.QuotationStatus'
         toDate:

@@ -31,7 +31,7 @@ type GetReviewsByPackageIDRequest struct {
 
 type ReviewResponse struct {
 	ID       uint             `json:"id"`
-	Rating   *float64         `json:"rating"`
+	Rating   float64          `json:"rating"`
 	Comment  string           `json:"comment"`
 	Customer CustomerResponse `json:"customer"`
 	IsEdited bool             `json:"isEdited"`
@@ -58,7 +58,7 @@ func RegisterValidations(validate *validator.Validate) {
 func ToReviewResponse(review model.Review) ReviewResponse {
 	return ReviewResponse{
 		ID:       review.ID,
-		Rating:   &review.Rating,
+		Rating:   review.Rating,
 		Comment:  review.Comment,
 		Customer: ToCustomerResponse(review.Customer),
 		IsEdited: review.IsEdited,
