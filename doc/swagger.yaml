@@ -115,7 +115,7 @@ components:
         comment:
           type: string
         quotationID:
-          type: string
+          type: integer
         rating:
           type: number
       required:
@@ -646,7 +646,7 @@ components:
         id:
           type: integer
         quotationID:
-          type: string
+          type: integer
         rating:
           type: number
       required:

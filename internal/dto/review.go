@@ -7,14 +7,14 @@ import (
 )
 
 type CreateReviewRequest struct {
-	QuotationID string   `params:"quotationId" validate:"required"`
+	QuotationID uint     `params:"quotationId" validate:"required"`
 	Rating      *float64 `json:"rating" validate:"validRating,gte=0.0,lte=5.0,required"`
 	Comment     string   `json:"comment"`
 }
 
 type UpdateReviewRequest struct {
 	ID          uint     `params:"id" validate:"required"`
-	QuotationID string   `param:"quotationId" validate:"required"`
+	QuotationID uint     `param:"quotationId" validate:"required"`
 	Rating      *float64 `json:"rating" validate:"omitempty,validRating,gte=0.0,lte=5.0"`
 	Comment     string   `json:"comment"`
 }
