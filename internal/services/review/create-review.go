@@ -14,7 +14,7 @@ import (
 // @Tags 		reviews
 // @Router 		/api/v1/customer/quotations/{quotationId}/review [POST]
 // @Security    ApiKeyAuth
-// @Param 		quotationId 	path 		uint 					true "Quotation ID"
+// @Param 		quotationId 	path 		string 					true "Quotation ID"
 // @Param 		review 			body 		dto.CreateReviewRequest true "Review details"
 // @Success 	204 			"Review created successfully"
 // @Failure     400   {object}  dto.HttpError

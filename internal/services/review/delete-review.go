@@ -14,7 +14,7 @@ import (
 // @Tags 			reviews
 // @Router 			/api/v1/customer/quotations/{quotationId}/review/{id} [DELETE]
 // @Security    	ApiKeyAuth
-// @Param 			quotationId 	path 	uint 	true 	"Quotation ID"
+// @Param 			quotationId 	path 	string 	true 	"Quotation ID"
 // @Param 			id 				path 	uint 	true 	"ID"
 // @Success 		204 			"Review Deleted successfully"
 // @Failure     	400 {object}  	dto.HttpError
