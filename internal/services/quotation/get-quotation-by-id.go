@@ -40,6 +40,7 @@ func (h *Handler) HandleGetQuotationByID(c *fiber.Ctx) error {
 		Preload("Photographer.User").
 		Preload("Photographer.Packages").
 		Preload("Previews").
+		Preload("Review").
 		First(&quotation, req.QuotationID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperror.NotFound("quotation not found", err)
