@@ -20,7 +20,7 @@ type UpdateReviewRequest struct {
 }
 
 type DeleteReviewRequest struct {
-	ID          uint `params: "id" validate: "required"`
+	ID          uint `params:"id" validate:"required"`
 	QuotationID uint `param:"quotationId" validate:"required"`
 }
 

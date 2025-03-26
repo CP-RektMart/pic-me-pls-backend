@@ -12,7 +12,7 @@ type Review struct {
 	Customer    User      `gorm:"foreignKey:CustomerID"`
 	Rating      float64   `gorm:"not null"`
 	QuotationID uint      `gorm:"not null"`
-	Quotation   Quotation `gorm: "foreignKey:QuotationID"`
+	Quotation   Quotation `gorm:"foreignKey:QuotationID"`
 	IsEdited    bool      `gorm:"not null;default: false"`
 	Comment     string
 }
