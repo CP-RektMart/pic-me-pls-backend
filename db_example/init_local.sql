@@ -81,12 +81,6 @@ VALUES
 (3, 'https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg?s=1024x1024&w=0&k=20&c=z8_rWaI8x4zApNEEG9DnWlGXyDIXe-OmsAyQ5fGPVV8=', 'Nature image', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (4, 'https://t4.ftcdn.net/jpg/05/23/62/91/360_F_523629123_RpAModBJXgCTPfilfYaCIbPaalFIjbvv.jpg', 'Portrait image', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
--- Insert Reviews
-INSERT INTO Reviews (package_id, customer_id, rating, comment, created_at, updated_at)
-VALUES
-(1, 1, 4.5, 'Breathtaking colors and stunning shots! Worth every penny.', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 2, 5.0, 'Absolutely magical! Every moment was perfectly captured.', LOCALTIMESTAMP, LOCALTIMESTAMP);
-
 -- Link Packages to Categories
 INSERT INTO Packages_Categories (package_id, category_id)
 VALUES
@@ -100,13 +94,21 @@ VALUES
 (3, 2, 4, 'PAID', 540.00, 'Excited to freeze this special moment in time—booking confirmed!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 2, 3, 'PENDING', 1530.00, 'Looking forward to a timeless portrait session—can’t wait!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 2, 3, 'CONFIRMED', 6300.00, 'All set for a stunning shoot—excited to bring our vision to life!', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
-(2, 1, 3, 'CANCELLED', 300.00, 'Unfortunately, plans changed—hope to rebook soon!', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
+(2, 1, 3, 'CANCELLED', 300.00, 'Unfortunately, plans changed—hope to rebook soon!', '2025-03-03T17:33:00+07:00', '2025-03-03T19:50:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 2, 4, 'CANCELLED', 540.00, 'Excited to freeze this special moment in time—booking confirmed!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Reviews
+INSERT INTO Reviews (package_id, customer_id, rating, comment, created_at, updated_at, quotation_id, is_edited)
+VALUES
+(3, 2, 4.5, 'Breathtaking colors and stunning shots! Worth every penny.', LOCALTIMESTAMP, LOCALTIMESTAMP, 2, false),
+(2, 1, 5.0, 'Absolutely magical! Every moment was perfectly captured.', LOCALTIMESTAMP, LOCALTIMESTAMP, 3, true),
+(3, 2, 5.0, 'Absolutely magical! Every moment was perfectly captured.', LOCALTIMESTAMP, LOCALTIMESTAMP, 6, true);
 
 -- Insert Previews
 INSERT INTO Previews (quotation_id, link) 
 VALUES
 (1, 'img1.link'),
-(1, 'img2.link')
+(1, 'img2.link');
 
 -- Verify the data
 SELECT * FROM Users;

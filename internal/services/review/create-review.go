@@ -12,9 +12,9 @@ import (
 // @Summary Create a review
 // @Description Create a review for a quotation.
 // @Tags reviews
-// @Router /api/v1/customer/quotations/{id}/review [POST]
+// @Router /api/v1/customer/quotations/{quotationId}/review [POST]
 // @Security    ApiKeyAuth
-// @Param id path string true "Quotation ID"
+// @Param quoationId path string true "Quotation ID"
 // @Param review body dto.CreateReviewRequest true "Review details"
 // @Success 204 "Review created successfully"
 // @Failure     400   {object}  dto.HttpError
@@ -53,7 +53,7 @@ func (h *Handler) createReview(req *dto.CreateReviewRequest, userID uint) error 
 		}
 
 		var quotation model.Quotation
-		if err := h.store.DB.Where("id = ?", req.ID).First(&quotation).Error; err != nil {
+		if err := h.store.DB.Where("id = ?", req.QuotationID).First(&quotation).Error; err != nil {
 			return apperror.NotFound("Quotation not found", err)
 		}
 

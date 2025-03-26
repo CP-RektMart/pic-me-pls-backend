@@ -10,11 +10,11 @@ import (
 )
 
 // @Summary			confirm quotation
-// @Description			confirm quotaion
+// @Description			confirm quotation
 // @Tags			quotations
 // @Router			/api/v1/customer/quotations/{id}/confirm [PATCH]
 // @Security			ApiKeyAuth
-// @Param 			quotation id 	path 	uint 	true 	"quotaion id"
+// @Param 			quotation id 	path 	uint 	true 	"quotation id"
 // @Success			204
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
@@ -50,4 +50,3 @@ func (h *Handler) HandlerConfirmQuotation(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
-
