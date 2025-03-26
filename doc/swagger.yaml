@@ -114,12 +114,12 @@ components:
       properties:
         comment:
           type: string
-        id:
-          type: string
+        quotationID:
+          type: integer
         rating:
           type: number
       required:
-      - id
+      - quotationID
       - rating
       type: object
     dto.CustomerPublicResponse:
@@ -148,6 +148,16 @@ components:
       properties:
         mediaID:
           type: integer
+      type: object
+    dto.DeleteReviewRequest:
+      properties:
+        id:
+          type: integer
+        quotationID:
+          type: integer
+      required:
+      - id
+      - quotationID
       type: object
     dto.GetQuotationResponse:
       properties:
@@ -637,6 +647,20 @@ components:
       - quotationID
       - toDate
       type: object
+    dto.UpdateReviewRequest:
+      properties:
+        comment:
+          type: string
+        id:
+          type: integer
+        quotationID:
+          type: integer
+        rating:
+          type: number
+      required:
+      - id
+      - quotationID
+      type: object
     dto.UserResponse:
       properties:
         accountNo:
@@ -1001,7 +1025,7 @@ paths:
     patch:
       description: accept preview photo
       parameters:
-      - description: quotaion id
+      - description: quotation id
         in: path
         name: id
         required: true
@@ -1041,9 +1065,9 @@ paths:
       - quotations
   /api/v1/customer/quotations/{id}/cancel:
     patch:
-      description: cancelled quotaion
+      description: cancelled quotation
       parameters:
-      - description: quotaion id
+      - description: quotation id
         in: path
         name: id
         required: true
@@ -1083,9 +1107,9 @@ paths:
       - quotations
   /api/v1/customer/quotations/{id}/confirm:
     patch:
-      description: confirm quotaion
+      description: confirm quotation
       parameters:
-      - description: quotaion id
+      - description: quotation id
         in: path
         name: id
         required: true
@@ -1123,13 +1147,13 @@ paths:
       summary: confirm quotation
       tags:
       - quotations
-  /api/v1/customer/quotations/{id}/review:
+  /api/v1/customer/quotations/{quotationId}/review:
     post:
       description: Create a review for a quotation.
       parameters:
       - description: Quotation ID
         in: path
-        name: id
+        name: quoationId
         required: true
         schema:
           type: string
@@ -1158,6 +1182,91 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Create a review
+      tags:
+      - reviews
+  /api/v1/customer/quotations/{quotationId}/reviews/{id}:
+    delete:
+      description: Delete a review from a quotation.
+      parameters:
+      - description: Quotation ID
+        in: path
+        name: quotationId
+        required: true
+        schema:
+          type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.DeleteReviewRequest'
+        description: Review details
+        required: true
+      responses:
+        "204":
+          description: Review Deleted successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a review
+      tags:
+      - reviews
+    patch:
+      description: Update a review for a quotation.
+      parameters:
+      - description: Quotation ID
+        in: path
+        name: quotationId
+        required: true
+        schema:
+          type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.UpdateReviewRequest'
+        description: Review details
+        required: true
+      responses:
+        "204":
+          description: Review Updated successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Update a review
       tags:
       - reviews
   /api/v1/customers/{id}:
@@ -1848,7 +1957,7 @@ paths:
     post:
       description: submit preview photo and set status to submitted
       parameters:
-      - description: quotaion id
+      - description: quotation id
         in: path
         name: id
         required: true
@@ -2015,7 +2124,7 @@ paths:
     get:
       description: Get Quotation By ID
       parameters:
-      - description: quotaion id
+      - description: quotation id
         in: path
         name: id
         required: true
