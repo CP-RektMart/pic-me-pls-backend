@@ -1,6 +1,8 @@
 package quotation
 
 import (
+	"encoding/json"
+
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -33,7 +35,7 @@ func (h *Handler) HandleCreateQuotation(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	if err = h.CreateQuotation(req, userID); err != nil {
+	if err := h.CreateQuotation(req, userID); err != nil {
 		return errors.Wrap(err, "failed to create quotation")
 	}
 
@@ -71,9 +73,32 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, photographerI
 		if err := tx.Create(&newQuotation).Error; err != nil {
 			return errors.Wrap(err, "failed to create quotation")
 		}
+
+		if err := tx.
+			Preload("Package.Category").
+			Preload("Package.Tags").
+			First(&newQuotation, newQuotation.ID).Error; err != nil {
+			return errors.Wrap(err, "failed fetch quotation")
+		}
+
+		json, err := json.Marshal(dto.ToQuotationMessageResponse(newQuotation))
+		if err != nil {
+			return errors.Wrap(err, "failed Marshal quotation json")
+		}
+
+		if err := h.chatService.SendMessageModel(model.Message{
+			Type:       model.MessageTypeQuotation,
+			Content:    string(json),
+			SenderID:   newQuotation.PhotographerID,
+			ReceiverID: newQuotation.CustomerID,
+		}); err != nil {
+			return errors.Wrap(err, "failed send message")
+		}
+
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "failed to create quotation")
 	}
+
 	return nil
 }

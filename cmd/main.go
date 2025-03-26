@@ -69,7 +69,7 @@ func main() {
 	reviewHandler := review.NewHandler(store, validate, authMiddleware)
 	categoryHandler := category.NewHandler(store, validate)
 	objectHandler := objects.NewHandler(store, config.Storage)
-	quotationHandler := quotation.NewHandler(store, authMiddleware, validate)
+	quotationHandler := quotation.NewHandler(store, authMiddleware, validate, chatService)
 	mediaHandler := media.NewHandler(store, validate, authMiddleware)
 	customerHandler := customer.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, authMiddleware, chatService)

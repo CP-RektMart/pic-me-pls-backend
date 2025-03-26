@@ -76,7 +76,16 @@ type GetQuotationResponse struct {
 	FromDate     time.Time             `json:"fromDate"`
 	ToDate       time.Time             `json:"toDate"`
 	Previews     []ListPreviewResponse `json:"previews,omitempty"`
-	Review       *ReviewResponse        `json:"review,omitempty"`
+	Review       *ReviewResponse       `json:"review,omitempty"`
+}
+type QuotationMessageResponse struct {
+	ID          uint                            `json:"id"`
+	Package     QuotationMessagePackageResponse `json:"package"`
+	Status      model.QuotationStatus           `json:"status"`
+	Price       float64                         `json:"price"`
+	Description string                          `json:"description"`
+	FromDate    time.Time                       `json:"fromDate"`
+	ToDate      time.Time                       `json:"toDate"`
 }
 
 func ToGetQuotationResponse(quotation model.Quotation) GetQuotationResponse {
@@ -113,6 +122,18 @@ func ToQuotationResponses(quotations []model.Quotation) []QuotationResponse {
 	return lo.Map(quotations, func(quotation model.Quotation, _ int) QuotationResponse {
 		return ToQuotationResponse(quotation)
 	})
+}
+
+func ToQuotationMessageResponse(quotation model.Quotation) QuotationMessageResponse {
+	return QuotationMessageResponse{
+		ID:          quotation.ID,
+		Package:     ToQuotationMessagePackageResponse(quotation.Package),
+		Status:      quotation.Status,
+		Price:       quotation.Price,
+		Description: quotation.Description,
+		FromDate:    quotation.FromDate,
+		ToDate:      quotation.ToDate,
+	}
 }
 
 type CheckoutSessionResponse struct {

@@ -42,7 +42,7 @@ func (h *Handler) receiveRealtimeMessage(wg *sync.WaitGroup, c *websocket.Conn, 
 		}
 
 		if mt == websocket.TextMessage {
-			h.chatService.SendMessage(userID, string(msg))
+			h.chatService.SendRawString(userID, string(msg))
 		}
 	}
 }
