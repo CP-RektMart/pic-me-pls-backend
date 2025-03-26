@@ -76,7 +76,7 @@ type GetQuotationResponse struct {
 	FromDate     time.Time             `json:"fromDate"`
 	ToDate       time.Time             `json:"toDate"`
 	Previews     []ListPreviewResponse `json:"previews,omitempty"`
-	Review       ReviewResponse        `json:"review,omitempty"`
+	Review       *ReviewResponse        `json:"review,omitempty"`
 }
 
 func ToGetQuotationResponse(quotation model.Quotation) GetQuotationResponse {
@@ -91,7 +91,7 @@ func ToGetQuotationResponse(quotation model.Quotation) GetQuotationResponse {
 		FromDate:     quotation.FromDate,
 		ToDate:       quotation.ToDate,
 		Previews:     ToListPreviewResponses(quotation.Previews),
-		Review:       ToReviewResponse(*quotation.Review),
+		Review:       lo.EmptyableToPtr(ToReviewResponse(quotation.Review)),
 	}
 }
 

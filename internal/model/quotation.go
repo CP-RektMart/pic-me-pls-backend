@@ -42,5 +42,5 @@ type Quotation struct {
 	FromDate       time.Time       `gorm:"not null"`
 	ToDate         time.Time       `gorm:"not null"`
 	Previews       []Preview       `gorm:"foreignKey:QuotationID"`
-	Review         *Review
+	Review         Review
 }
