@@ -7,11 +7,11 @@ import (
 	"github.com/samber/lo"
 )
 
-type AcceptQuotationRequest struct {
+type CompleteQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
-type AcceptPhotoRequest struct {
+type CompletePhotoRequest struct {
 	QuotationID string `params:"id"`
 }
 
