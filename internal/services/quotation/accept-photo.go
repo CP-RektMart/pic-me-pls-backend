@@ -20,7 +20,7 @@ import (
 // @Failure			403	{object}	dto.HttpError
 // @Failure			404	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleAcceptQuotation(c *fiber.Ctx) error {
+func (h *Handler) HandleCompleteQuotation(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed get user id from context")
@@ -43,7 +43,7 @@ func (h *Handler) HandleAcceptQuotation(c *fiber.Ctx) error {
 		return apperror.Forbidden("user not have permission", nil)
 	}
 
-	quotation.Status = model.QuotationAccepted
+	quotation.Status = model.QuotationCompleted
 	if err := h.store.DB.Save(&quotation).Error; err != nil {
 		return errors.Wrap(err, "failed accept quotation")
 	}
