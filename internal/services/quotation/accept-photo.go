@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary			accept preview photo
-// @Description		accept preview photo
+// @Summary			complete preview photo
+// @Description		complete preview photo
 // @Tags			quotations
-// @Router			/api/v1/customer/quotations/{id}/accept [PATCH]
+// @Router			/api/v1/customer/quotations/{id}/complete [PATCH]
 // @Security		ApiKeyAuth
 // @Param 			quotation id 	path 	uint 	true 	"quotation id"
 // @Success			204
@@ -26,7 +26,7 @@ func (h *Handler) HandleCompleteQuotation(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed get user id from context")
 	}
 
-	var req dto.AcceptPhotoRequest
+	var req dto.CompletePhotoRequest
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("invalid params", err)
 	}
