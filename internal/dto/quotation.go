@@ -11,10 +11,6 @@ type CompleteQuotationRequest struct {
 	QuotationID string `params:"id"`
 }
 
-type CompletePhotoRequest struct {
-	QuotationID string `params:"id"`
-}
-
 type GetQuotationRequest struct {
 	QuotationID string `params:"id"`
 }

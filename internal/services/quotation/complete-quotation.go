@@ -26,7 +26,7 @@ func (h *Handler) HandleCompleteQuotation(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed get user id from context")
 	}
 
-	var req dto.CompletePhotoRequest
+	var req dto.CompleteQuotationRequest
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("invalid params", err)
 	}
