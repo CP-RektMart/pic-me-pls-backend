@@ -87,9 +87,9 @@ func (s *Server) RegisterRoutes(
 		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
 		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
 
-		// reviews
-		reviews := all.Group("/reviews")
-		reviews.Post("/", authMiddleware.Auth, reviewHandler.HandleCreateReview)
+		// reports
+		reports := all.Group("/reports")
+		reports.Post("/", authMiddleware.Auth, reviewHandler.HandleCreateReview)
 	}
 
 	// customer
