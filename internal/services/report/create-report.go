@@ -87,8 +87,7 @@ func (h *Handler) CreateReport(req *dto.CreateReportRequest, userID uint) error 
 		}
 
 		if err := tx.
-			Preload("Package.Category").
-			Preload("Package.Tags").
+			Preload("Quotation").
 			First(&newReport, newReport.ID).Error; err != nil {
 			return errors.Wrap(err, "Failed fetch report")
 		}
