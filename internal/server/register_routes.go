@@ -86,6 +86,10 @@ func (s *Server) RegisterRoutes(
 		message.Use("/ws", messageHandler.HandleSupportWebAPI, authMiddleware.Auth, messageHandler.HandleWebsocket)
 		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
 		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
+
+		// reviews
+		reviews := all.Group("/reviews")
+		reviews.Post("/", authMiddleware.Auth, reviewHandler.HandleCreateReview)
 	}
 
 	// customer
