@@ -62,8 +62,11 @@ func (h *Handler) CreateReport(req *dto.CreateReportRequest, userID uint) error 
 		if targetQuotation.PhotographerID == 0 {
 			return apperror.NotFound("Quotation not found", errors.New("PhotographerID not found"))
 		}
+
 		photographerID := targetQuotation.PhotographerID
 		customerID := targetQuotation.CustomerID
+
+		// there is no photographer id in quotation
 		if photographerID == 0 {
 			return apperror.NotFound("Quotation not found", errors.New("PhotographerID not found"))
 		}
@@ -71,10 +74,12 @@ func (h *Handler) CreateReport(req *dto.CreateReportRequest, userID uint) error 
 			return apperror.NotFound("Quotation not found", errors.New("CustomerID not found"))
 		}
 
+		// user is not related to the quotation
 		if newReport.ReporterRole != "ADMIN" && userID != photographerID && userID != customerID {
 			return apperror.Forbidden("You are not allowed to create a report for this quotation", errors.New("User is not customer or photographer"))
 		}
 
+		//mismatch user role
 		if newReport.ReporterRole == "PHOTOGRAPHER" && userID != photographerID {
 			return apperror.Forbidden("Check your bofy", errors.New("User role mismatch"))
 		}
