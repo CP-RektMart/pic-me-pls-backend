@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
 )
 
 type VerifyCitizenCardRequest struct {
@@ -58,4 +59,32 @@ func ToPhotographerResponse(photographer model.Photographer) PhotographerRespons
 		ActiveStatus:      photographer.ActiveStatus,
 		Packages:          ToSmallPackageResponses(photographer.Packages),
 	}
+}
+
+type ListPhotographerResponse struct {
+	ID                uint   `json:"id"`
+	Name              string `json:"name"`
+	Email             string `json:"email"`
+	PhoneNumber       string `json:"phoneNumber"`
+	ProfilePictureURL string `json:"profilePictureUrl"`
+	IsVerified        bool   `json:"isVerified"`
+	ActiveStatus      bool   `json:"activeStatus"`
+}
+
+func ToListPhotographerResponse(p model.Photographer) ListPhotographerResponse {
+	return ListPhotographerResponse{
+		ID:                p.UserID,
+		Name:              p.User.Name,
+		Email:             p.User.Email,
+		PhoneNumber:       p.User.PhoneNumber,
+		ProfilePictureURL: p.User.ProfilePictureURL,
+		IsVerified:        p.IsVerified,
+		ActiveStatus:      p.ActiveStatus,
+	}
+}
+
+func ToListPhotographersResponse(ps []model.Photographer) []ListPhotographerResponse {
+	return lo.Map(ps, func(p model.Photographer, _ int) ListPhotographerResponse {
+		return ToListPhotographerResponse(p)
+	})
 }

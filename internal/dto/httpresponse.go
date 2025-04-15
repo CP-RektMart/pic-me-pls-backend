@@ -12,3 +12,7 @@ type HttpError struct {
 type HttpListResponse[T any] struct {
 	Result []T `json:"result"`
 }
+
+func Success[T any](data T) HttpResponse[T] {
+	return HttpResponse[T]{Result: data}
+}

@@ -13,6 +13,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/admin"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
@@ -74,6 +75,7 @@ func main() {
 	customerHandler := customer.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, authMiddleware, chatService)
 	stripeHandler := stripe.NewHandler(store, validate, authMiddleware, config.Stripe, config.FrontendURL)
+	adminHandler := admin.NewHandler(store, authMiddleware, validate)
 
 	server.RegisterDocs()
 
@@ -93,6 +95,7 @@ func main() {
 		customerHandler,
 		messageHandler,
 		stripeHandler,
+		adminHandler,
 	)
 
 	server.Start(ctx, stop)
