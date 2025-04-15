@@ -10,7 +10,7 @@ type Report struct {
 	Quotation   Quotation    `gorm:"foreignKey:QuotationID"`
 	ReporterID  uint         `gorm:"not null"`
 	Reporter    User         `gorm:"foreignKey:ReporterID"`
-	Status      ReportStatus `gorm:"type:varchar(20);not null"` // enum-like type
+	Status      ReportStatus `gorm:"not null"`
 	Message     string       `gorm:"not null"`
 	Title       string       `gorm:"not null"`
 }
@@ -21,5 +21,5 @@ const (
 	ReportStatusReported    ReportStatus = "REPORTED"
 	ReportStatusReviewed    ReportStatus = "REVIEWED"
 	ReportStatusApproved    ReportStatus = "ACCEPTED"
-	ReportStatusDestructive ReportStatus = "DESTRUCTIVE"
+	ReportStatusDestructive ReportStatus = "DECLINED"
 )

@@ -48,7 +48,7 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 		newReport := model.Report{
 			QuotationID: req.QuotationID,
 			ReporterID:  userID,
-			Status:      "reported",
+			Status:      model.ReportStatusReported,
 			Message:     req.Message,
 			Title:       req.Title,
 		}
