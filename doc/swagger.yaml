@@ -234,6 +234,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.GetQuotationResponse'
       type: object
+    dto.HttpResponse-dto_ListPackageResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.ListPackageResponse'
+      type: object
     dto.HttpResponse-dto_LoginResponse:
       properties:
         result:
@@ -283,6 +288,24 @@ components:
       properties:
         result:
           type: string
+      type: object
+    dto.ListPackageResponse:
+      properties:
+        category:
+          $ref: '#/components/schemas/dto.CategoryResponse'
+        description:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        tags:
+          items:
+            $ref: '#/components/schemas/dto.TagResponse'
+          type: array
+          uniqueItems: false
       type: object
     dto.ListPhotographerResponse:
       properties:
@@ -1258,6 +1281,57 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: list photographers
+      tags:
+      - admin
+  /api/v1/admin/photographers/{photographerID}:
+    get:
+      parameters:
+      - description: photographer id
+        in: path
+        name: photographerID
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_ListPackageResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: get photographers detail
       tags:
       - admin
   /api/v1/auth/login:

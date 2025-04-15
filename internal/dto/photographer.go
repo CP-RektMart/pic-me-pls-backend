@@ -88,3 +88,27 @@ func ToListPhotographersResponse(ps []model.Photographer) []ListPhotographerResp
 		return ToListPhotographerResponse(p)
 	})
 }
+
+type DetailPhotographerResponse struct {
+	ID                uint                  `json:"id"`
+	Name              string                `json:"name"`
+	Email             string                `json:"email"`
+	PhoneNumber       string                `json:"phoneNumber"`
+	ProfilePictureURL string                `json:"profilePictureUrl"`
+	IsVerified        bool                  `json:"isVerified"`
+	ActiveStatus      bool                  `json:"activeStatus"`
+	Packages          []ListPackageResponse `json:"packages"`
+}
+
+func ToDetailPhotographerResponse(p model.Photographer) DetailPhotographerResponse {
+	return DetailPhotographerResponse{
+		ID:                p.UserID,
+		Name:              p.User.Name,
+		Email:             p.User.Email,
+		PhoneNumber:       p.User.PhoneNumber,
+		ProfilePictureURL: p.User.ProfilePictureURL,
+		IsVerified:        p.IsVerified,
+		ActiveStatus:      p.ActiveStatus,
+		Packages:          ToListPackagesResponse(p.Packages),
+	}
+}
