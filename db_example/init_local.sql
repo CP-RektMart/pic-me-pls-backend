@@ -130,14 +130,14 @@ VALUES
 
 
 -- Insert Reports
-INSERT INTO Reports (quotation_id, reporter_id, status, message, title)
+INSERT INTO Reports (created_at, updated_at, quotation_id, reporter_id, status, message, title)
 VALUES
-(1, 1, 'REPORTED', 'Photographer appears so late', 'Shit photographer'),
-(2, 2, 'REVIEWED', 'We had a slight delay but it was handled professionally', 'Delay reviewed'),
-(2, 2, 'ACCEPTED', 'Photographer exceeded expectations. Great work!', 'Wonderful Experience'),
-(5, 2, 'DESTRUCTIVE', 'Photographer was rude and unprofessional. Never again.', 'Terrible behavior'),
-(5, 1, 'REPORTED', 'Photographer cancelled last minute without notice', 'Last-minute cancellation'),
-(6, 2, 'ACCEPTED', 'Photographer refunded after cancellation. Appreciated.', 'Resolved promptly');
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 1, 1, 'REPORTED', 'Photographer appears so late', 'Shit photographer'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 2, 2, 'REVIEWED', 'We had a slight delay but it was handled professionally', 'Delay reviewed'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 2, 2, 'ACCEPTED', 'Photographer exceeded expectations. Great work!', 'Wonderful Experience'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 5, 2, 'DESTRUCTIVE', 'Photographer was rude and unprofessional. Never again.', 'Terrible behavior'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 5, 1, 'REPORTED', 'Photographer cancelled last minute without notice', 'Last-minute cancellation'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 6, 2, 'ACCEPTED', 'Photographer refunded after cancellation. Appreciated.', 'Resolved promptly');
 
 
 -- Verify the data
