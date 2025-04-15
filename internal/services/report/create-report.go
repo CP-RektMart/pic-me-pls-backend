@@ -46,12 +46,11 @@ func (h *Handler) HandleCreateReport(c *fiber.Ctx) error {
 func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		newReport := model.Report{
-			QuotationID:  req.QuotationID,
-			ReporterID:   userID,
-			ReporterRole: req.ReporterRole,
-			Status:       "reported",
-			Message:      req.Message,
-			Title:        req.Title,
+			QuotationID: req.QuotationID,
+			ReporterID:  userID,
+			Status:      "reported",
+			Message:     req.Message,
+			Title:       req.Title,
 		}
 
 		var targetQuotation model.Quotation
@@ -62,8 +61,8 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 		customerID := targetQuotation.CustomerID
 
 		// user is not related to the quotation
-		if newReport.ReporterRole != "ADMIN" && userID != customerID {
-			return apperror.Forbidden("You are not allowed to create a report for this quotation", errors.New("User is not customer or photographer"))
+		if userID != customerID {
+			return apperror.Forbidden("You are not allowed to create a report for this quotation", errors.New("User is not allowed to report this quotation"))
 		}
 
 		if err := tx.Create(&newReport).Error; err != nil {
