@@ -75,7 +75,7 @@ func main() {
 	customerHandler := customer.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, authMiddleware, chatService)
 	stripeHandler := stripe.NewHandler(store, validate, authMiddleware, config.Stripe, config.FrontendURL)
-	reportHandler := report.NewHandler(store, authMiddleware, validate, chatService)
+	reportHandler := report.NewHandler(store, authMiddleware, validate)
 
 	server.RegisterDocs()
 

@@ -17,6 +17,9 @@ import (
 // @Param       body  body  dto.CreateReportRequest  true  "Report details"
 // @Success     200
 // @Failure     400   {object}  dto.HttpError
+// @Failure     401   {object}  dto.HttpError
+// @Failure     403   {object}  dto.HttpError
+// @Failure     404   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
 func (h *Handler) HandleCreateReport(c *fiber.Ctx) error {
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
@@ -56,21 +59,7 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 			return apperror.NotFound("Quotation not found", err)
 		}
 
-		//get photographer id from quotation
-		if targetQuotation.PhotographerID == 0 {
-			return apperror.NotFound("Quotation not found", errors.New("PhotographerID not found"))
-		}
-
-		photographerID := targetQuotation.PhotographerID
 		customerID := targetQuotation.CustomerID
-
-		// there is no photographer id in quotation
-		if photographerID == 0 {
-			return apperror.NotFound("Quotation not found", errors.New("PhotographerID not found"))
-		}
-		if customerID == 0 {
-			return apperror.NotFound("Quotation not found", errors.New("CustomerID not found"))
-		}
 
 		// user is not related to the quotation
 		if newReport.ReporterRole != "ADMIN" && userID != customerID {
@@ -79,12 +68,6 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 
 		if err := tx.Create(&newReport).Error; err != nil {
 			return errors.Wrap(err, "Failed to create report")
-		}
-
-		if err := tx.
-			Preload("Quotation").
-			First(&newReport, newReport.ID).Error; err != nil {
-			return errors.Wrap(err, "Failed fetch report")
 		}
 
 		return nil

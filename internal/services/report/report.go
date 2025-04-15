@@ -14,11 +14,10 @@ type Handler struct {
 	chatService    *chat.Server
 }
 
-func NewHandler(store *database.Store, authMiddleware authentication.AuthMiddleware, validate *validator.Validate, chatService *chat.Server) *Handler {
+func NewHandler(store *database.Store, authMiddleware authentication.AuthMiddleware, validate *validator.Validate) *Handler {
 	return &Handler{
 		store:          store,
 		authMiddleware: authMiddleware,
 		validate:       validate,
-		chatService:    chatService,
 	}
 }
