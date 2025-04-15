@@ -8,3 +8,7 @@ type ListPhotographersRequest struct {
 type AdminGetPhotographerByID struct {
 	PhotographerID uint `params:"photographerID" validate:"required"`
 }
+
+type AdminDeletePackageByID struct {
+	PackageID uint `params:"packageID" validate:"required"`
+}

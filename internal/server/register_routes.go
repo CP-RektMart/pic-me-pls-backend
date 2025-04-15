@@ -147,6 +147,10 @@ func (s *Server) RegisterRoutes(
 		photographers := admin.Group("/photographers")
 		photographers.Get("/", adminHandler.HandleListPhotographers)
 		photographers.Get("/:photographerID", adminHandler.HandleGetPhotographerByID)
+
+		// packages
+		packages := admin.Group("/packages")
+		packages.Delete("/:packageID", adminHandler.HandleDeletePackageByID)
 	}
 
 	// stripe
