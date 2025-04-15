@@ -40,12 +40,7 @@ func (h *Handler) HandleVerifyCard(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Fail to create citizen card")
 	}
 
-	response := dto.CitizenCardResponse{
-		CitizenID:  user.CitizenID,
-		LaserID:    user.LaserID,
-		Picture:    user.Picture,
-		ExpireDate: user.ExpireDate,
-	}
+	response := dto.ToCitizenCardResponse(user)
 
 	return c.JSON(dto.HttpResponse[dto.CitizenCardResponse]{
 		Result: response,
@@ -78,7 +73,7 @@ func (h *Handler) createCitizenCard(userID uint, imageURL, citizenID, laserID st
 		}
 
 		photographer := model.Photographer{
-			UserID: userID,
+			UserID:       userID,
 			ActiveStatus: true,
 			IsVerified:   true,
 		}
