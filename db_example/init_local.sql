@@ -1,11 +1,93 @@
+Phum
+_phumsiri_
+Invisible
+
+เสี่ยใหญ่อุบล — 12/04/2025, 18:26
+อ๋อ
+คงโดนหัก
+Phum — 12/04/2025, 18:26
+จริง นี่ว่าน่าจะ 0
+ทีนี้
+มีอีกคนอะ
+ที่แคปแต่ result
+จะให้ดีมั้ย เพราะ request เขาอาจจะผิดแบบนี้ก้ได้
+แคปแบบไม่เห็น request body
+เสี่ยใหญ่อุบล — 12/04/2025, 18:34
+ถ้ามีแต่ after แต่มันยังถุกก้ให้ได้นะ
+แต่ถ้าผิดคงต้องหัก
+Phum — 12/04/2025, 18:35
+เคคับๆ ขอบคุณคับๆ
+เสี่ยใหญ่อุบล — 12/04/2025, 18:37
+แต่อย่าหักเยอะล่ะ
+Phum — 12/04/2025, 18:37
+ไม่ๆ
+เสี่ยใหญ่อุบล — 12/04/2025, 18:37
+นี่แค่วิชาเลือกชิวๆเอาไว้ลงเอาเกรด
+Phum — 12/04/2025, 18:37
+ให้ 10 เกือบหมดอะ ที่ตรวจ
+555555555
+จริง นี่จะหักก้แค่ตรงนี้อะ ไม่งั้นเดะ 10 หมดเขาด่า
+55555555
+เสี่ยใหญ่อุบล — 12/04/2025, 18:38
+kk
+Phum — 13/04/2025, 17:12
+ถ้า health = warning
+มันจะยังรับ request ได้อ่อ
+มันมีคนส่งงั้นมา มันไม่ตรง ก้คงต้องตัดปะ หรือไงดี
+55555555555
+เสี่ยใหญ่อุบล — 13/04/2025, 17:32
+เอิ่ม
+ละมันเข้าได้อ่อ
+ข้อ3อะ
+Phum — 13/04/2025, 18:51
+ใช่ๆ
+งงอยู่
+555555555
+เสี่ยใหญ่อุบล — 13/04/2025, 19:02
+Dafuk
+Phum — 13/04/2025, 19:04
+ไม่รู้ว่าแคปก่อน result จะออกมั้ยไรงี้
+แต่กำลังคิดว่า
+ให้ๆไป เพราะถ้ามองที่ functionality 
+มันออกมาได้
+ปะ
+แบบถ้าจากที่อจพิมว่าดูที่ว่าทำได้ ทำไม่ได้ไรงี้
+แต่มันผิดโจทย์ข้อนั้นตรงๆเลยนี่ดิ
+5555555555555
+เสี่ยใหญ่อุบล — 13/04/2025, 19:26
+ใชต้องหัก
+Phum — 13/04/2025, 19:27
+kk
+probably give it a 9
+or 8.5 dee waa
+เสี่ยใหญ่อุบล — 13/04/2025, 19:37
+แล้วแต่
+Phum — 13/04/2025, 19:37
+ok
+thx krub
+Phum — 19:15
+sry bro
+almost forgot it
+import streamlit as st
+import pandas as pd
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+Expand
+streamlit_iris.py
+7 KB
+เสี่ยใหญ่อุบล — 21:11
 -- Reset the database for testing
 DELETE FROM Tags;
 DELETE FROM Reviews;
 DELETE FROM Citizen_Cards;
+DELETE FROM Previews;
 DELETE FROM Quotations;
 DELETE FROM Media;
 DELETE FROM Packages_Categories;
 DELETE FROM Packages;
+DELETE FROM Messages;
 DELETE FROM Categories;
 DELETE FROM Photographers;
 DELETE FROM Users;
@@ -18,6 +100,114 @@ ALTER SEQUENCE media_id_seq RESTART WITH 1;
 ALTER SEQUENCE reviews_id_seq RESTART WITH 1;
 ALTER SEQUENCE categories_id_seq RESTART WITH 1;
 ALTER SEQUENCE quotations_id_seq RESTART WITH 1;
+ALTER SEQUENCE previews_id_seq RESTART WITH 1;
+ALTER SEQUENCE messages_id_seq RESTART WITH 1;
+
+-- Insert Users
+INSERT INTO Users (name, email, phone_number, profile_picture_url, role, facebook, instagram, bank, account_no, bank_branch, created_at, updated_at)
+VALUES
+('User 1', 'user1@example.com', '0034567890', 'https://cdn-icons-png.flaticon.com/512/10337/10337609.png', 'CUSTOMER', 'Fookbace', 'ig', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 2', 'user2@example.com', '0045678901', 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg', 'CUSTOMER', 'bookface', 'graminsta', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 3', 'user3@example.com', '0056789012', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'PHOTOGRAPHER', 'vlllqw sq', 'IG', 'BAY', '', 'branch', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 4', 'user4@example.com', '0067890123', 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg', 'PHOTOGRAPHER', 'face book', 'GI', 'KKP', '', 'bchnaf', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 5', 'user5@example.com', '0078901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Photographers
+INSERT INTO Photographers (user_id, is_verified, active_status, created_at, updated_at)
+VALUES
+(3, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Citizen Cards
+INSERT INTO Citizen_Cards (citizen_id, laser_id, photographer_id, picture, expire_date, created_at, updated_at)
+VALUES
+('1519999567819', 'LASER123', 3, 'https://www.visa.com.vn/dam/VCOM/regional/ap/vietnam/global-elements/images/vn-visa-gold-card-498x280.png', '2026-12-31', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('4819999567819', 'LASER234', 4, 'https://www.visa.com.vn/dam/VCOM/regional/ap/vietnam/global-elements/images/vn-visa-classic-card-498x280.png', '2027-11-30', LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Categories
+INSERT INTO Categories (name, description, created_at, updated_at)
+VALUES
+('Wedding', 'Capture the love, laughter, and lifetime vows in stunning detail.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Portrait', 'A timeless collection of personal and professional portraits.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Event', 'From birthdays to corporate galas—relive every special moment.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Landscape', 'Breathtaking vistas, majestic mountains, and serene countryside views.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Sports', 'High-speed action shots that freeze the thrill of the game.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Street', 'Raw and authentic snapshots of everyday life in motion.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Astro', 'Journey beyond the stars with stunning astrophotography.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Family', 'Cherish heartfelt family moments with beautifully composed images.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Underwater', 'Dive into the deep and capture marine wonders beneath the surface.', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('Nature', 'Reconnect with the beauty of the earth through vibrant nature photography.', LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Packages
+INSERT INTO Packages (photographer_id, name, description, price, category_id, created_at, updated_at)
+VALUES
+(3, 'Golden Hour Magic', 'Let the sun paint your memories with breathtaking sunset photography.', 150.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 'Ever After Wedding', 'Immortalize the happiest day of your life with a dreamy wedding shoot.', 300.00, 1, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, 'Wilderness Wonders', 'Lose yourself in the raw beauty of nature through this immersive package.', 200.00, 10, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, 'Timeless Portraits', 'Classic and elegant portraits designed to make you look your best.', 250.00, 2, LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Tags
+INSERT INTO Tags (package_id, name, created_at, updated_at)
+VALUES
+(1, 'Golden Hour', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 'Nature', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Wedding Bliss', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'Elegant Portraits', LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Insert Media
+INSERT INTO Media (package_id, picture_url, description, created_at, updated_at)
+VALUES
+(1, 'https://t4.ftcdn.net/jpg/01/04/78/75/360_F_104787586_63vz1PkylLEfSfZ08dqTnqJqlqdq0eXx.jpg', 'Sunset image', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 'https://media.istockphoto.com/id/1172427455/photo/beautiful-sunset-over-the-tropical-sea.jpg?s=612x612&w=0&k=20&c=i3R3cbE94hdu6PRWT7cQBStY_wknVzl2pFCjQppzTBg=', 'Sunset image 2', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://media.istockphoto.com/id/587197548/photo/beautiful-setting-for-outdoors-wedding-ceremony.jpg?s=612x612&w=0&k=20&c=E46nXAiNpnREvNNPUvc-4tQZhzdjJb6PSPasNFvNsOs=', 'Wedding image', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://media.istockphoto.com/id/1043755348/photo/romantic-wedding-ceremony.jpg?s=612x612&w=0&k=20&c=pXjKa-aTfh3oxYzc06HkYw19f-Ez9q-bPpElZmwlFKw=', 'Wedding image 2', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 'https://media.istockphoto.com/id/681119612/photo/wedding-birthday-reception-decoration-chairs-tables-and-flowers.jpg?s=612x612&w=0&k=20&c=8K-WOBrUC9KrrQbuD8LwDgAH7g3KyEvbe1jOsfdsE6w=', 'Wedding image 3', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 'https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg?s=1024x1024&w=0&k=20&c=z8_rWaI8x4zApNEEG9DnWlGXyDIXe-OmsAyQ5fGPVV8=', 'Nature image', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(4, 'https://t4.ftcdn.net/jpg/05/23/62/91/360_F_523629123_RpAModBJXgCTPfilfYaCIbPaalFIjbvv.jpg', 'Portrait image', LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+-- Link Packages to Categories
+INSERT INTO Packages_Categories (package_id, category_id)
+VALUES
+(1, 1),
+(2, 1);
+
+-- Insert Quotations
+INSERT INTO Quotations (package_id, customer_id, photographer_id, status, price, description, from_date, to_date, created_at, updated_at)
+VALUES
+(1, 1, 3, 'SUBMIT', 1500.00, 'Eager to capture the golden hour magic—let’s make this happen!', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(3, 2, 4, 'PAID', 540.00, 'Excited to freeze this special moment in time—booking confirmed!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 3, 'PENDING', 1530.00, 'Looking forward to a timeless portrait session—can’t wait!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(2, 2, 3, 'CONFIRMED', 6300.00, 'All set for a stunning shoot—excited to bring our vision to life!', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
+... (65 lines left)
+Collapse
+message.txt
+11 KB
+เพิ่มchat
+﻿
+-- Reset the database for testing
+DELETE FROM Tags;
+DELETE FROM Reviews;
+DELETE FROM Citizen_Cards;
+DELETE FROM Previews;
+DELETE FROM Quotations;
+DELETE FROM Media;
+DELETE FROM Packages_Categories;
+DELETE FROM Packages;
+DELETE FROM Messages;
+DELETE FROM Categories;
+DELETE FROM Photographers;
+DELETE FROM Users;
+
+ALTER SEQUENCE packages_id_seq RESTART WITH 1;
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
+ALTER SEQUENCE citizen_cards_id_seq RESTART WITH 1;
+ALTER SEQUENCE tags_id_seq RESTART WITH 1;
+ALTER SEQUENCE media_id_seq RESTART WITH 1;
+ALTER SEQUENCE reviews_id_seq RESTART WITH 1;
+ALTER SEQUENCE categories_id_seq RESTART WITH 1;
+ALTER SEQUENCE quotations_id_seq RESTART WITH 1;
+ALTER SEQUENCE previews_id_seq RESTART WITH 1;
+ALTER SEQUENCE messages_id_seq RESTART WITH 1;
 
 -- Insert Users
 INSERT INTO Users (name, email, phone_number, profile_picture_url, role, facebook, instagram, bank, account_no, bank_branch, created_at, updated_at)
@@ -109,6 +299,32 @@ INSERT INTO Previews (quotation_id, link)
 VALUES
 (1, 'img1.link'),
 (1, 'img2.link');
+
+-- Insert Messages
+INSERT INTO Messages (type, content, sender_id, receiver_id, created_at, updated_at)
+VALUES
+('TEXT', 'I am interested in your photography package.', 2, 4, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Can we schedule the shoot for next weekend?',4, 2, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Yes, I am available. Let me know the details.', 2, 4, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Thanks.', 2, 4, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'I will be right back.', 4, 2, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Hello, how are you?', 1, 3, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'I am interested in your photography package.', 1, 3, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Yes.', 1, 3, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Halo', 3, 2, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Hi', 2, 3, LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+
+-- Insert Reports
+INSERT INTO Reports (quotation_id, reporter_id, status, message, title)
+VALUES
+(1, 1, 'REPORTED', 'Photographer appears so late', 'Shit photographer'),
+(2, 2, 'REVIEWED', 'We had a slight delay but it was handled professionally', 'Delay reviewed'),
+(2, 2, 'ACCEPTED', 'Photographer exceeded expectations. Great work!', 'Wonderful Experience'),
+(5, 2, 'DESTRUCTIVE', 'Photographer was rude and unprofessional. Never again.', 'Terrible behavior'),
+(5, 1, 'REPORTED', 'Photographer cancelled last minute without notice', 'Last-minute cancellation'),
+(6, 2, 'ACCEPTED', 'Photographer refunded after cancellation. Appreciated.', 'Resolved promptly');
+
 
 -- Verify the data
 SELECT * FROM Users;
