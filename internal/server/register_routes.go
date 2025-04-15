@@ -90,7 +90,7 @@ func (s *Server) RegisterRoutes(
 		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
 
 		// reports
-		reports := all.Group("/reports")
+		reports := customer.Group("/reports")
 		reports.Post("/", authMiddleware.Auth, reportHandler.HandleCreateReport)
 	}
 
