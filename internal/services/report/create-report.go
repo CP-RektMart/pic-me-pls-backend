@@ -1,8 +1,6 @@
 package report
 
 import (
-	"time"
-
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
@@ -50,7 +48,6 @@ func (h *Handler) CreateReport(req *dto.CreateReportRequest, userID uint) error 
 			ReporterRole: req.ReporterRole,
 			Status:       "reported",
 			Message:      req.Message,
-			DateCreated:  time.Now(),
 		}
 
 		var targetQuotation model.Quotation
@@ -75,16 +72,8 @@ func (h *Handler) CreateReport(req *dto.CreateReportRequest, userID uint) error 
 		}
 
 		// user is not related to the quotation
-		if newReport.ReporterRole != "ADMIN" && userID != photographerID && userID != customerID {
+		if newReport.ReporterRole != "ADMIN" && userID != customerID {
 			return apperror.Forbidden("You are not allowed to create a report for this quotation", errors.New("User is not customer or photographer"))
-		}
-
-		//mismatch user role
-		if newReport.ReporterRole == "PHOTOGRAPHER" && userID != photographerID {
-			return apperror.Forbidden("Check your bofy", errors.New("User role mismatch"))
-		}
-		if newReport.ReporterRole == "CUSTOMER" && userID != customerID {
-			return apperror.Forbidden("Check your bofy", errors.New("User role mismatch"))
 		}
 
 		if err := tx.Create(&newReport).Error; err != nil {
