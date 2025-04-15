@@ -11,11 +11,11 @@ import (
 
 // @Summary     Create a report
 // @Description Creates a new report for a user
-// @Tags
+// @Tags		customer
 // @Router      /api/v1/customer/reports [POST]
 // @Security    ApiKeyAuth
 // @Param       body  body  dto.CreateReportRequest  true  "Report details"
-// @Success     204
+// @Success     200
 // @Failure     400   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
 func (h *Handler) HandleCreateReport(c *fiber.Ctx) error {
@@ -33,14 +33,14 @@ func (h *Handler) HandleCreateReport(c *fiber.Ctx) error {
 		return apperror.BadRequest("Invalid request body", err)
 	}
 
-	if err := h.CreateReport(req, userID); err != nil {
+	if err := h.createReport(req, userID); err != nil {
 		return errors.Wrap(err, "Failed to create report")
 	}
 
-	return c.SendStatus(fiber.StatusNoContent)
+	return c.SendStatus(fiber.StatusOK)
 }
 
-func (h *Handler) CreateReport(req *dto.CreateReportRequest, userID uint) error {
+func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		newReport := model.Report{
 			QuotationID:  req.QuotationID,

@@ -110,6 +110,22 @@ components:
       - price
       - toDate
       type: object
+    dto.CreateReportRequest:
+      properties:
+        message:
+          type: string
+        quotation_id:
+          type: integer
+        reporter_role:
+          enum:
+          - CUSTOMER
+          - PHOTOGRAPHER
+          type: string
+      required:
+      - message
+      - quotation_id
+      - reporter_role
+      type: object
     dto.CreateReviewRequest:
       properties:
         comment:
@@ -1554,6 +1570,36 @@ paths:
       summary: Update a review
       tags:
       - reviews
+  /api/v1/customer/reports:
+    post:
+      description: Creates a new report for a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreateReportRequest'
+        description: Report details
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create a report
+      tags:
+      - customer
   /api/v1/customers/{id}:
     get:
       description: Get customer public profile
