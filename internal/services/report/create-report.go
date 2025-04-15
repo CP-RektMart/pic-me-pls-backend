@@ -60,6 +60,11 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 
 		customerID := targetQuotation.CustomerID
 
+		// quotation status is PENDING or COMFIRMED -> not allowed to report
+		if targetQuotation.Status == "PENDING" || targetQuotation.Status == "CONFIRMED" {
+			return apperror.Forbidden("You are not allowed to report this quotation", errors.New("Quotation is not allowed to be reported"))
+		}
+
 		// user is not related to the quotation
 		if userID != customerID {
 			return apperror.Forbidden("You are not allowed to create a report for this quotation", errors.New("User is not allowed to report this quotation"))
