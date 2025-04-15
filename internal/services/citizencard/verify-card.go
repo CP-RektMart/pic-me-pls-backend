@@ -75,7 +75,7 @@ func (h *Handler) createCitizenCard(userID uint, imageURL, citizenID, laserID st
 		photographer := model.Photographer{
 			UserID:       userID,
 			ActiveStatus: true,
-			IsVerified:   true,
+			IsVerified:   false,
 		}
 
 		// update photographer status
