@@ -1223,6 +1223,53 @@ paths:
       summary: update category
       tags:
       - categories
+  /api/v1/admin/packages/{packageID}:
+    delete:
+      parameters:
+      - description: package id
+        in: path
+        name: packageID
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: admin delete package
+      tags:
+      - admin
   /api/v1/admin/photographers:
     get:
       parameters:
@@ -1283,7 +1330,7 @@ paths:
       summary: list photographers
       tags:
       - admin
-  /api/v1/admin/photographers/{photographerID}:
+  /api/v1/admin/photographers/{id}:
     get:
       parameters:
       - description: photographer id
