@@ -48,6 +48,7 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 			ReporterRole: req.ReporterRole,
 			Status:       "reported",
 			Message:      req.Message,
+			Title:        req.Title,
 		}
 
 		var targetQuotation model.Quotation

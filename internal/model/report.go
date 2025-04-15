@@ -13,6 +13,7 @@ type Report struct {
 	ReporterRole string       `gorm:"not null"`                  // customer, admin
 	Status       ReportStatus `gorm:"type:varchar(20);not null"` // enum-like type
 	Message      string       `gorm:"not null"`
+	Title        string       `gorm:"not null"`
 }
 
 type ReportStatus string
