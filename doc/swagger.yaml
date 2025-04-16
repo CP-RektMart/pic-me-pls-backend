@@ -1177,6 +1177,41 @@ paths:
       summary: update category
       tags:
       - categories
+  /api/v1/admin/photographer/{id}/ban:
+    patch:
+      description: ban photographer by id
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: ban photographer
+      tags:
+      - admin
   /api/v1/admin/user:
     get:
       description: get all users
