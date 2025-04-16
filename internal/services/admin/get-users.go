@@ -9,6 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Summary      get all users
+// @Description  get all users for admin
+// @Tags         admin
+// @Router       /api/v1/admin/user [GET]
+// @Security			ApiKeyAuth
+// @Success      200    {object}  dto.HttpListResponse[dto.PublicUserResponse]
+// @Failure      400    {object}  dto.HttpError
+// @Failure      404    {object}  dto.HttpError
+// @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetAllUsers(c *fiber.Ctx) error {
 	var users []model.User
 
@@ -20,7 +29,7 @@ func (h *Handler) HandleGetAllUsers(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed fetch users")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[[]dto.PublicUserResponse]{
+	return c.Status(fiber.StatusOK).JSON(dto.HttpListResponse[dto.PublicUserResponse]{
 		Result: dto.ToPublicUserResponses(users),
 	})
 }
