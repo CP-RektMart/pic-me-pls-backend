@@ -59,12 +59,12 @@ func (h *Handler) updateReport(req *dto.UpdateReportRequest, userID uint) error 
 			return apperror.Forbidden("You are not allowed to update this report", nil)
 		}
 
-		report.Status = model.ReportStatus(req.Status)
-		report.Message = req.Message
-		report.Title = req.Title
-
-		if err := tx.Save(&report).Error; err != nil {
-			return errors.Wrap(err, "Failed to update report")
+		if err := tx.Model(&report).Where("id = ?", req.ReportID).Updates(model.Report{
+			Status:  req.Status,
+			Message: req.Message,
+			Title:   req.Title,
+		}).Error; err != nil {
+			return errors.Wrap(err, "failed to update quotation")
 		}
 
 		return nil
