@@ -25,7 +25,7 @@ func (h *Handler) HandleGetReportByID(c *fiber.Ctx) error {
 	if err != nil {
 		return errors.Wrap(err, "Failed to get user id from context")
 	}
-	if jwtEntity.Role != model.UserRoleCustomer && jwtEntity.Role != model.UserRoleAdmin {
+	if jwtEntity.Role != model.UserRoleCustomer {
 		return apperror.Forbidden("You are not allowed to access this endpoint", nil)
 	}
 
