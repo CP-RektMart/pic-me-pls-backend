@@ -92,9 +92,7 @@ func (s *Server) RegisterRoutes(
 		// reports
 		reports := customer.Group("/reports")
 		reports.Post("/", authMiddleware.Auth, reportHandler.HandleCreateReport)
-
-		getReports := all.Group("/reports")
-		getReports.Get("/", authMiddleware.Auth, reportHandler.HandleGetAllReports)
+		reports.Get("/", authMiddleware.Auth, reportHandler.HandleGetAllReports)
 	}
 
 	// customer

@@ -37,13 +37,13 @@ func (h *Handler) HandleGetAllReports(c *fiber.Ctx) error {
 	var reports []dto.ReportResponse
 
 	// photographers cannot get their own reports
-	if jwtEntity.Role != model.UserRolePhotographer {
+	if jwtEntity.Role == model.UserRoleCustomer {
 		reports, err = h.getAllReports(jwtEntity.ID)
 		if err != nil {
 			return errors.Wrap(err, "Failed getting reports")
 		}
 	} else {
-		return apperror.Forbidden("Only customers and admins can get reports", nil)
+		return apperror.Forbidden("Only customers can get reports", nil)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(reports)
