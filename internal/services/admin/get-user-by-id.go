@@ -10,10 +10,10 @@ import (
 )
 
 // @Summary      get user by id
-// @Description  get user by id for admin
+// @Description  get user by id
 // @Tags         admin
 // @Router       /api/v1/admin/user/{id} [GET]
-// @Security			ApiKeyAuth
+// @Security	 ApiKeyAuth
 // @Success      200    {object}  dto.HttpResponse[dto.PublicUserResponse]
 // @Failure      400    {object}  dto.HttpError
 // @Failure      404    {object}  dto.HttpError

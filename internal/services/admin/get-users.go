@@ -10,7 +10,7 @@ import (
 )
 
 // @Summary      get all users
-// @Description  get all users for admin
+// @Description  get all users
 // @Tags         admin
 // @Router       /api/v1/admin/user [GET]
 // @Security			ApiKeyAuth

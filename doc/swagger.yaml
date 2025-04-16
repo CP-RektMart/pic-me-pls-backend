@@ -1179,7 +1179,7 @@ paths:
       - categories
   /api/v1/admin/user:
     get:
-      description: get all users for admin
+      description: get all users
       responses:
         "200":
           content:
@@ -1212,7 +1212,7 @@ paths:
       - admin
   /api/v1/admin/user/{id}:
     get:
-      description: get user by id for admin
+      description: get user by id
       responses:
         "200":
           content:
