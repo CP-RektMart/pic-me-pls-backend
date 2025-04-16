@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/admin"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
@@ -33,6 +34,7 @@ func (s *Server) RegisterRoutes(
 	customerHandler *customer.Handler,
 	messageHandler *message.Handler,
 	stripeHandler *stripe.Handler,
+	adminHandler *admin.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -140,6 +142,11 @@ func (s *Server) RegisterRoutes(
 		categories.Post("/", categoryHandler.HandleCreateCategory)
 		categories.Patch("/:id", categoryHandler.HandleUpdateCategory)
 		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
+
+		// users
+		admins := admin.Group("/users")
+		admins.Get("/", adminHandler.HandleGetAllUsers)
+		admins.Get("/:id", adminHandler.HandleGetUserByID)
 	}
 
 	// stripe
