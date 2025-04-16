@@ -114,17 +114,14 @@ components:
       properties:
         message:
           type: string
-        quotation_id:
+        quotationId:
           type: integer
-        reporter_role:
-          enum:
-          - CUSTOMER
-          - PHOTOGRAPHER
+        title:
           type: string
       required:
       - message
-      - quotation_id
-      - reporter_role
+      - quotationId
+      - title
       type: object
     dto.CreateReviewRequest:
       properties:
@@ -222,14 +219,6 @@ components:
           type: array
           uniqueItems: false
       type: object
-    dto.HttpListResponse-dto_PublicUserResponse:
-      properties:
-        result:
-          items:
-            $ref: '#/components/schemas/dto.PublicUserResponse'
-          type: array
-          uniqueItems: false
-      type: object
     dto.HttpListResponse-mock_ReportDetail:
       properties:
         result:
@@ -277,11 +266,6 @@ components:
       properties:
         result:
           $ref: '#/components/schemas/dto.PhotographerResponse'
-      type: object
-    dto.HttpResponse-dto_PublicUserResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.PublicUserResponse'
       type: object
     dto.HttpResponse-dto_RegisterResponse:
       properties:
@@ -497,7 +481,12 @@ components:
         profilePictureUrl:
           type: string
         role:
-          $ref: '#/components/schemas/model.UserRole'
+          type: string
+          x-enum-varnames:
+          - UserRoleUnknown
+          - UserRoleAdmin
+          - UserRolePhotographer
+          - UserRoleCustomer
       type: object
     dto.QuotationResponse:
       properties:
@@ -728,12 +717,7 @@ components:
         profilePictureUrl:
           type: string
         role:
-          type: string
-          x-enum-varnames:
-          - UserRoleUnknown
-          - UserRoleAdmin
-          - UserRolePhotographer
-          - UserRoleCustomer
+          $ref: '#/components/schemas/model.UserRole'
       type: object
     dto.UserUpdateRequest:
       properties:
@@ -1193,72 +1177,6 @@ paths:
       summary: update category
       tags:
       - categories
-  /api/v1/admin/user:
-    get:
-      description: get all users for admin
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpListResponse-dto_PublicUserResponse'
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: get all users
-      tags:
-      - admin
-  /api/v1/admin/user/{id}:
-    get:
-      description: get user by id for admin
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PublicUserResponse'
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: get user by id
-      tags:
-      - admin
   /api/v1/auth/login:
     post:
       description: Login
@@ -1650,6 +1568,53 @@ paths:
       tags:
       - reviews
   /api/v1/customer/reports:
+    get:
+      description: Get all reports of a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreateReportRequest'
+        description: Report details
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get all reports
+      tags:
+      - customer
     post:
       description: Creates a new report for a user
       requestBody:
@@ -1668,6 +1633,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
         "500":
           content:
             application/json:
