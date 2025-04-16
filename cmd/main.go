@@ -13,7 +13,6 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/jwt"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/server"
-	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/admin"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
@@ -24,6 +23,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/report"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
@@ -75,7 +75,7 @@ func main() {
 	customerHandler := customer.NewHandler(store, validate)
 	messageHandler := message.NewHandler(store, authMiddleware, chatService)
 	stripeHandler := stripe.NewHandler(store, validate, authMiddleware, config.Stripe, config.FrontendURL)
-	adminHandler := admin.NewHandler(store, validate, authMiddleware)
+	reportHandler := report.NewHandler(store, authMiddleware, validate)
 
 	server.RegisterDocs()
 
@@ -95,7 +95,7 @@ func main() {
 		customerHandler,
 		messageHandler,
 		stripeHandler,
-		adminHandler,
+		reportHandler,
 	)
 
 	server.Start(ctx, stop)

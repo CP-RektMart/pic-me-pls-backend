@@ -84,13 +84,3 @@ func ToPublicUserResponse(user model.User) PublicUserResponse {
 		Role:              user.Role,
 	}
 }
-
-func ToPublicUserResponses(users []model.User) []PublicUserResponse {
-	var results []PublicUserResponse
-
-	for _, u := range users {
-		results = append(results, ToPublicUserResponse(u))
-	}
-
-	return results
-}
