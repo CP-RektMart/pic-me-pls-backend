@@ -11,7 +11,7 @@ import (
 // @Summary     Get all reports
 // @Description Get all reports of a user
 // @Tags		customer
-// @Router      /api/v1/reports [GET]
+// @Router      /api/v1/customers/reports [GET]
 // @Security    ApiKeyAuth
 // @Param       body  body  dto.CreateReportRequest  true  "Report details"
 // @Success     200
