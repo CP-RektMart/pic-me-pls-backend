@@ -47,7 +47,12 @@ type PublicUserResponse struct {
 	Role              model.UserRole `json:"role"`
 }
 
-type GetUsersByIDRequest struct {
+type GetUsersRequest struct {
+	PaginationRequest
+	Name string `query:"name" default:""`
+}
+
+type GetUserByIDRequest struct {
 	ID uint `params:"id" validate:"required"`
 }
 
