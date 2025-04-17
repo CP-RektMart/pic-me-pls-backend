@@ -2,6 +2,7 @@ package admin
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
@@ -36,7 +37,20 @@ func (h *Handler) HandleBanPhotographer(c *fiber.Ctx) error {
 
 func (h *Handler) BanPhotographer(ID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
-		// DO something
+		var photographer model.Photographer
+		if err := tx.First(&photographer, ID).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return apperror.NotFound("photographer not found", err)
+			}
+			return errors.Wrap(err, "failed to fetch photographer")
+		}
+
+		photographer.IsBan = true
+
+		if err := tx.Save(&photographer).Error; err != nil {
+			return errors.Wrap(err, "failed to ban photographer")
+		}
+
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "failed to ban photographer")

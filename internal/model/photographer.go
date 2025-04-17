@@ -16,6 +16,7 @@ type Photographer struct {
 
 	IsVerified   bool      `gorm:"not null;default:false"`
 	ActiveStatus bool      `gorm:"not null;default:false"`
+	IsBan        bool      `gorm:"not null;default:false"`
 	Packages     []Package `gorm:"foreignKey:PhotographerID"`
 
 	CitizenCard CitizenCard `gorm:"foreignKey:PhotographerID"`
