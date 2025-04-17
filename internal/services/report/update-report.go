@@ -60,7 +60,6 @@ func (h *Handler) updateReport(req *dto.UpdateReportRequest, userID uint) error 
 		}
 
 		if err := tx.Model(&report).Where("id = ?", req.ReportID).Updates(model.Report{
-			Status:  req.Status,
 			Message: req.Message,
 			Title:   req.Title,
 		}).Error; err != nil {
