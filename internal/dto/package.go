@@ -83,6 +83,10 @@ type GetPackageByIDRequest struct {
 	ID uint `params:"id" validate:"required"`
 }
 
+type DeletePackageRequest struct {
+	ID uint `params:"id" validate:"required"`
+}
+
 func ToPackageResponse(Package model.Package) PackageResponse {
 	return PackageResponse{
 		ID:           Package.ID,
