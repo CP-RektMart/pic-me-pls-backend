@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
+)
 
 type UserUpdateRequest struct {
 	Name              string `json:"name"`
@@ -86,11 +89,7 @@ func ToPublicUserResponse(user model.User) PublicUserResponse {
 }
 
 func ToPublicUserResponses(users []model.User) []PublicUserResponse {
-	var results []PublicUserResponse
-
-	for _, u := range users {
-		results = append(results, ToPublicUserResponse(u))
-	}
-
-	return results
+	return lo.Map(users, func(u model.User, _ int) PublicUserResponse {
+		return ToPublicUserResponse(u)
+	})
 }
