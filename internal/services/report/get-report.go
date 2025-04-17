@@ -21,13 +21,6 @@ import (
 // @Failure     404   {object}  dto.HttpError
 // @Failure     500   {object}  dto.HttpError
 func (h *Handler) HandleGetReportByID(c *fiber.Ctx) error {
-	jwtEntity, err := h.authMiddleware.GetJWTEntityFromContext(c.UserContext())
-	if err != nil {
-		return errors.Wrap(err, "Failed to get user id from context")
-	}
-	if jwtEntity.Role != model.UserRoleCustomer {
-		return apperror.Forbidden("You are not allowed to access this endpoint", nil)
-	}
 
 	userID, err := h.authMiddleware.GetUserIDFromContext(c.UserContext())
 	if err != nil {
