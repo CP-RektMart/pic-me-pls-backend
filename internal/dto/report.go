@@ -9,6 +9,7 @@ type CreateReportRequest struct {
 }
 
 type ReportResponse struct {
+	ReportID    uint   `json:"reportId"`
 	QuotationID uint   `json:"quotationId"`
 	ReporterID  uint   `json:"reporterId"`
 	Status      string `json:"status"`

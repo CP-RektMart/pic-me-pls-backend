@@ -45,6 +45,7 @@ func (h *Handler) HandleGetReportByID(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.ReportResponse{
+		ReportID:    report.ID,
 		QuotationID: report.QuotationID,
 		ReporterID:  report.ReporterID,
 		Status:      string(report.Status),
