@@ -8,6 +8,10 @@ type CreateReportRequest struct {
 	Title       string `json:"title" validate:"required"`
 }
 
+type GetReportByIDRequest struct {
+	ReportID uint `params:"id" validate:"required"`
+}
+
 type ReportResponse struct {
 	ReportID    uint   `json:"reportId"`
 	QuotationID uint   `json:"quotationId"`

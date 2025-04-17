@@ -27,12 +27,12 @@ func (h *Handler) HandleGetReportByID(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Failed to get user id from context")
 	}
 
-	id := c.Params("id")
-	if id == "" {
-		return apperror.BadRequest("Invalid report id", nil)
+	req := new(dto.GetReportByIDRequest)
+	if err := c.ParamsParser(req); err != nil {
+		return apperror.BadRequest("Invalid params", err)
 	}
 
-	report, err := h.getReport(id, userID)
+	report, err := h.getReport(req.ReportID, userID)
 	if err != nil {
 		return errors.Wrap(err, "Failed to get report")
 	}
@@ -47,7 +47,7 @@ func (h *Handler) HandleGetReportByID(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) getReport(id string, userID uint) (*model.Report, error) {
+func (h *Handler) getReport(id uint, userID uint) (*model.Report, error) {
 	var report model.Report
 	if err := h.store.DB.Where("id = ? AND reporter_id = ?", id, userID).First(&report).Error; err != nil {
 		return nil, apperror.NotFound("Report not found", err)
