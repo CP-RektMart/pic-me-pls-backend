@@ -144,9 +144,9 @@ func (s *Server) RegisterRoutes(
 		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
 
 		// users
-		admins := admin.Group("/users")
-		admins.Get("/", adminHandler.HandleGetAllUsers)
-		admins.Get("/:id", adminHandler.HandleGetUserByID)
+		users := admin.Group("/users")
+		users.Get("/", adminHandler.HandleGetAllUsers)
+		users.Get("/:id", adminHandler.HandleGetUserByID)
 	}
 
 	// stripe
