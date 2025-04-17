@@ -45,6 +45,10 @@ func (h *Handler) BanPhotographer(ID uint) error {
 			return errors.Wrap(err, "failed to fetch photographer")
 		}
 
+		if photographer.IsBan {
+			return apperror.BadRequest("photographer already banned", nil)
+		}
+
 		photographer.IsBan = true
 
 		if err := tx.Save(&photographer).Error; err != nil {
