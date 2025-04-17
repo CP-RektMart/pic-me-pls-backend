@@ -272,6 +272,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.RegisterResponse'
       type: object
+    dto.HttpResponse-dto_ReportResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.ReportResponse'
+      type: object
     dto.HttpResponse-dto_TokenResponse:
       properties:
         result:
@@ -574,6 +579,19 @@ components:
           type: string
         user:
           $ref: '#/components/schemas/dto.UserResponse'
+      type: object
+    dto.ReportResponse:
+      properties:
+        message:
+          type: string
+        quotationId:
+          type: integer
+        reporterId:
+          type: integer
+        status:
+          type: string
+        title:
+          type: string
       type: object
     dto.ReviewResponse:
       properties:
@@ -1649,6 +1667,49 @@ paths:
       summary: Get customer public profile
       tags:
       - customer
+  /api/v1/customers/reports:
+    get:
+      description: Get all reports of a user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_ReportResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      summary: Get all reports
+      tags:
+      - customer
   /api/v1/me:
     get:
       description: Get me
@@ -2512,54 +2573,6 @@ paths:
       summary: Get Quotation By ID
       tags:
       - quotations
-  /api/v1/reports:
-    get:
-      description: Get all reports of a user
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreateReportRequest'
-        description: Report details
-        required: true
-      responses:
-        "200":
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Unauthorized
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Forbidden
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Get all reports
-      tags:
-      - customer
   /api/v1/stripe/checkout/quotations/{id}:
     post:
       description: Generates a Stripe checkout session for a quotation

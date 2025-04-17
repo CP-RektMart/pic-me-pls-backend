@@ -12,20 +12,13 @@ import (
 // @Description Get all reports of a user
 // @Tags		customer
 // @Router      /api/v1/customers/reports [GET]
-// @Security    ApiKeyAuth
-// @Param       body  body  dto.CreateReportRequest  true  "Report details"
-// @Success     200
-// @Failure     400   {object}  dto.HttpError
-// @Failure     401   {object}  dto.HttpError
-// @Failure     403   {object}  dto.HttpError
-// @Failure     404   {object}  dto.HttpError
-// @Failure     500   {object}  dto.HttpError
+// @Success     200 	{object}  dto.HttpResponse[dto.ReportResponse]
+// @Failure     400   	{object}  dto.HttpError
+// @Failure     401   	{object}  dto.HttpError
+// @Failure     403   	{object}  dto.HttpError
+// @Failure     404   	{object}  dto.HttpError
+// @Failure     500   	{object}  dto.HttpError
 func (h *Handler) HandleGetAllReports(c *fiber.Ctx) error {
-	jwtEntity, err := h.authMiddleware.GetJWTEntityFromContext(c.UserContext())
-	if err != nil {
-		return errors.Wrap(err, "Failed getting jwtEntity from context")
-	}
-
 	var req dto.PaginationRequest
 	if err := c.QueryParser(&req); err != nil {
 		return apperror.BadRequest("Iinvalid query", err)
@@ -35,16 +28,6 @@ func (h *Handler) HandleGetAllReports(c *fiber.Ctx) error {
 	}
 
 	var reports []dto.ReportResponse
-
-	// photographers cannot get their own reports
-	if jwtEntity.Role == model.UserRoleCustomer {
-		reports, err = h.getAllReports(jwtEntity.ID)
-		if err != nil {
-			return errors.Wrap(err, "Failed getting reports")
-		}
-	} else {
-		return apperror.Forbidden("Only customers can get reports", nil)
-	}
 
 	return c.Status(fiber.StatusOK).JSON(reports)
 }
