@@ -13,6 +13,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/report"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
@@ -35,6 +36,7 @@ func (s *Server) RegisterRoutes(
 	messageHandler *message.Handler,
 	stripeHandler *stripe.Handler,
 	adminHandler *admin.Handler,
+	reportHandler *report.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -88,6 +90,10 @@ func (s *Server) RegisterRoutes(
 		message.Use("/ws", messageHandler.HandleSupportWebAPI, authMiddleware.Auth, messageHandler.HandleWebsocket)
 		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
 		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
+
+		// reports
+		reports := customer.Group("/reports")
+		reports.Post("/", authMiddleware.Auth, reportHandler.HandleCreateReport)
 	}
 
 	// customer
