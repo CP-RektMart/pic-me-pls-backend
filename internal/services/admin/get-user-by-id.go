@@ -19,7 +19,7 @@ import (
 // @Failure      404    {object}  dto.HttpError
 // @Failure      500    {object}  dto.HttpError
 func (h *Handler) HandleGetUserByID(c *fiber.Ctx) error {
-	var req dto.GetPhotographerByIDRequest
+	var req dto.GetUsersByIDRequest
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("invalid path params", err)
 	}
