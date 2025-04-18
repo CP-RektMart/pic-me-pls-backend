@@ -110,6 +110,19 @@ components:
       - price
       - toDate
       type: object
+    dto.CreateReportRequest:
+      properties:
+        message:
+          type: string
+        quotationId:
+          type: integer
+        title:
+          type: string
+      required:
+      - message
+      - quotationId
+      - title
+      type: object
     dto.CreateReviewRequest:
       properties:
         comment:
@@ -725,6 +738,17 @@ components:
       - price
       - quotationID
       - toDate
+      type: object
+    dto.UpdateReportRequest:
+      properties:
+        message:
+          type: string
+        reportID:
+          type: integer
+        title:
+          type: string
+      required:
+      - reportID
       type: object
     dto.UpdateReviewRequest:
       properties:
@@ -1724,6 +1748,102 @@ paths:
       summary: Update a review
       tags:
       - reviews
+  /api/v1/customer/reports:
+    post:
+      description: Creates a new report for a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.CreateReportRequest'
+        description: Report details
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create a report
+      tags:
+      - customer
+  /api/v1/customer/reports/{id}:
+    patch:
+      description: Updates an existing report
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.UpdateReportRequest'
+        description: Report details
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Update a report
+      tags:
+      - customer
   /api/v1/customers/{id}:
     get:
       description: Get customer public profile

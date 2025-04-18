@@ -91,9 +91,6 @@ func (s *Server) RegisterRoutes(
 		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
 		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
 
-		// reports
-		reports := customer.Group("/reports")
-		reports.Post("/", authMiddleware.Auth, reportHandler.HandleCreateReport)
 	}
 
 	// customer
@@ -108,6 +105,12 @@ func (s *Server) RegisterRoutes(
 		quotations.Post("/:quotationId/review", reviewHandler.HandleCreateReview)
 		quotations.Patch("/:quotationId/review/:id", reviewHandler.HandleUpdateReview)
 		quotations.Delete("/:quotationId/review/:id", reviewHandler.HandleDeleteReview)
+
+		// reports
+		reports := customer.Group("/reports")
+		reports.Post("/", authMiddleware.Auth, reportHandler.HandleCreateReport)
+		reports.Patch("/:id", authMiddleware.Auth, reportHandler.HandleUpdateReport)
+
 	}
 
 	// photographer
