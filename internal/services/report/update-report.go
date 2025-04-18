@@ -12,7 +12,7 @@ import (
 // @Summary     Update a report
 // @Description Updates an existing report
 // @Tags		customer
-// @Router      /api/v1/customers/reports/{id} [PATCH]
+// @Router      /api/v1/customer/reports/{id} [PATCH]
 // @Security    ApiKeyAuth
 // @Param       body  body  dto.CreateReportRequest  true  "Report details"
 // @Success     200

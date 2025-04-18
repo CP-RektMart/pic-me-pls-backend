@@ -1568,7 +1568,7 @@ paths:
       tags:
       - reviews
   /api/v1/customer/reports:
-    patch:
+    post:
       description: Creates a new report for a user
       requestBody:
         content:
@@ -1615,41 +1615,7 @@ paths:
       summary: Create a report
       tags:
       - customer
-  /api/v1/customers/{id}:
-    get:
-      description: Get customer public profile
-      parameters:
-      - description: customer's userId
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_CustomerPublicResponse'
-          description: OK
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Get customer public profile
-      tags:
-      - customer
-  /api/v1/customers/reports/{id}:
+  /api/v1/customer/reports/{id}:
     patch:
       description: Updates an existing report
       requestBody:
@@ -1695,6 +1661,40 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update a report
+      tags:
+      - customer
+  /api/v1/customers/{id}:
+    get:
+      description: Get customer public profile
+      parameters:
+      - description: customer's userId
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_CustomerPublicResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get customer public profile
       tags:
       - customer
   /api/v1/me:
