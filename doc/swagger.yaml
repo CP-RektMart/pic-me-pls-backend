@@ -1391,6 +1391,11 @@ paths:
         name: pageSize
         schema:
           type: integer
+      - description: Filter by user's name (case-insensitive)
+        in: query
+        name: name
+        schema:
+          type: string
       responses:
         "200":
           content:

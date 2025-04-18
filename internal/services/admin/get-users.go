@@ -16,6 +16,7 @@ import (
 // @Security     ApiKeyAuth
 // @Param        page      query    int  false  "Page number (default: 1)"
 // @Param        pageSize  query    int  false  "Page size (default: 5, max: 20)"
+// @Param        name      query    string  false  "Filter by user's name (case-insensitive)"
 // @Success      200       {object} dto.PaginationResponse[dto.PublicUserResponse]
 // @Failure      400       {object} dto.HttpError
 // @Failure      404       {object} dto.HttpError
@@ -32,7 +33,7 @@ func (h *Handler) HandleGetAllUsers(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid request body", err)
 	}
 
-	query := h.store.DB.Model(&model.User{})
+	query := h.store.DB.Model(&model.User{}).Where("name ILIKE ?", "%"+params.Name+"%")
 
 	page, pageSize, offset := dto.GetPaginationData(params.PaginationRequest, 1, 5)
 
