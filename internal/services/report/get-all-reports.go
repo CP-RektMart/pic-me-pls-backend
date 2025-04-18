@@ -14,8 +14,8 @@ import (
 // @Router      /api/v1/customer/reports [GET]
 // @Security			ApiKeyAuth
 // @Param        		page      query    int    false  "Page number"
-// @Param        		page_size query    int    false  "Page size"
-// @Success     200 	{object}  dto.HttpResponse[dto.ReportResponse]
+// @Param        		pageSize query    int    false  "Page size"
+// @Success     200 	{object}  dto.HttpResponse[dto.PaginationResponse[dto.ReportResponse]]
 // @Failure     400   	{object}  dto.HttpError
 // @Failure     401   	{object}  dto.HttpError
 // @Failure     403   	{object}  dto.HttpError

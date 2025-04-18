@@ -9,6 +9,7 @@ type CreateReportRequest struct {
 }
 
 type ReportResponse struct {
+	ID          uint   `json:"id"`
 	QuotationID uint   `json:"quotationId"`
 	ReporterID  uint   `json:"reporterId"`
 	Status      string `json:"status"`
@@ -16,20 +17,21 @@ type ReportResponse struct {
 	Title       string `json:"title"`
 }
 
-type ReportListResponse struct {
-	Reports []ReportResponse `json:"reports"`
+func ToGetReportByIDResponse(report model.Report) ReportResponse {
+	return ReportResponse{
+		ID:          report.ID,
+		QuotationID: report.QuotationID,
+		ReporterID:  report.ReporterID,
+		Status:      string(report.Status),
+		Message:     report.Message,
+		Title:       report.Title,
+	}
 }
 
 func ToReportResponses(reports []model.Report) []ReportResponse {
 	var reportResponses []ReportResponse
 	for _, report := range reports {
-		reportResponses = append(reportResponses, ReportResponse{
-			QuotationID: report.QuotationID,
-			ReporterID:  report.ReporterID,
-			Status:      string(report.Status),
-			Message:     report.Message,
-			Title:       report.Title,
-		})
+		reportResponses = append(reportResponses, ToGetReportByIDResponse(report))
 	}
 	return reportResponses
 }
