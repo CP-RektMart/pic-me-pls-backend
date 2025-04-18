@@ -272,6 +272,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.PaginationResponse-ListPhotographerResponse'
       type: object
+    dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PaginationResponse-dto_ReportResponse'
+      type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
         result:
@@ -510,6 +515,20 @@ components:
         totalPage:
           type: integer
       type: object
+    dto.PaginationResponse-dto_ReportResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.ReportResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
+      type: object
     dto.PaginationResponse-dto_ReviewResponse:
       properties:
         data:
@@ -647,6 +666,21 @@ components:
           type: string
         user:
           $ref: '#/components/schemas/dto.UserResponse'
+      type: object
+    dto.ReportResponse:
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+        quotationId:
+          type: integer
+        reporterId:
+          type: integer
+        status:
+          type: string
+        title:
+          type: string
       type: object
     dto.ReviewResponse:
       properties:
@@ -1857,6 +1891,61 @@ paths:
       tags:
       - reviews
   /api/v1/customer/reports:
+    get:
+      description: Get all reports of a user
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: Page size
+        in: query
+        name: pageSize
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get all reports
+      tags:
+      - customer
     post:
       description: Creates a new report for a user
       requestBody:
