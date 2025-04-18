@@ -25,6 +25,17 @@ type ReportListResponse struct {
 	Reports []ReportResponse `json:"reports"`
 }
 
+func ToGetReportByIDResponse(report model.Report) ReportResponse {
+	return ReportResponse{
+		ID:          report.ID,
+		QuotationID: report.QuotationID,
+		ReporterID:  report.ReporterID,
+		Status:      string(report.Status),
+		Message:     report.Message,
+		Title:       report.Title,
+	}
+}
+
 func ToReportResponses(reports []model.Report) []ReportResponse {
 	var reportResponses []ReportResponse
 	for _, report := range reports {

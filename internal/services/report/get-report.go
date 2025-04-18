@@ -13,8 +13,7 @@ import (
 // @Tags		customer
 // @Router      /api/v1/customer/reports/{id} [GET]
 // @Security    ApiKeyAuth
-// @Param       body  body  dto.CreateReportRequest  true  "Report details"
-// @Success     200
+// @Success     200	  {object}  dto.HttpResponse[dto.ReportResponse]
 // @Failure     400   {object}  dto.HttpError
 // @Failure     401   {object}  dto.HttpError
 // @Failure     403   {object}  dto.HttpError
@@ -37,13 +36,8 @@ func (h *Handler) HandleGetReportByID(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Failed to get report")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.ReportResponse{
-		ID:          report.ID,
-		QuotationID: report.QuotationID,
-		ReporterID:  report.ReporterID,
-		Status:      string(report.Status),
-		Message:     report.Message,
-		Title:       report.Title,
+	return c.Status(fiber.StatusOK).JSON(dto.HttpResponse[dto.ReportResponse]{
+		Result: dto.ToGetReportByIDResponse(*report),
 	})
 }
 
