@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
 )
 
 type VerifyCitizenCardRequest struct {
@@ -57,5 +58,57 @@ func ToPhotographerResponse(photographer model.Photographer) PhotographerRespons
 		IsVerified:        photographer.IsVerified,
 		ActiveStatus:      photographer.ActiveStatus,
 		Packages:          ToSmallPackageResponses(photographer.Packages),
+	}
+}
+
+type ListPhotographerResponse struct {
+	ID                uint   `json:"id"`
+	Name              string `json:"name"`
+	Email             string `json:"email"`
+	PhoneNumber       string `json:"phoneNumber"`
+	ProfilePictureURL string `json:"profilePictureUrl"`
+	IsVerified        bool   `json:"isVerified"`
+	ActiveStatus      bool   `json:"activeStatus"`
+}
+
+func ToListPhotographerResponse(p model.Photographer) ListPhotographerResponse {
+	return ListPhotographerResponse{
+		ID:                p.UserID,
+		Name:              p.User.Name,
+		Email:             p.User.Email,
+		PhoneNumber:       p.User.PhoneNumber,
+		ProfilePictureURL: p.User.ProfilePictureURL,
+		IsVerified:        p.IsVerified,
+		ActiveStatus:      p.ActiveStatus,
+	}
+}
+
+func ToListPhotographersResponse(ps []model.Photographer) []ListPhotographerResponse {
+	return lo.Map(ps, func(p model.Photographer, _ int) ListPhotographerResponse {
+		return ToListPhotographerResponse(p)
+	})
+}
+
+type DetailPhotographerResponse struct {
+	ID                uint                  `json:"id"`
+	Name              string                `json:"name"`
+	Email             string                `json:"email"`
+	PhoneNumber       string                `json:"phoneNumber"`
+	ProfilePictureURL string                `json:"profilePictureUrl"`
+	IsVerified        bool                  `json:"isVerified"`
+	ActiveStatus      bool                  `json:"activeStatus"`
+	Packages          []ListPackageResponse `json:"packages"`
+}
+
+func ToDetailPhotographerResponse(p model.Photographer) DetailPhotographerResponse {
+	return DetailPhotographerResponse{
+		ID:                p.UserID,
+		Name:              p.User.Name,
+		Email:             p.User.Email,
+		PhoneNumber:       p.User.PhoneNumber,
+		ProfilePictureURL: p.User.ProfilePictureURL,
+		IsVerified:        p.IsVerified,
+		ActiveStatus:      p.ActiveStatus,
+		Packages:          ToListPackagesResponse(p.Packages),
 	}
 }

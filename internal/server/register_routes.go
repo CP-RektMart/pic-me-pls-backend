@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/middlewares/authentication"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/admin"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/auth"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/category"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/citizencard"
@@ -34,6 +35,7 @@ func (s *Server) RegisterRoutes(
 	customerHandler *customer.Handler,
 	messageHandler *message.Handler,
 	stripeHandler *stripe.Handler,
+	adminHandler *admin.Handler,
 	reportHandler *report.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
@@ -103,11 +105,6 @@ func (s *Server) RegisterRoutes(
 		quotations.Post("/:quotationId/review", reviewHandler.HandleCreateReview)
 		quotations.Patch("/:quotationId/review/:id", reviewHandler.HandleUpdateReview)
 		quotations.Delete("/:quotationId/review/:id", reviewHandler.HandleDeleteReview)
-
-		// reports
-		reports := customer.Group("/reports")
-		reports.Post("/", authMiddleware.Auth, reportHandler.HandleCreateReport)
-		reports.Get("/:id", authMiddleware.AuthCustomer, reportHandler.HandleGetReportByID)
 	}
 
 	// photographer
@@ -148,6 +145,11 @@ func (s *Server) RegisterRoutes(
 		categories.Post("/", categoryHandler.HandleCreateCategory)
 		categories.Patch("/:id", categoryHandler.HandleUpdateCategory)
 		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
+
+		// photographers
+		photographers := admin.Group("/photographers")
+		photographers.Get("/", adminHandler.HandleListPhotographers)
+		photographers.Get("/:photographerID", adminHandler.HandleGetPhotographerByID)
 	}
 
 	// stripe
