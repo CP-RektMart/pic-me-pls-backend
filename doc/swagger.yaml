@@ -247,6 +247,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.GetQuotationResponse'
       type: object
+    dto.HttpResponse-dto_ListPackageResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.ListPackageResponse'
+      type: object
     dto.HttpResponse-dto_LoginResponse:
       properties:
         result:
@@ -262,10 +267,10 @@ components:
         result:
           $ref: '#/components/schemas/dto.PackageResponse'
       type: object
-    dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse:
+    dto.HttpResponse-dto_PhotographerResponse:
       properties:
         result:
-          $ref: '#/components/schemas/dto.PaginationResponse-dto_ReportResponse'
+          $ref: '#/components/schemas/dto.PhotographerResponse'
       type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
@@ -295,6 +300,41 @@ components:
     dto.HttpResponse-string:
       properties:
         result:
+          type: string
+      type: object
+    dto.ListPackageResponse:
+      properties:
+        category:
+          $ref: '#/components/schemas/dto.CategoryResponse'
+        description:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        tags:
+          items:
+            $ref: '#/components/schemas/dto.TagResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    dto.ListPhotographerResponse:
+      properties:
+        activeStatus:
+          type: boolean
+        email:
+          type: string
+        id:
+          type: integer
+        isVerified:
+          type: boolean
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
           type: string
       type: object
     dto.ListPreviewResponse:
@@ -380,6 +420,20 @@ components:
             $ref: '#/components/schemas/dto.TagResponse'
           type: array
           uniqueItems: false
+      type: object
+    dto.PaginationResponse-ListPhotographerResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.ListPhotographerResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
       type: object
     dto.PaginationResponse-QuotationResponse:
       properties:
@@ -713,6 +767,17 @@ components:
       - price
       - quotationID
       - toDate
+      type: object
+    dto.UpdateReportRequest:
+      properties:
+        message:
+          type: string
+        reportID:
+          type: integer
+        title:
+          type: string
+      required:
+      - reportID
       type: object
     dto.UpdateReviewRequest:
       properties:
@@ -1211,6 +1276,72 @@ paths:
       summary: update category
       tags:
       - categories
+  /api/v1/admin/user:
+    get:
+      description: get all users for admin
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpListResponse-dto_PublicUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: get all users
+      tags:
+      - admin
+  /api/v1/admin/user/{id}:
+    get:
+      description: get user by id for admin
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PublicUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: get user by id
+      tags:
+      - admin
   /api/v1/auth/login:
     post:
       description: Login
@@ -1702,6 +1833,54 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Create a report
+      tags:
+      - customer
+  /api/v1/customer/reports/{id}:
+    patch:
+      description: Updates an existing report
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.UpdateReportRequest'
+        description: Report details
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Update a report
       tags:
       - customer
   /api/v1/customers/{id}:
