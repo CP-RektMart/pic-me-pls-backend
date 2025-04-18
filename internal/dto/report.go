@@ -17,7 +17,7 @@ type ReportResponse struct {
 	Title       string `json:"title"`
 }
 
-func ToGetReportByIDResponse(report model.Report) ReportResponse {
+func ToReportResponse(report model.Report) ReportResponse {
 	return ReportResponse{
 		ID:          report.ID,
 		QuotationID: report.QuotationID,
@@ -31,7 +31,7 @@ func ToGetReportByIDResponse(report model.Report) ReportResponse {
 func ToReportResponses(reports []model.Report) []ReportResponse {
 	var reportResponses []ReportResponse
 	for _, report := range reports {
-		reportResponses = append(reportResponses, ToGetReportByIDResponse(report))
+		reportResponses = append(reportResponses, ToReportResponse(report))
 	}
 	return reportResponses
 }

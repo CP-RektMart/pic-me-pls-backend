@@ -52,11 +52,12 @@ func (h *Handler) getAllReports(req dto.PaginationRequest, userID uint) (*dto.Pa
 	var reports []model.Report
 	if err := h.store.DB.
 		Offset(offset).
+		Limit(pageSize).
 		Where("reporter_id = ?", userID).Find(&reports).Error; err != nil {
 		return nil, errors.Wrap(err, "Failed getting reports")
 	}
 	var count int64
-	if err := h.store.DB.Model(&model.Report{}).Where("reporter_id = ?", userID).Count(&count).Limit(pageSize).Error; err != nil {
+	if err := h.store.DB.Model(&model.Report{}).Where("reporter_id = ?", userID).Count(&count).Error; err != nil {
 		return nil, errors.Wrap(err, "Failed counting reports")
 	}
 	totalPage := (int(count) + pageSize - 1) / pageSize
