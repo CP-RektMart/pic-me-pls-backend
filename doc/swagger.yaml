@@ -674,20 +674,12 @@ components:
       type: object
     dto.ReportResponse:
       properties:
-<<<<<<< HEAD
-=======
-        id:
-          type: integer
->>>>>>> main
         message:
           type: string
         quotationId:
           type: integer
-<<<<<<< HEAD
         reportId:
           type: integer
-=======
->>>>>>> main
         reporterId:
           type: integer
         status:
