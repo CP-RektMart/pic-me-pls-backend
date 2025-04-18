@@ -108,10 +108,10 @@ func (s *Server) RegisterRoutes(
 
 		// reports
 		reports := customer.Group("/reports")
-		reports.Post("/", authMiddleware.Auth, reportHandler.HandleCreateReport)
-		reports.Get("/", authMiddleware.AuthCustomer, reportHandler.HandleGetAllReports)
-		reports.Patch("/:id", authMiddleware.Auth, reportHandler.HandleUpdateReport)
-
+		reports.Post("/", reportHandler.HandleCreateReport)
+		reports.Get("/", reportHandler.HandleGetAllReports)
+		reports.Get("/:id", reportHandler.HandleGetReportByID)
+		reports.Patch("/:id", reportHandler.HandleUpdateReport)
 	}
 
 	// photographer
