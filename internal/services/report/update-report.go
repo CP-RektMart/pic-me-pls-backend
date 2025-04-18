@@ -14,7 +14,7 @@ import (
 // @Tags		customer
 // @Router      /api/v1/customer/reports/{id} [PATCH]
 // @Security    ApiKeyAuth
-// @Param       body  body  dto.CreateReportRequest  true  "Report details"
+// @Param       body  body  dto.UpdateReportRequest  true  "Report details"
 // @Success     200
 // @Failure     400   {object}  dto.HttpError
 // @Failure     401   {object}  dto.HttpError

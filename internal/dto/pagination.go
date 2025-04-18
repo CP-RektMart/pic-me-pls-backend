@@ -25,8 +25,8 @@ func (p *PaginationRequest) CheckPaginationRequest() (page int, pageSize int, of
 	return
 }
 
-func GetPaginationData(req PaginationRequest, defaultPage, defaultPageSize int) (int, int, int) {
-	page, pageSize := req.Page, req.PageSize
+func GetPaginationData(req PaginationRequest, defaultPage, defaultPageSize int) (page, pageSize, offset int) {
+	page, pageSize = req.Page, req.PageSize
 
 	if req.Page == 0 {
 		page = defaultPage
@@ -35,7 +35,29 @@ func GetPaginationData(req PaginationRequest, defaultPage, defaultPageSize int) 
 		pageSize = defaultPageSize
 	}
 
-	offset := (page - 1) * pageSize
+	offset = (page - 1) * pageSize
+	return
+}
 
-	return page, pageSize, offset
+func (p *PaginationRequest) GetPaginationData(defaultPage, defaultPageSize int) (page, pageSize, offset int) {
+	page, pageSize = p.Page, p.PageSize
+
+	if p.Page == 0 {
+		page = defaultPage
+	}
+	if p.PageSize == 0 {
+		pageSize = defaultPageSize
+	}
+
+	offset = (page - 1) * pageSize
+	return
+}
+
+func NewPaginationResponse[T any](data []T, page, pageSize, totalPage int) PaginationResponse[T] {
+	return PaginationResponse[T]{
+		Data:      data,
+		Page:      page,
+		PageSize:  pageSize,
+		TotalPage: totalPage,
+	}
 }
