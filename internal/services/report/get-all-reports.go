@@ -11,7 +11,7 @@ import (
 // @Summary     Get all reports
 // @Description Get all reports of a user
 // @Tags		customer
-// @Router      /api/v1/customers/reports [GET]
+// @Router      /api/v1/customer/reports [GET]
 // @Security			ApiKeyAuth
 // @Param        		page      query    int    false  "Page number"
 // @Param        		page_size query    int    false  "Page size"
