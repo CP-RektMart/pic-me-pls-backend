@@ -13,6 +13,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/report"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
@@ -35,6 +36,7 @@ func (s *Server) RegisterRoutes(
 	messageHandler *message.Handler,
 	stripeHandler *stripe.Handler,
 	adminHandler *admin.Handler,
+	reportHandler *report.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -142,6 +144,11 @@ func (s *Server) RegisterRoutes(
 		categories.Post("/", categoryHandler.HandleCreateCategory)
 		categories.Patch("/:id", categoryHandler.HandleUpdateCategory)
 		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
+
+		// photographers
+		photographers := admin.Group("/photographers")
+		photographers.Get("/", adminHandler.HandleListPhotographers)
+		photographers.Get("/:photographerID", adminHandler.HandleGetPhotographerByID)
 
 		// users
 		users := admin.Group("/users")
