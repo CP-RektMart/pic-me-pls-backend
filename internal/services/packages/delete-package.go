@@ -50,7 +50,7 @@ func (h *Handler) deletePackage(packageID uint, userID uint) error {
 			return apperror.Forbidden("You are not allowed to delete this package", errors.New("unauthorized"))
 		}
 
-		if err := h.store.DB.Delete(&pkg).Error; err != nil {
+		if err := h.store.DB.Select("Media").Select("Tags").Delete(&pkg).Error; err != nil {
 			return errors.Wrap(err, "Failed to delete package")
 		}
 
