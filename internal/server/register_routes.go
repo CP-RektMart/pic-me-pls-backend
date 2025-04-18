@@ -109,6 +109,7 @@ func (s *Server) RegisterRoutes(
 		// reports
 		reports := customer.Group("/reports")
 		reports.Post("/", reportHandler.HandleCreateReport)
+		reports.Get("/", reportHandler.HandleGetAllReports)
 		reports.Get("/:id", reportHandler.HandleGetReportByID)
 		reports.Patch("/:id", reportHandler.HandleUpdateReport)
 	}
@@ -128,6 +129,7 @@ func (s *Server) RegisterRoutes(
 		packages.Post("/", packagesHandler.HandleCreatePackage)
 		packages.Patch("/:id", packagesHandler.HandleUpdatePackage)
 		packages.Get("/", packagesHandler.HandlerListPhotographerPackages)
+		packages.Delete("/:id", packagesHandler.HandleDeletePackage)
 
 		// media
 		media := photographer.Group("/media")
@@ -156,6 +158,11 @@ func (s *Server) RegisterRoutes(
 		photographers := admin.Group("/photographers")
 		photographers.Get("/", adminHandler.HandleListPhotographers)
 		photographers.Get("/:photographerID", adminHandler.HandleGetPhotographerByID)
+
+		// users
+		users := admin.Group("/users")
+		users.Get("/", adminHandler.HandleGetAllUsers)
+		users.Get("/:id", adminHandler.HandleGetUserByID)
 	}
 
 	// stripe

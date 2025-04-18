@@ -8,6 +8,25 @@ type CreateReportRequest struct {
 	Title       string `json:"title" validate:"required"`
 }
 
+func ToReportResponse(report model.Report) ReportResponse {
+	return ReportResponse{
+		ID:          report.ID,
+		QuotationID: report.QuotationID,
+		ReporterID:  report.ReporterID,
+		Status:      string(report.Status),
+		Message:     report.Message,
+		Title:       report.Title,
+	}
+}
+
+func ToReportResponses(reports []model.Report) []ReportResponse {
+	var reportResponses []ReportResponse
+	for _, report := range reports {
+		reportResponses = append(reportResponses, ToReportResponse(report))
+	}
+	return reportResponses
+}
+
 type GetReportByIDRequest struct {
 	ReportID uint `params:"id" validate:"required"`
 }
@@ -34,20 +53,6 @@ func ToGetReportByIDResponse(report model.Report) ReportResponse {
 		Message:     report.Message,
 		Title:       report.Title,
 	}
-}
-
-func ToReportResponses(reports []model.Report) []ReportResponse {
-	var reportResponses []ReportResponse
-	for _, report := range reports {
-		reportResponses = append(reportResponses, ReportResponse{
-			QuotationID: report.QuotationID,
-			ReporterID:  report.ReporterID,
-			Status:      string(report.Status),
-			Message:     report.Message,
-			Title:       report.Title,
-		})
-	}
-	return reportResponses
 }
 
 type UpdateReportRequest struct {
