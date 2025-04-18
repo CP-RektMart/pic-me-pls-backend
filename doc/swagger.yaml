@@ -110,22 +110,6 @@ components:
       - price
       - toDate
       type: object
-    dto.CreateReportRequest:
-      properties:
-        message:
-          type: string
-        quotation_id:
-          type: integer
-        reporter_role:
-          enum:
-          - CUSTOMER
-          - PHOTOGRAPHER
-          type: string
-      required:
-      - message
-      - quotation_id
-      - reporter_role
-      type: object
     dto.CreateReviewRequest:
       properties:
         comment:
@@ -222,14 +206,6 @@ components:
           type: array
           uniqueItems: false
       type: object
-    dto.HttpListResponse-dto_PublicUserResponse:
-      properties:
-        result:
-          items:
-            $ref: '#/components/schemas/dto.PublicUserResponse'
-          type: array
-          uniqueItems: false
-      type: object
     dto.HttpListResponse-mock_ReportDetail:
       properties:
         result:
@@ -258,6 +234,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.GetQuotationResponse'
       type: object
+    dto.HttpResponse-dto_ListPackageResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.ListPackageResponse'
+      type: object
     dto.HttpResponse-dto_LoginResponse:
       properties:
         result:
@@ -273,15 +254,15 @@ components:
         result:
           $ref: '#/components/schemas/dto.PackageResponse'
       type: object
+    dto.HttpResponse-dto_PaginationResponse-ListPhotographerResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PaginationResponse-ListPhotographerResponse'
+      type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
         result:
           $ref: '#/components/schemas/dto.PhotographerResponse'
-      type: object
-    dto.HttpResponse-dto_PublicUserResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.PublicUserResponse'
       type: object
     dto.HttpResponse-dto_RegisterResponse:
       properties:
@@ -306,6 +287,41 @@ components:
     dto.HttpResponse-string:
       properties:
         result:
+          type: string
+      type: object
+    dto.ListPackageResponse:
+      properties:
+        category:
+          $ref: '#/components/schemas/dto.CategoryResponse'
+        description:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        tags:
+          items:
+            $ref: '#/components/schemas/dto.TagResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    dto.ListPhotographerResponse:
+      properties:
+        activeStatus:
+          type: boolean
+        email:
+          type: string
+        id:
+          type: integer
+        isVerified:
+          type: boolean
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
           type: string
       type: object
     dto.ListPreviewResponse:
@@ -391,6 +407,20 @@ components:
             $ref: '#/components/schemas/dto.TagResponse'
           type: array
           uniqueItems: false
+      type: object
+    dto.PaginationResponse-ListPhotographerResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.ListPhotographerResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
       type: object
     dto.PaginationResponse-QuotationResponse:
       properties:
@@ -497,7 +527,12 @@ components:
         profilePictureUrl:
           type: string
         role:
-          $ref: '#/components/schemas/model.UserRole'
+          type: string
+          x-enum-varnames:
+          - UserRoleUnknown
+          - UserRoleAdmin
+          - UserRolePhotographer
+          - UserRoleCustomer
       type: object
     dto.QuotationResponse:
       properties:
@@ -728,12 +763,7 @@ components:
         profilePictureUrl:
           type: string
         role:
-          type: string
-          x-enum-varnames:
-          - UserRoleUnknown
-          - UserRoleAdmin
-          - UserRolePhotographer
-          - UserRoleCustomer
+          $ref: '#/components/schemas/model.UserRole'
       type: object
     dto.UserUpdateRequest:
       properties:
@@ -1193,15 +1223,30 @@ paths:
       summary: update category
       tags:
       - categories
-  /api/v1/admin/user:
+  /api/v1/admin/photographers:
     get:
-      description: get all users for admin
+      parameters:
+      - description: 'Page number for pagination (default: 1)'
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: 'Number of records per page (default: 5, max: 20)'
+        in: query
+        name: pageSize
+        schema:
+          type: integer
+      - description: Filter by photographer's name (case-insensitive)
+        in: query
+        name: name
+        schema:
+          type: string
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpListResponse-dto_PublicUserResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-ListPhotographerResponse'
           description: OK
         "400":
           content:
@@ -1209,6 +1254,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
         "404":
           content:
             application/json:
@@ -1223,18 +1280,24 @@ paths:
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
-      summary: get all users
+      summary: list photographers
       tags:
       - admin
-  /api/v1/admin/user/{id}:
+  /api/v1/admin/photographers/{photographerID}:
     get:
-      description: get user by id for admin
+      parameters:
+      - description: photographer id
+        in: path
+        name: photographerID
+        required: true
+        schema:
+          type: integer
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PublicUserResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_ListPackageResponse'
           description: OK
         "400":
           content:
@@ -1242,6 +1305,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
         "404":
           content:
             application/json:
@@ -1256,7 +1331,7 @@ paths:
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
-      summary: get user by id
+      summary: get photographers detail
       tags:
       - admin
   /api/v1/auth/login:
@@ -1649,36 +1724,6 @@ paths:
       summary: Update a review
       tags:
       - reviews
-  /api/v1/customer/reports:
-    post:
-      description: Creates a new report for a user
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dto.CreateReportRequest'
-        description: Report details
-        required: true
-      responses:
-        "200":
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dto.HttpError'
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Create a report
-      tags:
-      - customer
   /api/v1/customers/{id}:
     get:
       description: Get customer public profile

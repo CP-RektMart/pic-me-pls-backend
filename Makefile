@@ -12,3 +12,4 @@ start:
 
 .PHONY:
 	server swagger start
+	
