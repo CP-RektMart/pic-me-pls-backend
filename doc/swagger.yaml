@@ -1568,7 +1568,7 @@ paths:
       tags:
       - reviews
   /api/v1/customer/reports:
-    post:
+    patch:
       description: Creates a new report for a user
       requestBody:
         content:
