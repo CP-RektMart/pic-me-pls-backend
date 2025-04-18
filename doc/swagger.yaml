@@ -277,6 +277,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.PhotographerResponse'
       type: object
+    dto.HttpResponse-dto_PublicUserResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PublicUserResponse'
+      type: object
     dto.HttpResponse-dto_RegisterResponse:
       properties:
         result:
@@ -491,6 +496,20 @@ components:
         totalPage:
           type: integer
       type: object
+    dto.PaginationResponse-dto_PublicUserResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.PublicUserResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
+      type: object
     dto.PaginationResponse-dto_ReviewResponse:
       properties:
         data:
@@ -540,12 +559,7 @@ components:
         profilePictureUrl:
           type: string
         role:
-          type: string
-          x-enum-varnames:
-          - UserRoleUnknown
-          - UserRoleAdmin
-          - UserRolePhotographer
-          - UserRoleCustomer
+          $ref: '#/components/schemas/model.UserRole'
       type: object
     dto.QuotationResponse:
       properties:
@@ -787,7 +801,12 @@ components:
         profilePictureUrl:
           type: string
         role:
-          $ref: '#/components/schemas/model.UserRole'
+          type: string
+          x-enum-varnames:
+          - UserRoleUnknown
+          - UserRoleAdmin
+          - UserRolePhotographer
+          - UserRoleCustomer
       type: object
     dto.UserUpdateRequest:
       properties:
@@ -1356,6 +1375,95 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get photographers detail
+      tags:
+      - admin
+  /api/v1/admin/users:
+    get:
+      description: Retrieve a paginated list of users.
+      parameters:
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: 'Page size (default: 5, max: 20)'
+        in: query
+        name: pageSize
+        schema:
+          type: integer
+      - description: Filter by user's name (case-insensitive)
+        in: query
+        name: name
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.PaginationResponse-dto_PublicUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Users
+      tags:
+      - admin
+  /api/v1/admin/users/{id}:
+    get:
+      description: get user by id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PublicUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: get user by id
       tags:
       - admin
   /api/v1/auth/login:
