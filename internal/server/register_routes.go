@@ -105,6 +105,12 @@ func (s *Server) RegisterRoutes(
 		quotations.Post("/:quotationId/review", reviewHandler.HandleCreateReview)
 		quotations.Patch("/:quotationId/review/:id", reviewHandler.HandleUpdateReview)
 		quotations.Delete("/:quotationId/review/:id", reviewHandler.HandleDeleteReview)
+
+		// reports
+		reports := customer.Group("/reports")
+		reports.Post("/", reportHandler.HandleCreateReport)
+		reports.Get("/:id", reportHandler.HandleGetReportByID)
+		reports.Patch("/:id", reportHandler.HandleUpdateReport)
 	}
 
 	// photographer
