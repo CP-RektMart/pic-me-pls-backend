@@ -267,10 +267,15 @@ components:
         result:
           $ref: '#/components/schemas/dto.PackageResponse'
       type: object
-    dto.HttpResponse-dto_PhotographerResponse:
+    dto.HttpResponse-dto_PaginationResponse-ListPhotographerResponse:
       properties:
         result:
-          $ref: '#/components/schemas/dto.PhotographerResponse'
+          $ref: '#/components/schemas/dto.PaginationResponse-ListPhotographerResponse'
+      type: object
+    dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PaginationResponse-dto_ReportResponse'
       type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
@@ -1276,15 +1281,30 @@ paths:
       summary: update category
       tags:
       - categories
-  /api/v1/admin/user:
+  /api/v1/admin/photographers:
     get:
-      description: get all users for admin
+      parameters:
+      - description: 'Page number for pagination (default: 1)'
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: 'Number of records per page (default: 5, max: 20)'
+        in: query
+        name: pageSize
+        schema:
+          type: integer
+      - description: Filter by photographer's name (case-insensitive)
+        in: query
+        name: name
+        schema:
+          type: string
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpListResponse-dto_PublicUserResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-ListPhotographerResponse'
           description: OK
         "400":
           content:
@@ -1292,6 +1312,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
         "404":
           content:
             application/json:
@@ -1306,18 +1338,24 @@ paths:
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
-      summary: get all users
+      summary: list photographers
       tags:
       - admin
-  /api/v1/admin/user/{id}:
+  /api/v1/admin/photographers/{photographerID}:
     get:
-      description: get user by id for admin
+      parameters:
+      - description: photographer id
+        in: path
+        name: photographerID
+        required: true
+        schema:
+          type: integer
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PublicUserResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_ListPackageResponse'
           description: OK
         "400":
           content:
@@ -1325,6 +1363,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
         "404":
           content:
             application/json:
@@ -1339,7 +1389,7 @@ paths:
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
-      summary: get user by id
+      summary: get photographers detail
       tags:
       - admin
   /api/v1/auth/login:
