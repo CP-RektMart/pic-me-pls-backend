@@ -43,12 +43,7 @@ func (h *Handler) HandleGetAllReports(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Failed getting reports")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.PaginationResponse[dto.ReportResponse]{
-		Page:      reports.Page,
-		PageSize:  reports.PageSize,
-		TotalPage: reports.TotalPage,
-		Data:      reports.Data,
-	})
+	return c.Status(fiber.StatusOK).JSON(reports)
 }
 
 func (h *Handler) getAllReports(req dto.PaginationRequest, userID uint) (*dto.PaginationResponse[dto.ReportResponse], error) {
@@ -61,7 +56,7 @@ func (h *Handler) getAllReports(req dto.PaginationRequest, userID uint) (*dto.Pa
 		return nil, errors.Wrap(err, "Failed getting reports")
 	}
 	var count int64
-	if err := h.store.DB.Model(&model.Report{}).Where("reporter_id = ?", userID).Count(&count).Error; err != nil {
+	if err := h.store.DB.Model(&model.Report{}).Where("reporter_id = ?", userID).Count(&count).Limit(pageSize).Error; err != nil {
 		return nil, errors.Wrap(err, "Failed counting reports")
 	}
 	totalPage := (int(count) + pageSize - 1) / pageSize
