@@ -12,8 +12,9 @@ import (
 // @Summary      get user by id
 // @Description  get user by id
 // @Tags         admin
-// @Router       /api/v1/admin/user/{id} [GET]
+// @Router       /api/v1/admin/users/{id} [GET]
 // @Security	 ApiKeyAuth
+// @Param        id          path     int  true   "User ID"
 // @Success      200    {object}  dto.HttpResponse[dto.PublicUserResponse]
 // @Failure      400    {object}  dto.HttpError
 // @Failure      404    {object}  dto.HttpError

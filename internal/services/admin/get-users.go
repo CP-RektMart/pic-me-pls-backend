@@ -12,14 +12,14 @@ import (
 // @Summary      Get All Users
 // @Description  Retrieve a paginated list of users.
 // @Tags         admin
-// @Router       /api/v1/admin/user [GET]
+// @Router       /api/v1/admin/users [GET]
+// @Security     ApiKeyAuth
 // @Param        page      query    int  false  "Page number (default: 1)"
 // @Param        pageSize  query    int  false  "Page size (default: 5, max: 20)"
 // @Success      200       {object} dto.PaginationResponse[dto.PublicUserResponse]
 // @Failure      400       {object} dto.HttpError
 // @Failure      404       {object} dto.HttpError
 // @Failure      500       {object} dto.HttpError
-// @Security     ApiKeyAuth
 func (h *Handler) HandleGetAllUsers(c *fiber.Ctx) error {
 	var users []model.User
 	var params dto.GetUsersRequest
