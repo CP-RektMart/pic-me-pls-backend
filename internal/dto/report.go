@@ -13,7 +13,7 @@ type GetReportByIDRequest struct {
 }
 
 type ReportResponse struct {
-	ReportID    uint   `json:"reportId"`
+	ID          uint   `json:"reportId"`
 	QuotationID uint   `json:"quotationId"`
 	ReporterID  uint   `json:"reporterId"`
 	Status      string `json:"status"`
