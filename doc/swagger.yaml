@@ -262,6 +262,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.PackageResponse'
       type: object
+    dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PaginationResponse-dto_ReportResponse'
+      type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
         result:
@@ -271,11 +276,6 @@ components:
       properties:
         result:
           $ref: '#/components/schemas/dto.RegisterResponse'
-      type: object
-    dto.HttpResponse-dto_ReportResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.ReportResponse'
       type: object
     dto.HttpResponse-dto_TokenResponse:
       properties:
@@ -437,6 +437,20 @@ components:
         totalPage:
           type: integer
       type: object
+    dto.PaginationResponse-dto_ReportResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.ReportResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
+      type: object
     dto.PaginationResponse-dto_ReviewResponse:
       properties:
         data:
@@ -582,6 +596,8 @@ components:
       type: object
     dto.ReportResponse:
       properties:
+        id:
+          type: integer
         message:
           type: string
         quotationId:
@@ -1596,7 +1612,7 @@ paths:
           type: integer
       - description: Page size
         in: query
-        name: page_size
+        name: pageSize
         schema:
           type: integer
       responses:
@@ -1604,7 +1620,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_ReportResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse'
           description: OK
         "400":
           content:
