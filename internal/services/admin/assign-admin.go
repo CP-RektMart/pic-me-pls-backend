@@ -46,8 +46,16 @@ func (h *Handler) assignAdmin(userID uint, admin bool) error {
 	}
 
 	if admin {
+		if user.Role == model.UserRoleAdmin {
+			return apperror.BadRequest("user already be an admin", nil)
+		}
+
 		user.Role = model.UserRoleAdmin
 	} else {
+		if user.Role != model.UserRoleAdmin {
+			return apperror.BadRequest("user already not an admin", nil)
+		}
+
 		err := h.store.DB.First(&model.Photographer{}, userID).Error
 		isPhotographer := err == nil
 
