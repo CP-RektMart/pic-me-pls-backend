@@ -44,6 +44,10 @@ type PublicUserResponse struct {
 	Role              model.UserRole `json:"role"`
 }
 
+type GetUsersByIDRequest struct {
+	ID uint `params:"id" validate:"required"`
+}
+
 func ToUserResponse(user model.User) UserResponse {
 	return UserResponse{
 		ID:                user.ID,
