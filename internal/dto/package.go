@@ -83,6 +83,10 @@ type GetPackageByIDRequest struct {
 	ID uint `params:"id" validate:"required"`
 }
 
+type DeletePackageRequest struct {
+	ID uint `params:"id" validate:"required"`
+}
+
 func ToPackageResponse(Package model.Package) PackageResponse {
 	return PackageResponse{
 		ID:           Package.ID,
@@ -141,4 +145,30 @@ func ToQuotationMessagePackageResponse(pkg model.Package) QuotationMessagePackag
 		Tags:        ToTagResponses(pkg.Tags),
 		Category:    lo.EmptyableToPtr(ToCategoryResponse(pkg.Category)),
 	}
+}
+
+type ListPackageResponse struct {
+	ID          uint             `json:"id"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Price       float64          `json:"price"`
+	Category    CategoryResponse `json:"category"`
+	Tags        []TagResponse    `json:"tags"`
+}
+
+func ToListPackageResponse(p model.Package) ListPackageResponse {
+	return ListPackageResponse{
+		ID:          p.ID,
+		Name:        p.Name,
+		Description: p.Description,
+		Price:       p.Price,
+		Category:    ToCategoryResponse(p.Category),
+		Tags:        ToTagResponses(p.Tags),
+	}
+}
+
+func ToListPackagesResponse(ps []model.Package) []ListPackageResponse {
+	return lo.Map(ps, func(p model.Package, _ int) ListPackageResponse {
+		return ToListPackageResponse(p)
+	})
 }

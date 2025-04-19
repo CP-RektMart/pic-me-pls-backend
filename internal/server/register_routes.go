@@ -13,6 +13,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/packages"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/photographers"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/quotation"
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/report"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/review"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/stripe"
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/services/user"
@@ -35,6 +36,7 @@ func (s *Server) RegisterRoutes(
 	messageHandler *message.Handler,
 	stripeHandler *stripe.Handler,
 	adminHandler *admin.Handler,
+	reportHandler *report.Handler,
 ) {
 	v1 := s.app.Group("/api/v1")
 
@@ -88,6 +90,7 @@ func (s *Server) RegisterRoutes(
 		message.Use("/ws", messageHandler.HandleSupportWebAPI, authMiddleware.Auth, messageHandler.HandleWebsocket)
 		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
 		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
+
 	}
 
 	// customer
@@ -102,6 +105,13 @@ func (s *Server) RegisterRoutes(
 		quotations.Post("/:quotationId/review", reviewHandler.HandleCreateReview)
 		quotations.Patch("/:quotationId/review/:id", reviewHandler.HandleUpdateReview)
 		quotations.Delete("/:quotationId/review/:id", reviewHandler.HandleDeleteReview)
+
+		// reports
+		reports := customer.Group("/reports")
+		reports.Post("/", reportHandler.HandleCreateReport)
+		reports.Get("/", reportHandler.HandleGetAllReports)
+		reports.Get("/:id", reportHandler.HandleGetReportByID)
+		reports.Patch("/:id", reportHandler.HandleUpdateReport)
 	}
 
 	// photographer
@@ -119,6 +129,7 @@ func (s *Server) RegisterRoutes(
 		packages.Post("/", packagesHandler.HandleCreatePackage)
 		packages.Patch("/:id", packagesHandler.HandleUpdatePackage)
 		packages.Get("/", packagesHandler.HandlerListPhotographerPackages)
+		packages.Delete("/:id", packagesHandler.HandleDeletePackage)
 
 		// media
 		media := photographer.Group("/media")
@@ -143,14 +154,16 @@ func (s *Server) RegisterRoutes(
 		categories.Patch("/:id", categoryHandler.HandleUpdateCategory)
 		categories.Delete("/:id", categoryHandler.HandleDeleteCategory)
 
-		// users
-		admins := admin.Group("/users")
-		admins.Get("/", adminHandler.HandleGetAllUsers)
-		admins.Get("/:id", adminHandler.HandleGetUserByID)
-
-		// photographer
-		photographers := admin.Group("/photographer")
+		// photographers
+		photographers := admin.Group("/photographers")
+		photographers.Get("/", adminHandler.HandleListPhotographers)
+		photographers.Get("/:photographerID", adminHandler.HandleGetPhotographerByID)
 		photographers.Patch("/:id/ban", adminHandler.HandleBanPhotographer)
+
+		// users
+		users := admin.Group("/users")
+		users.Get("/", adminHandler.HandleGetAllUsers)
+		users.Get("/:id", adminHandler.HandleGetUserByID)
 	}
 
 	// stripe

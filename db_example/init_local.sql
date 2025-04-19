@@ -4,10 +4,12 @@ DELETE FROM Previews;
 DELETE FROM Tags;
 DELETE FROM Reviews;
 DELETE FROM Citizen_Cards;
+DELETE FROM Previews;
 DELETE FROM Quotations;
 DELETE FROM Media;
 DELETE FROM Packages_Categories;
 DELETE FROM Packages;
+DELETE FROM Messages;
 DELETE FROM Categories;
 DELETE FROM Photographers;
 DELETE FROM Users;
@@ -20,6 +22,8 @@ ALTER SEQUENCE media_id_seq RESTART WITH 1;
 ALTER SEQUENCE reviews_id_seq RESTART WITH 1;
 ALTER SEQUENCE categories_id_seq RESTART WITH 1;
 ALTER SEQUENCE quotations_id_seq RESTART WITH 1;
+ALTER SEQUENCE previews_id_seq RESTART WITH 1;
+ALTER SEQUENCE messages_id_seq RESTART WITH 1;
 
 -- Insert Users
 INSERT INTO Users (name, email, phone_number, profile_picture_url, role, facebook, instagram, bank, account_no, bank_branch, created_at, updated_at)
@@ -114,6 +118,32 @@ INSERT INTO Previews (quotation_id, link)
 VALUES
 (1, 'img1.link'),
 (1, 'img2.link');
+
+-- Insert Messages
+INSERT INTO Messages (type, content, sender_id, receiver_id, created_at, updated_at)
+VALUES
+('TEXT', 'I am interested in your photography package.', 2, 4, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Can we schedule the shoot for next weekend?',4, 2, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Yes, I am available. Let me know the details.', 2, 4, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Thanks.', 2, 4, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'I will be right back.', 4, 2, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Hello, how are you?', 1, 3, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'I am interested in your photography package.', 1, 3, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Yes.', 1, 3, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Halo', 3, 2, LOCALTIMESTAMP, LOCALTIMESTAMP),
+('TEXT', 'Hi', 2, 3, LOCALTIMESTAMP, LOCALTIMESTAMP);
+
+
+-- Insert Reports
+INSERT INTO Reports (created_at, updated_at, quotation_id, reporter_id, status, message, title)
+VALUES
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 1, 1, 'REPORTED', 'Photographer appears so late', 'Shit photographer'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 2, 2, 'REVIEWED', 'We had a slight delay but it was handled professionally', 'Delay reviewed'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 2, 2, 'ACCEPTED', 'Photographer exceeded expectations. Great work!', 'Wonderful Experience'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 5, 1, 'DESTRUCTIVE', 'Photographer was rude and unprofessional. Never again.', 'Terrible behavior'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 5, 1, 'REPORTED', 'Photographer cancelled last minute without notice', 'Last-minute cancellation'),
+(LOCALTIMESTAMP, LOCALTIMESTAMP, 6, 2, 'ACCEPTED', 'Photographer refunded after cancellation. Appreciated.', 'Resolved promptly');
+
 
 -- Verify the data
 SELECT * FROM Users;

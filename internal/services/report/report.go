@@ -1,4 +1,4 @@
-package admin
+package report
 
 import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/database"
@@ -12,11 +12,7 @@ type Handler struct {
 	validate       *validator.Validate
 }
 
-func NewHandler(
-	store *database.Store,
-	authMiddleware authentication.AuthMiddleware,
-	validate *validator.Validate,
-) *Handler {
+func NewHandler(store *database.Store, authMiddleware authentication.AuthMiddleware, validate *validator.Validate) *Handler {
 	return &Handler{
 		store:          store,
 		authMiddleware: authMiddleware,
