@@ -8,3 +8,8 @@ type ListPhotographersRequest struct {
 type AdminGetPhotographerByID struct {
 	PhotographerID uint `params:"photographerID" validate:"required"`
 }
+
+type AssignAdminRequest struct {
+	UserID uint  `params:"userID" validate:"required"`
+	Admin  *bool `json:"admin" validate:"required"`
+}
