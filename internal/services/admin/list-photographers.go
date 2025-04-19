@@ -40,7 +40,7 @@ func (h *Handler) HandleListPhotographers(c *fiber.Ctx) error {
 
 	count, err := h.countPhotographers(req.Name)
 	if err != nil {
-		return errors.Wrap(err, "failed count table photographers")
+		return errors.Wrap(err, "failed to count photographers")
 	}
 
 	totalPage := pagination.TotalPageFromCount(count, pageSize)
