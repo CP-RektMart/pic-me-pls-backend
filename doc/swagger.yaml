@@ -1516,6 +1516,42 @@ paths:
       summary: get photographers detail
       tags:
       - admin
+  /api/v1/admin/photographers/{photographerID}/verify:
+    patch:
+      description: Verify a photographer by their ID
+      parameters:
+      - description: '{Photographer Id}'
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Verify photographer
+      tags:
+      - admin
   /api/v1/admin/users:
     get:
       description: Retrieve a paginated list of users.

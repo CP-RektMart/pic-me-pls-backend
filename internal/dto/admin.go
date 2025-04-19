@@ -13,3 +13,7 @@ type ListUnverifiedPhotographerRequest struct {
 	PaginationRequest
 	Name *string `query:"name"`
 }
+
+type VerifyPhotographerRequest struct {
+	PhotographerID uint `params:"photographerId" validate:"required"`
+}
