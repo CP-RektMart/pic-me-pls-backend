@@ -25,6 +25,7 @@ func (h *Handler) HandleBanPhotographer(c *fiber.Ctx) error {
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("invalid path params", err)
 	}
+
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid path params", err)
 	}
@@ -46,11 +47,11 @@ func (h *Handler) BanPhotographer(ID uint) error {
 			return errors.Wrap(err, "failed to fetch photographer")
 		}
 
-		if photographer.IsBan {
+		if photographer.IsBanned {
 			return apperror.BadRequest("photographer already banned", nil)
 		}
 
-		photographer.IsBan = true
+		photographer.IsBanned = true
 
 		if err := tx.Save(&photographer).Error; err != nil {
 			return errors.Wrap(err, "failed to ban photographer")
