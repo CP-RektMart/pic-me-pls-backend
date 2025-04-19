@@ -158,12 +158,15 @@ func (s *Server) RegisterRoutes(
 		photographers := admin.Group("/photographers")
 		photographers.Get("/", adminHandler.HandleListPhotographers)
 		photographers.Get("/:photographerID", adminHandler.HandleGetPhotographerByID)
-		photographers.Patch("/:id/ban", adminHandler.HandleBanPhotographer)
 
 		// users
 		users := admin.Group("/users")
 		users.Get("/", adminHandler.HandleGetAllUsers)
 		users.Get("/:id", adminHandler.HandleGetUserByID)
+
+		// photographer
+		photographer := admin.Group("/photographer")
+		photographer.Patch("/:id/ban", adminHandler.HandleBanPhotographer)
 	}
 
 	// stripe
