@@ -30,6 +30,8 @@ components:
           type: string
         expireDate:
           type: string
+        id:
+          type: integer
         laserId:
           type: string
         picture:
@@ -272,6 +274,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.PaginationResponse-ListPhotographerResponse'
       type: object
+    dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedCitizenCardResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedCitizenCardResponse'
+      type: object
     dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse:
       properties:
         result:
@@ -360,6 +367,25 @@ components:
           type: string
         quotationId:
           type: integer
+      type: object
+    dto.ListUnverifiedCitizenCardResponse:
+      properties:
+        activeStatus:
+          type: boolean
+        citizenCard:
+          $ref: '#/components/schemas/dto.CitizenCardResponse'
+        email:
+          type: string
+        id:
+          type: integer
+        isVerified:
+          type: boolean
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
       type: object
     dto.LoginRequest:
       properties:
@@ -469,6 +495,20 @@ components:
         data:
           items:
             $ref: '#/components/schemas/dto.CategoryResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
+      type: object
+    dto.PaginationResponse-dto_ListUnverifiedCitizenCardResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.ListUnverifiedCitizenCardResponse'
           type: array
           uniqueItems: false
         page:
@@ -1328,7 +1368,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-ListPhotographerResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedCitizenCardResponse'
           description: OK
         "400":
           content:
@@ -1425,7 +1465,7 @@ paths:
       summary: list photographers
       tags:
       - admin
-  /api/v1/admin/photographers/{id}:
+  /api/v1/admin/photographers/{photographerID}:
     get:
       parameters:
       - description: photographer id
