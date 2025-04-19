@@ -1308,6 +1308,13 @@ paths:
   /api/v1/admin/photographer/{id}/ban:
     patch:
       description: ban photographer by id
+      parameters:
+      - description: Photographer ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         "204":
           description: No Content
@@ -1340,7 +1347,7 @@ paths:
       summary: ban photographer
       tags:
       - admin
-  /api/v1/admin/user:
+  /api/v1/admin/photographers:
     get:
       parameters:
       - description: 'Page number for pagination (default: 1)'
