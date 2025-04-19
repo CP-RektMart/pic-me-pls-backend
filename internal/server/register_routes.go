@@ -91,9 +91,6 @@ func (s *Server) RegisterRoutes(
 		message.Get("/ws", websocket.New(messageHandler.HandleRealTimeMessages))
 		message.Get("/", authMiddleware.Auth, messageHandler.HandleListMessages)
 
-		// reports
-		reports := customer.Group("/reports")
-		reports.Post("/", authMiddleware.Auth, reportHandler.HandleCreateReport)
 	}
 
 	// customer
@@ -108,6 +105,13 @@ func (s *Server) RegisterRoutes(
 		quotations.Post("/:quotationId/review", reviewHandler.HandleCreateReview)
 		quotations.Patch("/:quotationId/review/:id", reviewHandler.HandleUpdateReview)
 		quotations.Delete("/:quotationId/review/:id", reviewHandler.HandleDeleteReview)
+
+		// reports
+		reports := customer.Group("/reports")
+		reports.Post("/", reportHandler.HandleCreateReport)
+		reports.Get("/", reportHandler.HandleGetAllReports)
+		reports.Get("/:id", reportHandler.HandleGetReportByID)
+		reports.Patch("/:id", reportHandler.HandleUpdateReport)
 	}
 
 	// photographer
@@ -125,6 +129,7 @@ func (s *Server) RegisterRoutes(
 		packages.Post("/", packagesHandler.HandleCreatePackage)
 		packages.Patch("/:id", packagesHandler.HandleUpdatePackage)
 		packages.Get("/", packagesHandler.HandlerListPhotographerPackages)
+		packages.Delete("/:id", packagesHandler.HandleDeletePackage)
 
 		// media
 		media := photographer.Group("/media")
@@ -156,6 +161,8 @@ func (s *Server) RegisterRoutes(
 
 		// users
 		users := admin.Group("/users")
+		users.Get("/", adminHandler.HandleGetAllUsers)
+		users.Get("/:id", adminHandler.HandleGetUserByID)
 		users.Patch("/:userID/role", adminHandler.HandleAssignAdmin)
 	}
 

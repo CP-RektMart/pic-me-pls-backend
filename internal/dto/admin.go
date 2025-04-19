@@ -5,7 +5,7 @@ type ListPhotographersRequest struct {
 	Name *string `query:"name"`
 }
 
-type AdminGetPhotographerByID struct {
+type AdminGetPhotographerByIDRequest struct {
 	PhotographerID uint `params:"photographerID" validate:"required"`
 }
 
