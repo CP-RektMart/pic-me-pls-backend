@@ -44,6 +44,12 @@ func (h *Handler) HandleCreateReport(c *fiber.Ctx) error {
 }
 
 func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error {
+
+	// Validate the request
+	if err := ValidateReportRequest(req, userID); err != nil {
+		return errors.Wrap(err, "Invalid request")
+	}
+
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		newReport := model.Report{
 			QuotationID: req.QuotationID,
@@ -79,5 +85,18 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 		return errors.Wrap(err, "Failed to create quotation")
 	}
 
+	return nil
+}
+
+func ValidateReportRequest(req *dto.CreateReportRequest, userID uint) error {
+	if req.QuotationID == 0 {
+		return apperror.BadRequest("Quotation ID is required", nil)
+	}
+	if req.Message == "" {
+		return apperror.BadRequest("Message is required", nil)
+	}
+	if req.Title == "" {
+		return apperror.BadRequest("Title is required", nil)
+	}
 	return nil
 }
