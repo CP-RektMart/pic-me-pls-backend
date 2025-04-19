@@ -16,8 +16,8 @@ func ToReportResponse(report model.Report) ReportResponse {
 		Status:      string(report.Status),
 		Message:     report.Message,
 		Title:       report.Title,
-		CreatedAt:   report.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
-		UpdatedAt:   report.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		CreatedAt:   report.CreatedAt.Format("02 Jan 2006, 15:04"),
+		UpdatedAt:   report.UpdatedAt.Format("02 Jan 2006, 15:04"),
 	}
 }
 
@@ -56,8 +56,8 @@ func ToGetReportByIDResponse(report model.Report) ReportResponse {
 		Status:      string(report.Status),
 		Message:     report.Message,
 		Title:       report.Title,
-		CreatedAt:   report.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
-		UpdatedAt:   report.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		CreatedAt:   report.CreatedAt.Format("02 Jan 2006, 15:04"),
+		UpdatedAt:   report.UpdatedAt.Format("02 Jan 2006, 15:04"),
 	}
 }
 
