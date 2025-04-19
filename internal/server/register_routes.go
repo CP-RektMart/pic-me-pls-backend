@@ -166,7 +166,7 @@ func (s *Server) RegisterRoutes(
 		
 		// citizendCard
 		citizenCard := admin.Group("citizenCards")
-		citizenCard.Get("/unverify", adminHandler.HandleListUnverifiedCitizenCard)
+		citizenCard.Get("/unverify", adminHandler.HandleListUnverifiedPhotographer)
 	}
 
 	// stripe

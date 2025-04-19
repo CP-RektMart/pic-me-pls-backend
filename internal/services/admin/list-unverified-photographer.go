@@ -16,15 +16,15 @@ import (
 // @Security		ApiKeyAuth
 // @Param			page		query		int	false	"Page number for pagination (default: 1)"
 // @Param			pageSize	query		int	false	"Number of records per page (default: 5, max: 20)"
-// @Param			photographerName		query		string	false	"Filter by photographer's name (case-insensitive)"
-// @Success			200	{object}	dto.HttpResponse[dto.PaginationResponse[dto.ListUnverifiedCitizenCardResponse]]
+// @Param			name	query		string	false	"Filter by photographer's name (case-insensitive)"
+// @Success			200	{object}	dto.HttpResponse[dto.PaginationResponse[dto.ListUnverifiedPhotographerResponse]]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
 // @Failure			404	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleListUnverifiedCitizenCard(c *fiber.Ctx) error {
-	var req dto.ListUnverifiedCitizenCardRequest
+func (h *Handler) HandleListUnverifiedPhotographer(c *fiber.Ctx) error {
+	var req dto.ListUnverifiedPhotographerRequest
 	if err := c.QueryParser(&req); err != nil {
 		return apperror.BadRequest("invalid request", err)
 	}
@@ -33,21 +33,21 @@ func (h *Handler) HandleListUnverifiedCitizenCard(c *fiber.Ctx) error {
 	}
 
 	page, pageSize, offset := req.PaginationRequest.GetPaginationData(1, 10)
-	photographers, err := h.listUnverifiedPhotographer(req.PhotographerName, offset, pageSize)
+	photographers, err := h.listUnverifiedPhotographer(req.Name, offset, pageSize)
 	if err != nil {
 		return errors.Wrap(err, "failed query photographers")
 	}
 
-	count, err := h.countUnverifiedPhotographers(req.PhotographerName)
+	count, err := h.countUnverifiedPhotographers(req.Name)
 	if err != nil {
 		return errors.Wrap(err, "failed count table photographers")
 	}
 
 	totalPage := pagination.TotalPageFromCount(count, pageSize)
-	photosResp := dto.ToListUnverifiedCitizenCardsResponse(photographers)
+	photosResp := dto.ToListUnverifiedPhotographersResponse(photographers)
 	paginationResp := dto.NewPaginationResponse(photosResp, page, pageSize, totalPage)
 
-	return c.Status(fiber.StatusOK).JSON(paginationResp)
+	return c.Status(fiber.StatusOK).JSON(dto.Success(paginationResp))
 }
 
 func (h *Handler) listUnverifiedPhotographer(name *string, offset, limit int) ([]model.Photographer, error) {

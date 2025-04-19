@@ -25,7 +25,7 @@ func ToCitizenCardResponse(c *model.CitizenCard) CitizenCardResponse {
 	}
 }
 
-type ListUnverifiedCitizenCardResponse struct {
+type ListUnverifiedPhotographerResponse struct {
 	ID                uint                `json:"id"`
 	Name              string              `json:"name"`
 	Email             string              `json:"email"`
@@ -36,8 +36,8 @@ type ListUnverifiedCitizenCardResponse struct {
 	CitizenCard       CitizenCardResponse `json:"citizenCard"`
 }
 
-func ToListUnverifiedCitizenCardResponse(p model.Photographer) ListUnverifiedCitizenCardResponse {
-	return ListUnverifiedCitizenCardResponse{
+func ToListUnverifiedCitizenCardResponse(p model.Photographer) ListUnverifiedPhotographerResponse {
+	return ListUnverifiedPhotographerResponse{
 		ID:                p.UserID,
 		Name:              p.User.Name,
 		Email:             p.User.Email,
@@ -49,8 +49,8 @@ func ToListUnverifiedCitizenCardResponse(p model.Photographer) ListUnverifiedCit
 	}
 }
 
-func ToListUnverifiedCitizenCardsResponse(ps []model.Photographer) []ListUnverifiedCitizenCardResponse {
-	return lo.Map(ps, func(p model.Photographer, _ int) ListUnverifiedCitizenCardResponse {
+func ToListUnverifiedPhotographersResponse(ps []model.Photographer) []ListUnverifiedPhotographerResponse {
+	return lo.Map(ps, func(p model.Photographer, _ int) ListUnverifiedPhotographerResponse {
 		return ToListUnverifiedCitizenCardResponse(p)
 	})
 }

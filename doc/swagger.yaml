@@ -274,10 +274,10 @@ components:
         result:
           $ref: '#/components/schemas/dto.PaginationResponse-ListPhotographerResponse'
       type: object
-    dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedCitizenCardResponse:
+    dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedPhotographerResponse:
       properties:
         result:
-          $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedCitizenCardResponse'
+          $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse'
       type: object
     dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse:
       properties:
@@ -368,7 +368,7 @@ components:
         quotationId:
           type: integer
       type: object
-    dto.ListUnverifiedCitizenCardResponse:
+    dto.ListUnverifiedPhotographerResponse:
       properties:
         activeStatus:
           type: boolean
@@ -504,11 +504,11 @@ components:
         totalPage:
           type: integer
       type: object
-    dto.PaginationResponse-dto_ListUnverifiedCitizenCardResponse:
+    dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse:
       properties:
         data:
           items:
-            $ref: '#/components/schemas/dto.ListUnverifiedCitizenCardResponse'
+            $ref: '#/components/schemas/dto.ListUnverifiedPhotographerResponse'
           type: array
           uniqueItems: false
         page:
@@ -1360,7 +1360,7 @@ paths:
           type: integer
       - description: Filter by photographer's name (case-insensitive)
         in: query
-        name: photographerName
+        name: name
         schema:
           type: string
       responses:
@@ -1368,7 +1368,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedCitizenCardResponse'
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedPhotographerResponse'
           description: OK
         "400":
           content:

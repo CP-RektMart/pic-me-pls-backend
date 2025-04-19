@@ -9,7 +9,7 @@ type AdminGetPhotographerByIDRequest struct {
 	PhotographerID uint `params:"photographerID" validate:"required"`
 }
 
-type ListUnverifiedCitizenCardRequest struct {
+type ListUnverifiedPhotographerRequest struct {
 	PaginationRequest
-	PhotographerName *string `query:"photographerName"`
+	Name *string `query:"name"`
 }
