@@ -36,7 +36,7 @@ type ListUnverifiedPhotographerResponse struct {
 	CitizenCard       CitizenCardResponse `json:"citizenCard"`
 }
 
-func ToListUnverifiedCitizenCardResponse(p model.Photographer) ListUnverifiedPhotographerResponse {
+func ToListUnverifiedPhotographerResponse(p model.Photographer) ListUnverifiedPhotographerResponse {
 	return ListUnverifiedPhotographerResponse{
 		ID:                p.UserID,
 		Name:              p.User.Name,
@@ -51,6 +51,6 @@ func ToListUnverifiedCitizenCardResponse(p model.Photographer) ListUnverifiedPho
 
 func ToListUnverifiedPhotographersResponse(ps []model.Photographer) []ListUnverifiedPhotographerResponse {
 	return lo.Map(ps, func(p model.Photographer, _ int) ListUnverifiedPhotographerResponse {
-		return ToListUnverifiedCitizenCardResponse(p)
+		return ToListUnverifiedPhotographerResponse(p)
 	})
 }
