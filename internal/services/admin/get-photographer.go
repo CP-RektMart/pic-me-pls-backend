@@ -11,7 +11,7 @@ import (
 
 // @Summary			get photographers detail
 // @Tags			admin
-// @Router			/api/v1/admin/photographers/{id} [GET]
+// @Router			/api/v1/admin/photographers/{photographerID} [GET]
 // @Security		ApiKeyAuth
 // @Param			photographerID		path		int	true	"photographer id"
 // @Success			200	{object}	dto.HttpResponse[dto.ListPackageResponse]
@@ -21,7 +21,7 @@ import (
 // @Failure			404	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
 func (h *Handler) HandleGetPhotographerByID(c *fiber.Ctx) error {
-	var req dto.AdminGetPhotographerByID
+	var req dto.AdminGetPhotographerByIDRequest
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("invalid request", err)
 	}

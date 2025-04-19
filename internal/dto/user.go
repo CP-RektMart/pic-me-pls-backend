@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+import (
+	"github.com/CP-RektMart/pic-me-pls-backend/internal/model"
+	"github.com/samber/lo"
+)
 
 type UserUpdateRequest struct {
 	Name              string `json:"name"`
@@ -44,6 +47,15 @@ type PublicUserResponse struct {
 	Role              model.UserRole `json:"role"`
 }
 
+type GetUsersRequest struct {
+	PaginationRequest
+	Name string `query:"name" default:""`
+}
+
+type GetUserByIDRequest struct {
+	ID uint `params:"id" validate:"required"`
+}
+
 func ToUserResponse(user model.User) UserResponse {
 	return UserResponse{
 		ID:                user.ID,
@@ -79,4 +91,10 @@ func ToPublicUserResponse(user model.User) PublicUserResponse {
 		ProfilePictureURL: user.ProfilePictureURL,
 		Role:              user.Role,
 	}
+}
+
+func ToPublicUserResponses(users []model.User) []PublicUserResponse {
+	return lo.Map(users, func(u model.User, _ int) PublicUserResponse {
+		return ToPublicUserResponse(u)
+	})
 }
