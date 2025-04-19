@@ -89,7 +89,10 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 }
 
 func ValidateReportRequest(req *dto.CreateReportRequest, userID uint) error {
-	if req.QuotationID == 0 {
+	if userID <= 0 {
+		return apperror.BadRequest("User ID is required", nil)
+	}
+	if req.QuotationID <= 0 {
 		return apperror.BadRequest("Quotation ID is required", nil)
 	}
 	if req.Message == "" {

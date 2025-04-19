@@ -24,6 +24,16 @@ func TestValidateReportRequest(t *testing.T) {
 			expected: true,
 		},
 		{
+			name: "invalid request - non positive quotation ID",
+			request: dto.CreateReportRequest{
+				QuotationID: 0,
+				Message:     "Test message",
+				Title:       "Test title",
+			},
+			userID:   1,
+			expected: false,
+		},
+		{
 			name: "invalid request - empty message",
 			request: dto.CreateReportRequest{
 				QuotationID: 1,
@@ -31,6 +41,26 @@ func TestValidateReportRequest(t *testing.T) {
 				Title:       "Test title",
 			},
 			userID:   1,
+			expected: false,
+		},
+		{
+			name: "invalid request - empty title",
+			request: dto.CreateReportRequest{
+				QuotationID: 1,
+				Message:     "Test message",
+				Title:       "",
+			},
+			userID:   1,
+			expected: false,
+		},
+		{
+			name: "invalid request - non positive user ID",
+			request: dto.CreateReportRequest{
+				QuotationID: 1,
+				Message:     "Test message",
+				Title:       "Test title",
+			},
+			userID:   0,
 			expected: false,
 		},
 	}
