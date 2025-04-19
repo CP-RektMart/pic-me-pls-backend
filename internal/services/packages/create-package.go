@@ -46,6 +46,12 @@ func (h *Handler) HandleCreatePackage(c *fiber.Ctx) error {
 }
 
 func (h *Handler) createPackage(req *dto.CreatePackageRequest, photographerID uint) error {
+
+	// Validate the request
+	if err := ValidateCreatePackageRequest(req, photographerID); err != nil {
+		return errors.Wrap(err, "Invalid request")
+	}
+
 	newPackage := &model.Package{
 		Name:           req.Name,
 		Description:    req.Description,
@@ -56,6 +62,26 @@ func (h *Handler) createPackage(req *dto.CreatePackageRequest, photographerID ui
 	}
 	if err := h.store.DB.Create(&newPackage).Error; err != nil {
 		return errors.Wrap(err, "failed to save Package to DB")
+	}
+
+	return nil
+}
+
+func ValidateCreatePackageRequest(req *dto.CreatePackageRequest, photographerID uint) error {
+	if req.Name == "" {
+		return apperror.BadRequest("Package name is required", nil)
+	}
+	if req.Description == "" {
+		return apperror.BadRequest("Package description is required", nil)
+	}
+	if req.Price <= 0 {
+		return apperror.BadRequest("Package price must be greater than 0", nil)
+	}
+	if photographerID <= 0 {
+		return apperror.BadRequest("Photographer ID must be greater than 0", nil)
+	}
+	if len(req.Media) == 0 {
+		return apperror.BadRequest("At least one media file is required", nil)
 	}
 
 	return nil
