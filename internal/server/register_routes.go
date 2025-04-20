@@ -163,6 +163,7 @@ func (s *Server) RegisterRoutes(
 		users := admin.Group("/users")
 		users.Get("/", adminHandler.HandleGetAllUsers)
 		users.Get("/:id", adminHandler.HandleGetUserByID)
+		users.Patch("/:userID/role", adminHandler.HandleAssignAdmin)
 
 		// citizendCard
 		citizenCard := admin.Group("citizenCards")

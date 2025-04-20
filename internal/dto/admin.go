@@ -21,3 +21,8 @@ type BanPhotographerRequest struct {
 type AdminDeletePackageByID struct {
 	PackageID uint `params:"packageID" validate:"required"`
 }
+
+type AssignAdminRequest struct {
+	UserID uint  `params:"userID" validate:"required"`
+	Admin  *bool `json:"admin" validate:"required"`
+}
