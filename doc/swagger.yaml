@@ -30,6 +30,8 @@ components:
           type: string
         expireDate:
           type: string
+        id:
+          type: integer
         laserId:
           type: string
         picture:
@@ -272,10 +274,10 @@ components:
         result:
           $ref: '#/components/schemas/dto.PaginationResponse-ListPhotographerResponse'
       type: object
-    dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse:
+    dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedPhotographerResponse:
       properties:
         result:
-          $ref: '#/components/schemas/dto.PaginationResponse-dto_ReportResponse'
+          $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse'
       type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
@@ -343,6 +345,8 @@ components:
           type: string
         id:
           type: integer
+        isBanned:
+          type: boolean
         isVerified:
           type: boolean
         name:
@@ -360,6 +364,25 @@ components:
           type: string
         quotationId:
           type: integer
+      type: object
+    dto.ListUnverifiedPhotographerResponse:
+      properties:
+        activeStatus:
+          type: boolean
+        citizenCard:
+          $ref: '#/components/schemas/dto.CitizenCardResponse'
+        email:
+          type: string
+        id:
+          type: integer
+        isVerified:
+          type: boolean
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
       type: object
     dto.LoginRequest:
       properties:
@@ -469,6 +492,20 @@ components:
         data:
           items:
             $ref: '#/components/schemas/dto.CategoryResponse'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPage:
+          type: integer
+      type: object
+    dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/dto.ListUnverifiedPhotographerResponse'
           type: array
           uniqueItems: false
         page:
@@ -674,17 +711,21 @@ components:
       type: object
     dto.ReportResponse:
       properties:
+        createdAt:
+          type: string
+        id:
+          type: integer
         message:
           type: string
         quotationId:
-          type: integer
-        reportId:
           type: integer
         reporterId:
           type: integer
         status:
           type: string
         title:
+          type: string
+        updatedAt:
           type: string
       type: object
     dto.ReviewResponse:
@@ -1305,6 +1346,66 @@ paths:
       summary: update category
       tags:
       - categories
+  /api/v1/admin/citizenCards/unverify:
+    get:
+      parameters:
+      - description: 'Page number for pagination (default: 1)'
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: 'Number of records per page (default: 5, max: 20)'
+        in: query
+        name: pageSize
+        schema:
+          type: integer
+      - description: Filter by photographer's name (case-insensitive)
+        in: query
+        name: name
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedPhotographerResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: list unverified citizencard
+      tags:
+      - admin
   /api/v1/admin/packages/{packageID}:
     delete:
       parameters:
@@ -1350,6 +1451,48 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: admin delete package
+      tags:
+      - admin
+  /api/v1/admin/photographer/{id}/ban:
+    patch:
+      description: ban photographer by id
+      parameters:
+      - description: Photographer ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: ban photographer
       tags:
       - admin
   /api/v1/admin/photographers:
@@ -1961,7 +2104,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse'
+                $ref: '#/components/schemas/dto.PaginationResponse-dto_ReportResponse'
           description: OK
         "400":
           content:
@@ -2008,8 +2151,8 @@ paths:
         description: Report details
         required: true
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
