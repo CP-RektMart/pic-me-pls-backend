@@ -16,6 +16,8 @@ func ToReportResponse(report model.Report) ReportResponse {
 		Status:      string(report.Status),
 		Message:     report.Message,
 		Title:       report.Title,
+		CreatedAt:   report.CreatedAt.Format("02 Jan 2006, 15:04"),
+		UpdatedAt:   report.UpdatedAt.Format("02 Jan 2006, 15:04"),
 	}
 }
 
@@ -32,12 +34,14 @@ type GetReportByIDRequest struct {
 }
 
 type ReportResponse struct {
-	ID          uint   `json:"reportId"`
+	ID          uint   `json:"id"`
 	QuotationID uint   `json:"quotationId"`
 	ReporterID  uint   `json:"reporterId"`
 	Status      string `json:"status"`
 	Message     string `json:"message"`
 	Title       string `json:"title"`
+	CreatedAt   string `json:"createdAt"`
+	UpdatedAt   string `json:"updatedAt"`
 }
 
 type ReportListResponse struct {
@@ -52,6 +56,8 @@ func ToGetReportByIDResponse(report model.Report) ReportResponse {
 		Status:      string(report.Status),
 		Message:     report.Message,
 		Title:       report.Title,
+		CreatedAt:   report.CreatedAt.Format("02 Jan 2006, 15:04"),
+		UpdatedAt:   report.UpdatedAt.Format("02 Jan 2006, 15:04"),
 	}
 }
 

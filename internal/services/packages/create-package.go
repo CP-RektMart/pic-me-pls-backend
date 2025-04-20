@@ -6,6 +6,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/pkg/apperror"
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 // @Summary			Create Package
@@ -60,6 +61,19 @@ func (h *Handler) createPackage(req *dto.CreatePackageRequest, photographerID ui
 		CategoryID:     req.CategoryID,
 		Media:          dto.ToPackageMediaModels(req.Media),
 	}
+
+	var photographer model.Photographer
+	if err := h.store.DB.First(&photographer, photographerID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return apperror.NotFound("Photographer not found", err)
+		}
+		return errors.Wrap(err, "failed to get photographer")
+	}
+
+	if photographer.IsBanned {
+		return apperror.Forbidden("You are banned from creating packages", errors.New("banned photographer"))
+	}
+
 	if err := h.store.DB.Create(&newPackage).Error; err != nil {
 		return errors.Wrap(err, "failed to save Package to DB")
 	}

@@ -76,6 +76,10 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, photographerI
 			return apperror.NotFound("Photographer not found", err)
 		}
 
+		if photographer.IsBanned {
+			return apperror.Forbidden("You are banned from creating quotations", errors.New("banned photographer"))
+		}
+
 		if err := tx.Create(&newQuotation).Error; err != nil {
 			return errors.Wrap(err, "failed to create quotation")
 		}

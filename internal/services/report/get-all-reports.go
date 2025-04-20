@@ -15,7 +15,7 @@ import (
 // @Security			ApiKeyAuth
 // @Param        		page      query    int    false  "Page number"
 // @Param        		pageSize query    int    false  "Page size"
-// @Success     200 	{object}  dto.HttpResponse[dto.PaginationResponse[dto.ReportResponse]]
+// @Success     200 	{object}  dto.PaginationResponse[dto.ReportResponse]
 // @Failure     400   	{object}  dto.HttpError
 // @Failure     401   	{object}  dto.HttpError
 // @Failure     403   	{object}  dto.HttpError
@@ -56,6 +56,7 @@ func (h *Handler) getAllReports(req dto.PaginationRequest, userID uint) (*dto.Pa
 		Where("reporter_id = ?", userID).Find(&reports).Error; err != nil {
 		return nil, errors.Wrap(err, "Failed getting reports")
 	}
+
 	var count int64
 	if err := h.store.DB.Model(&model.Report{}).Where("reporter_id = ?", userID).Count(&count).Error; err != nil {
 		return nil, errors.Wrap(err, "Failed counting reports")

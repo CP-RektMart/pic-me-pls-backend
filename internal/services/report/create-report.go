@@ -15,7 +15,7 @@ import (
 // @Router      /api/v1/customer/reports [POST]
 // @Security    ApiKeyAuth
 // @Param       body  body  dto.CreateReportRequest  true  "Report details"
-// @Success     200
+// @Success     204
 // @Failure     400   {object}  dto.HttpError
 // @Failure     401   {object}  dto.HttpError
 // @Failure     403   {object}  dto.HttpError
@@ -40,7 +40,7 @@ func (h *Handler) HandleCreateReport(c *fiber.Ctx) error {
 		return errors.Wrap(err, "Failed to create report")
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
 func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error {
