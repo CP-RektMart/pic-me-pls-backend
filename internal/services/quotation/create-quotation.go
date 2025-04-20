@@ -111,13 +111,13 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, photographerI
 
 func ValidateCreateQuotationRequest(req *dto.CreateQuotationRequest, photographerID uint) error {
 	if req.CustomerID <= 0 {
-		return apperror.BadRequest("Customer ID is required", nil)
+		return apperror.BadRequest("Customer ID must be positive", nil)
 	}
 	if req.PackageID <= 0 {
-		return apperror.BadRequest("Package ID is required", nil)
+		return apperror.BadRequest("Package ID must be postive", nil)
 	}
 	if photographerID <= 0 {
-		return apperror.BadRequest("Photographer ID is required", nil)
+		return apperror.BadRequest("Photographer ID must be positive", nil)
 	}
 	if req.FromDate.IsZero() {
 		return apperror.BadRequest("From date is required", nil)
@@ -126,7 +126,7 @@ func ValidateCreateQuotationRequest(req *dto.CreateQuotationRequest, photographe
 		return apperror.BadRequest("To date is required", nil)
 	}
 	if req.Price <= 0 {
-		return apperror.BadRequest("Price must be greater than 0", nil)
+		return apperror.BadRequest("Price must be positive", nil)
 	}
 	if req.Description == "" {
 		return apperror.BadRequest("Description is required", nil)
