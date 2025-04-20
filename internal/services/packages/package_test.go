@@ -14,7 +14,7 @@ func TestValidateCreatePackageRequest(t *testing.T) {
 		expected bool
 	}{
 		{
-			name: "valid request",
+			name: "TC4: Valid request",
 			request: dto.CreatePackageRequest{
 				Name:        "Test Package",
 				Description: "Test Description",
@@ -29,7 +29,7 @@ func TestValidateCreatePackageRequest(t *testing.T) {
 			expected: true,
 		},
 		{
-			name: "invalid request - empty name",
+			name: "TC5: Invalid request - empty name",
 			request: dto.CreatePackageRequest{
 				Name:        "",
 				Description: "Test Description",
@@ -44,7 +44,7 @@ func TestValidateCreatePackageRequest(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "invalid request - empty description",
+			name: "TC6: Invalid request - empty description",
 			request: dto.CreatePackageRequest{
 				Name:        "Test Package",
 				Description: "",
@@ -59,7 +59,7 @@ func TestValidateCreatePackageRequest(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "invalid request - non positive price",
+			name: "TC7: Invalid request - non positive price",
 			request: dto.CreatePackageRequest{
 				Name:        "Test Package",
 				Description: "Test Description",
@@ -74,7 +74,7 @@ func TestValidateCreatePackageRequest(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "invalid request - non positive user ID",
+			name: "TC8: Invalid request - non positive user ID",
 			request: dto.CreatePackageRequest{
 				Name:        "Test Package",
 				Description: "Test Description",
@@ -89,7 +89,7 @@ func TestValidateCreatePackageRequest(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "invalid request - empty media",
+			name: "TC9: Invalid request - empty media",
 			request: dto.CreatePackageRequest{
 				Name:        "Test Package",
 				Description: "Test Description",
