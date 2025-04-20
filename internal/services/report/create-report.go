@@ -46,7 +46,7 @@ func (h *Handler) HandleCreateReport(c *fiber.Ctx) error {
 func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error {
 
 	// Validate the request
-	if err := ValidateReportRequest(req, userID); err != nil {
+	if err := ValidateCreateReportRequest(req, userID); err != nil {
 		return errors.Wrap(err, "Invalid request")
 	}
 
@@ -88,7 +88,7 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 	return nil
 }
 
-func ValidateReportRequest(req *dto.CreateReportRequest, userID uint) error {
+func ValidateCreateReportRequest(req *dto.CreateReportRequest, userID uint) error {
 	if userID <= 0 {
 		return apperror.BadRequest("User ID is required", nil)
 	}

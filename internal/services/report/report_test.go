@@ -6,7 +6,7 @@ import (
 	"github.com/CP-RektMart/pic-me-pls-backend/internal/dto"
 )
 
-func TestValidateReportRequest(t *testing.T) {
+func TestValidateCreateReportRequest(t *testing.T) {
 	tests := []struct {
 		name     string
 		request  dto.CreateReportRequest
@@ -67,7 +67,7 @@ func TestValidateReportRequest(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := ValidateReportRequest(&tt.request, tt.userID)
+			result := ValidateCreateReportRequest(&tt.request, tt.userID)
 			if (result == nil) != tt.expected {
 				t.Errorf("expected %v, got %v", tt.expected, result == nil)
 			}
