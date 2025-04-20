@@ -1,5 +1,15 @@
 components:
   schemas:
+    dto.AssignAdminRequest:
+      properties:
+        admin:
+          type: boolean
+        userID:
+          type: integer
+      required:
+      - admin
+      - userID
+      type: object
     dto.CategoryResponse:
       properties:
         description:
@@ -279,11 +289,6 @@ components:
         result:
           $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse'
       type: object
-    dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.PaginationResponse-dto_ReportResponse'
-      type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
         result:
@@ -350,6 +355,8 @@ components:
           type: string
         id:
           type: integer
+        isBanned:
+          type: boolean
         isVerified:
           type: boolean
         name:
@@ -714,17 +721,21 @@ components:
       type: object
     dto.ReportResponse:
       properties:
+        createdAt:
+          type: string
+        id:
+          type: integer
         message:
           type: string
         quotationId:
-          type: integer
-        reportId:
           type: integer
         reporterId:
           type: integer
         status:
           type: string
         title:
+          type: string
+        updatedAt:
           type: string
       type: object
     dto.ReviewResponse:
@@ -1405,6 +1416,95 @@ paths:
       summary: list unverified citizencard
       tags:
       - admin
+  /api/v1/admin/packages/{packageID}:
+    delete:
+      parameters:
+      - description: package id
+        in: path
+        name: packageID
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: admin delete package
+      tags:
+      - admin
+  /api/v1/admin/photographer/{id}/ban:
+    patch:
+      description: ban photographer by id
+      parameters:
+      - description: Photographer ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: ban photographer
+      tags:
+      - admin
   /api/v1/admin/photographers:
     get:
       parameters:
@@ -1639,6 +1739,60 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get user by id
+      tags:
+      - admin
+  /api/v1/admin/users/{userID}/role:
+    patch:
+      parameters:
+      - description: user id
+        in: path
+        name: userID
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.AssignAdminRequest'
+        description: detail
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: assign user to admin
       tags:
       - admin
   /api/v1/auth/login:
@@ -2050,7 +2204,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ReportResponse'
+                $ref: '#/components/schemas/dto.PaginationResponse-dto_ReportResponse'
           description: OK
         "400":
           content:
@@ -2097,8 +2251,8 @@ paths:
         description: Report details
         required: true
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
