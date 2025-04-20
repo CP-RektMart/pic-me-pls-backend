@@ -43,6 +43,12 @@ func (h *Handler) HandleCreateQuotation(c *fiber.Ctx) error {
 }
 
 func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, photographerID uint) error {
+
+	// Validate the request
+	if err := ValidateCreateQuotationRequest(req, photographerID); err != nil {
+		return errors.Wrap(err, "Invalid request")
+	}
+
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		newQuotation := model.Quotation{
 			CustomerID:     req.CustomerID,
@@ -104,5 +110,30 @@ func (h *Handler) CreateQuotation(req *dto.CreateQuotationRequest, photographerI
 		return errors.Wrap(err, "failed to create quotation")
 	}
 
+	return nil
+}
+
+func ValidateCreateQuotationRequest(req *dto.CreateQuotationRequest, photographerID uint) error {
+	if req.CustomerID <= 0 {
+		return apperror.BadRequest("Customer ID must be positive", nil)
+	}
+	if req.PackageID <= 0 {
+		return apperror.BadRequest("Package ID must be postive", nil)
+	}
+	if photographerID <= 0 {
+		return apperror.BadRequest("Photographer ID must be positive", nil)
+	}
+	if req.FromDate.IsZero() {
+		return apperror.BadRequest("From date is required", nil)
+	}
+	if req.ToDate.IsZero() {
+		return apperror.BadRequest("To date is required", nil)
+	}
+	if req.Price <= 0 {
+		return apperror.BadRequest("Price must be positive", nil)
+	}
+	if req.Description == "" {
+		return apperror.BadRequest("Description is required", nil)
+	}
 	return nil
 }

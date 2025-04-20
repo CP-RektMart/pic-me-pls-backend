@@ -42,3 +42,13 @@ func (h *Handler) HandleCreateCategory(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
+func ValidateCreateCategoryRequest(req dto.CreateCategoryRequest) error {
+	if req.Name == "" {
+		return apperror.BadRequest("Name is required", nil)
+	}
+	if req.Description == "" {
+		return apperror.BadRequest("Description is required", nil)
+	}
+	return nil
+}
