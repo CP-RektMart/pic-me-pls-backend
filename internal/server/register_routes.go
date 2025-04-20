@@ -171,6 +171,10 @@ func (s *Server) RegisterRoutes(
 		// photographer
 		photographer := admin.Group("/photographer")
 		photographer.Patch("/:id/ban", adminHandler.HandleBanPhotographer)
+
+		// packages
+		packages := admin.Group("/packages")
+		packages.Delete("/:packageID", adminHandler.HandleDeletePackageByID)
 	}
 
 	// stripe
