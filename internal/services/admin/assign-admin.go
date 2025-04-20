@@ -14,7 +14,7 @@ import (
 // @Security		ApiKeyAuth
 // @Param			userID		path		int	true	"user id"
 // @Param			detail		body		dto.AssignAdminRequest true "detail"
-// @Success			200
+// @Success			204
 // @Failure			400	{object}	dto.HttpError
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
@@ -36,7 +36,7 @@ func (h *Handler) HandleAssignAdmin(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed assign admin")
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
 func (h *Handler) assignAdmin(userID uint, admin bool) error {
