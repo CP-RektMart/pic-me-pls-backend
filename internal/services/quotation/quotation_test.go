@@ -15,7 +15,7 @@ func TestValidateCreateQuotationRequest(t *testing.T) {
 		expected       bool
 	}{
 		{
-			name: "valid request",
+			name: "TC10: Valid request",
 			request: dto.CreateQuotationRequest{
 				CustomerID:  1,
 				PackageID:   1,
@@ -34,7 +34,7 @@ func TestValidateCreateQuotationRequest(t *testing.T) {
 			expected:       true,
 		},
 		{
-			name: "invalid request - non positive customer ID",
+			name: "TC11: Invalid request - non positive customer ID",
 			request: dto.CreateQuotationRequest{
 				CustomerID:  0,
 				PackageID:   1,
@@ -53,7 +53,7 @@ func TestValidateCreateQuotationRequest(t *testing.T) {
 			expected:       false,
 		},
 		{
-			name: "invalid request - non positive package ID",
+			name: "TC12: Invalid request - non positive package ID",
 			request: dto.CreateQuotationRequest{
 				CustomerID:  1,
 				PackageID:   0,
@@ -72,7 +72,7 @@ func TestValidateCreateQuotationRequest(t *testing.T) {
 			expected:       false,
 		},
 		{
-			name: "invalid request - non positive price",
+			name: "TC13: Invalid request - non positive price",
 			request: dto.CreateQuotationRequest{
 				CustomerID:  1,
 				PackageID:   1,
@@ -91,7 +91,7 @@ func TestValidateCreateQuotationRequest(t *testing.T) {
 			expected:       false,
 		},
 		{
-			name: "invalid request - non positive photographer ID",
+			name: "TC14: Invalid request - non positive photographer ID",
 			request: dto.CreateQuotationRequest{
 				CustomerID:  1,
 				PackageID:   1,
@@ -110,7 +110,7 @@ func TestValidateCreateQuotationRequest(t *testing.T) {
 			expected:       false,
 		},
 		{
-			name: "invalid request - from date not provided",
+			name: "TC15: Invalid request - from date not provided",
 			request: dto.CreateQuotationRequest{
 				CustomerID:  1,
 				PackageID:   1,
@@ -126,7 +126,7 @@ func TestValidateCreateQuotationRequest(t *testing.T) {
 			expected:       false,
 		},
 		{
-			name: "invalid request - to date not provided",
+			name: "TC16: Invalid request - to date not provided",
 			request: dto.CreateQuotationRequest{
 				CustomerID:  1,
 				PackageID:   1,
@@ -142,7 +142,7 @@ func TestValidateCreateQuotationRequest(t *testing.T) {
 			expected:       false,
 		},
 		{
-			name: "invalid request - empty description",
+			name: "TC17: Invalid request - empty description",
 			request: dto.CreateQuotationRequest{
 				CustomerID:  1,
 				PackageID:   1,
