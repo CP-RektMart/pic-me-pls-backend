@@ -13,7 +13,7 @@ func TestValidateCreateCategoryRequest(t *testing.T) {
 		expected bool
 	}{
 		{
-			name: "valid request",
+			name: "TC1: Valid request",
 			request: dto.CreateCategoryRequest{
 				Name:        "Test Category",
 				Description: "Test Description",
@@ -21,7 +21,7 @@ func TestValidateCreateCategoryRequest(t *testing.T) {
 			expected: true,
 		},
 		{
-			name: "invalid request - empty name",
+			name: "TC2: Invalid request - empty name",
 			request: dto.CreateCategoryRequest{
 				Name:        "",
 				Description: "Test Description",
@@ -29,7 +29,7 @@ func TestValidateCreateCategoryRequest(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "invalid request - empty description",
+			name: "TC3: Invalid request - empty description",
 			request: dto.CreateCategoryRequest{
 				Name:        "Test Category",
 				Description: "",
