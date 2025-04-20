@@ -1,5 +1,15 @@
 components:
   schemas:
+    dto.AssignAdminRequest:
+      properties:
+        admin:
+          type: boolean
+        userID:
+          type: integer
+      required:
+      - admin
+      - userID
+      type: object
     dto.CategoryResponse:
       properties:
         description:
@@ -1406,6 +1416,53 @@ paths:
       summary: list unverified citizencard
       tags:
       - admin
+  /api/v1/admin/packages/{packageID}:
+    delete:
+      parameters:
+      - description: package id
+        in: path
+        name: packageID
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: admin delete package
+      tags:
+      - admin
   /api/v1/admin/photographer/{id}/ban:
     patch:
       description: ban photographer by id
@@ -1559,6 +1616,42 @@ paths:
       summary: get photographers detail
       tags:
       - admin
+  /api/v1/admin/photographers/{photographerID}/verify:
+    patch:
+      description: Verify a photographer by their ID
+      parameters:
+      - description: '{Photographer Id}'
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Verify photographer
+      tags:
+      - admin
   /api/v1/admin/users:
     get:
       description: Retrieve a paginated list of users.
@@ -1646,6 +1739,60 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get user by id
+      tags:
+      - admin
+  /api/v1/admin/users/{userID}/role:
+    patch:
+      parameters:
+      - description: user id
+        in: path
+        name: userID
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dto.AssignAdminRequest'
+        description: detail
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: assign user to admin
       tags:
       - admin
   /api/v1/auth/login:
