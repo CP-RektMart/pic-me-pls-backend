@@ -1315,8 +1315,8 @@ paths:
         schema:
           type: integer
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
         "400":
           content:
             application/json:
@@ -1412,7 +1412,7 @@ paths:
       summary: list photographers
       tags:
       - admin
-  /api/v1/admin/photographers/{id}:
+  /api/v1/admin/photographers/{photographerID}:
     get:
       parameters:
       - description: photographer id
