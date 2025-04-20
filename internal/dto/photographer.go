@@ -21,13 +21,6 @@ type ReVerifyCitizenCardRequest struct {
 	ExpireDate time.Time `json:"expireDate"`
 }
 
-type CitizenCardResponse struct {
-	CitizenID  string    `json:"citizenId"`
-	LaserID    string    `json:"laserId"`
-	Picture    string    `json:"picture"`
-	ExpireDate time.Time `json:"expireDate"`
-}
-
 type PhotographerResponse struct {
 	ID                uint                   `json:"id"`
 	Name              string                 `json:"name"`
@@ -68,6 +61,7 @@ type ListPhotographerResponse struct {
 	PhoneNumber       string `json:"phoneNumber"`
 	ProfilePictureURL string `json:"profilePictureUrl"`
 	IsVerified        bool   `json:"isVerified"`
+	IsBanned          bool   `json:"isBanned"`
 	ActiveStatus      bool   `json:"activeStatus"`
 }
 
@@ -79,6 +73,7 @@ func ToListPhotographerResponse(p model.Photographer) ListPhotographerResponse {
 		PhoneNumber:       p.User.PhoneNumber,
 		ProfilePictureURL: p.User.ProfilePictureURL,
 		IsVerified:        p.IsVerified,
+		IsBanned:          p.IsBanned,
 		ActiveStatus:      p.ActiveStatus,
 	}
 }

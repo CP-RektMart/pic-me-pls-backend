@@ -1,4 +1,5 @@
 -- Reset the database for testing
+DELETE FROM Reports;
 DELETE FROM Messages;
 DELETE FROM Previews;
 DELETE FROM Tags;
@@ -35,13 +36,18 @@ VALUES
 ('User 5', 'user5@example.com', '0078901234', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuGFjsxZCvbMuKnsJHFywAKXzJh6SsPWVsifY_z36wVT9p38WQ3IQPDPDjhFPDyxv6YQY&usqp=CAU', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
 ('User 6', 'user6@example.com', '0038901234', 'https://thumbs.dreamstime.com/b/customer-support-service-agent-headset-flat-vector-icon-design-designs-153069456.jpg', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
 ('User 7', 'user7@example.com', '0068901234', 'https://static.vecteezy.com/system/resources/previews/043/900/708/non_2x/user-profile-icon-illustration-vector.jpg', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
-('User 8', 'user8@example.com', '0063901234', 'https://t3.ftcdn.net/jpg/00/65/75/68/360_F_65756860_GUZwzOKNMUU3HldFoIA44qss7ZIrCG8I.jpg', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
+('User 8', 'user8@example.com', '0063901234', 'https://t3.ftcdn.net/jpg/00/65/75/68/360_F_65756860_GUZwzOKNMUU3HldFoIA44qss7ZIrCG8I.jpg', 'ADMIN', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 9', 'user9@example.com', '0263903234', 'https://t3.ftcdn.net/jpg/00/65/75/68/360_F_65756860_GUZwzOKNMUU3HldFoIA44qss7ZIrCG8I.jpg', 'PHOTOGRAPHER', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP),
+('User 10', 'user10@example.com', '0463901334', 'https://t3.ftcdn.net/jpg/00/65/75/68/360_F_65756860_GUZwzOKNMUU3HldFoIA44qss7ZIrCG8I.jpg', 'PHOTOGRAPHER', '', '', '', '', '', LOCALTIMESTAMP, LOCALTIMESTAMP);
 
 -- Insert Photographers
 INSERT INTO Photographers (user_id, is_verified, active_status, created_at, updated_at)
 VALUES
 (3, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP),
-(4, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP);
+(4, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(9, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP),
+(10, true, true, LOCALTIMESTAMP, LOCALTIMESTAMP);
+
 
 -- Insert Citizen Cards
 INSERT INTO Citizen_Cards (citizen_id, laser_id, photographer_id, picture, expire_date, created_at, updated_at)
@@ -99,7 +105,7 @@ VALUES
 -- Insert Quotations
 INSERT INTO Quotations (package_id, customer_id, photographer_id, status, price, description, from_date, to_date, created_at, updated_at)
 VALUES
-(1, 1, 3, 'SUBMIT', 1500.00, 'Eager to capture the golden hour magic—let’s make this happen!', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
+(1, 1, 3, 'SUBMITTED', 1500.00, 'Eager to capture the golden hour magic—let’s make this happen!', '2025-03-03T17:33:00+07:00', '2025-03-03T20:33:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (3, 2, 4, 'PAID', 540.00, 'Excited to freeze this special moment in time—booking confirmed!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 2, 3, 'PENDING', 1530.00, 'Looking forward to a timeless portrait session—can’t wait!', '2025-03-03T17:23:00+07:00', '2025-03-03T17:40:00+07:00', LOCALTIMESTAMP, LOCALTIMESTAMP),
 (2, 2, 3, 'CONFIRMED', 6300.00, 'All set for a stunning shoot—excited to bring our vision to life!', '2025-03-03', '2025-03-04', LOCALTIMESTAMP, LOCALTIMESTAMP),
