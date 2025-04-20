@@ -163,10 +163,14 @@ func (s *Server) RegisterRoutes(
 		users := admin.Group("/users")
 		users.Get("/", adminHandler.HandleGetAllUsers)
 		users.Get("/:id", adminHandler.HandleGetUserByID)
-		
+
 		// citizendCard
 		citizenCard := admin.Group("citizenCards")
 		citizenCard.Get("/unverify", adminHandler.HandleListUnverifiedPhotographer)
+
+		// photographer
+		photographer := admin.Group("/photographer")
+		photographer.Patch("/:id/ban", adminHandler.HandleBanPhotographer)
 	}
 
 	// stripe
