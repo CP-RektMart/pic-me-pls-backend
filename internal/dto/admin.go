@@ -14,6 +14,10 @@ type ListUnverifiedPhotographerRequest struct {
 	Name *string `query:"name"`
 }
 
+type VerifyPhotographerRequest struct {
+	PhotographerID uint `params:"photographerId" validate:"required"`
+}
+
 type BanPhotographerRequest struct {
 	ID uint `json:"id" validate:"required"`
 }

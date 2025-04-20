@@ -158,6 +158,7 @@ func (s *Server) RegisterRoutes(
 		photographers := admin.Group("/photographers")
 		photographers.Get("/", adminHandler.HandleListPhotographers)
 		photographers.Get("/:photographerID", adminHandler.HandleGetPhotographerByID)
+		photographers.Patch("/:photographerID/verify", adminHandler.HandleVerifyPhotographer)
 
 		// users
 		users := admin.Group("/users")
