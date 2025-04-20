@@ -90,10 +90,10 @@ func (h *Handler) createReport(req *dto.CreateReportRequest, userID uint) error 
 
 func ValidateCreateReportRequest(req *dto.CreateReportRequest, userID uint) error {
 	if userID <= 0 {
-		return apperror.BadRequest("User ID is required", nil)
+		return apperror.BadRequest("User ID must be positive", nil)
 	}
 	if req.QuotationID <= 0 {
-		return apperror.BadRequest("Quotation ID is required", nil)
+		return apperror.BadRequest("Quotation ID must be positive", nil)
 	}
 	if req.Message == "" {
 		return apperror.BadRequest("Message is required", nil)
