@@ -14,7 +14,7 @@ func TestValidateReportRequest(t *testing.T) {
 		expected bool
 	}{
 		{
-			name: "valid request",
+			name: "TC:18 Valid request",
 			request: dto.CreateReportRequest{
 				QuotationID: 1,
 				Message:     "Test message",
@@ -24,7 +24,7 @@ func TestValidateReportRequest(t *testing.T) {
 			expected: true,
 		},
 		{
-			name: "invalid request - non positive quotation ID",
+			name: "TC19: Invalid request - non positive quotation ID",
 			request: dto.CreateReportRequest{
 				QuotationID: 0,
 				Message:     "Test message",
@@ -34,7 +34,7 @@ func TestValidateReportRequest(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "invalid request - empty message",
+			name: "TC20: Invalid request - empty message",
 			request: dto.CreateReportRequest{
 				QuotationID: 1,
 				Message:     "",
@@ -44,7 +44,7 @@ func TestValidateReportRequest(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "invalid request - empty title",
+			name: "TC21: Invalid request - empty title",
 			request: dto.CreateReportRequest{
 				QuotationID: 1,
 				Message:     "Test message",
@@ -54,7 +54,7 @@ func TestValidateReportRequest(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "invalid request - non positive user ID",
+			name: "TC22: Invalid request - non positive user ID",
 			request: dto.CreateReportRequest{
 				QuotationID: 1,
 				Message:     "Test message",
