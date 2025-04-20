@@ -54,6 +54,18 @@ func (h *Handler) createMedia(req *dto.CreateMediaRequest, photographerID uint) 
 			return apperror.Forbidden("You are not allowed to create media in this package", errors.New("unauthorized"))
 		}
 
+		var photographer model.Photographer
+		if err := tx.First(&photographer, photographerID).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return apperror.NotFound("Photographer not found", err)
+			}
+			return errors.Wrap(err, "failed to get photographer")
+		}
+
+		if photographer.IsBanned {
+			return apperror.Forbidden("You are banned from creating media", errors.New("banned photographer"))
+		}
+
 		if err := tx.Create(&model.Media{
 			PackageID:   req.PackageID,
 			PictureURL:  req.PictureURL,

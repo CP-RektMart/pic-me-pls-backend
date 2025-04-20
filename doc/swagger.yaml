@@ -1405,6 +1405,48 @@ paths:
       summary: list unverified citizencard
       tags:
       - admin
+  /api/v1/admin/photographer/{id}/ban:
+    patch:
+      description: ban photographer by id
+      parameters:
+      - description: Photographer ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: ban photographer
+      tags:
+      - admin
   /api/v1/admin/photographers:
     get:
       parameters:
