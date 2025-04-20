@@ -14,7 +14,7 @@ import (
 // @Tags         admin
 // @Router       /api/v1/admin/photographers/{photographerID}/verify [PATCH]
 // @Security	 ApiKeyAuth
-// @Param        id          path     int  true   "{Photographer Id}"
+// @Param        photographerID          path     int  true   "{Photographer Id}"
 // @Success      204            "No Content"
 // @Failure      400            {object}  dto.HttpError
 // @Failure      404            {object}  dto.HttpError
@@ -38,17 +38,17 @@ func (h *Handler) HandleVerifyPhotographer(c *fiber.Ctx) error {
 }
 
 func (h *Handler) verifyPhotographer(photographerId uint) error {
-    result := h.store.DB.Model(&model.Photographer{}).
-        Where("user_id = ?", photographerId).
-        Update("is_verified", true)
+	result := h.store.DB.Model(&model.Photographer{}).
+		Where("user_id = ?", photographerId).
+		Update("is_verified", true)
 
-    if result.Error != nil {
-        return errors.Wrap(result.Error, "failed to verify photographer")
-    }
+	if result.Error != nil {
+		return errors.Wrap(result.Error, "failed to verify photographer")
+	}
 
-    if result.RowsAffected == 0 {
-        return apperror.NotFound("Photographer not found", gorm.ErrRecordNotFound)
-    }
+	if result.RowsAffected == 0 {
+		return apperror.NotFound("Photographer not found", gorm.ErrRecordNotFound)
+	}
 
-    return nil
+	return nil
 }
