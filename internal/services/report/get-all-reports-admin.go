@@ -15,6 +15,7 @@ import (
 // @Security			ApiKeyAuth
 // @Param        		page      query    int    false  "Page number"
 // @Param        		pageSize query    int    false  "Page size"
+// @Param        		title    query    string false  "Filter by report's title (case-insensitive)"
 // @Success     200 	{object}  dto.PaginationResponse[dto.ReportResponse]
 // @Failure     400   	{object}  dto.HttpError
 // @Failure     401   	{object}  dto.HttpError
@@ -23,7 +24,8 @@ import (
 // @Failure     500   	{object}  dto.HttpError
 func (h *Handler) HandleAdminGetAllReports(c *fiber.Ctx) error {
 
-	var req dto.PaginationRequest
+	var req dto.AdminGetAllReportsRequest
+
 	if err := c.QueryParser(&req); err != nil {
 		return apperror.BadRequest("Invalid query", err)
 	}
@@ -41,20 +43,21 @@ func (h *Handler) HandleAdminGetAllReports(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(reports)
 }
 
-func (h *Handler) adminGetAllReports(req dto.PaginationRequest) (*dto.PaginationResponse[dto.ReportResponse], error) {
-	page, pageSize, offset := dto.GetPaginationData(req, 1, 20)
+func (h *Handler) adminGetAllReports(req dto.AdminGetAllReportsRequest) (*dto.PaginationResponse[dto.ReportResponse], error) {
+	page, pageSize, offset := dto.GetPaginationData(req.PaginationRequest, 1, 20)
+
 	var reports []model.Report
-	if err := h.store.DB.
-		Offset(offset).
-		Limit(pageSize).
-		Find(&reports).Error; err != nil {
+	db := h.store.DB.Model(&model.Report{}).Where("title ILIKE ?", "%"+req.Title+"%")
+
+	if err := db.Offset(offset).Limit(pageSize).Find(&reports).Error; err != nil {
 		return nil, errors.Wrap(err, "Failed getting reports")
 	}
 
 	var count int64
-	if err := h.store.DB.Model(&model.Report{}).Count(&count).Error; err != nil {
+	if err := db.Count(&count).Error; err != nil {
 		return nil, errors.Wrap(err, "Failed counting reports")
 	}
+
 	totalPage := (int(count) + pageSize - 1) / pageSize
 
 	paginationResponse := dto.PaginationResponse[dto.ReportResponse]{

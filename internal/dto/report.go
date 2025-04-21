@@ -66,3 +66,8 @@ type UpdateReportRequest struct {
 	Message  string `json:"message"`
 	Title    string `json:"title"`
 }
+
+type AdminGetAllReportsRequest struct {
+	PaginationRequest
+	Title string `query:"title" default:""`
+}
