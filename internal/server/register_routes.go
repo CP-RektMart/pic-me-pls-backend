@@ -182,6 +182,8 @@ func (s *Server) RegisterRoutes(
 		//reports
 		reports := admin.Group("/reports")
 		reports.Get("/", reportHandler.HandleAdminGetAllReports)
+		reports.Patch("/:reportID/accept", adminHandler.HandleAcceptReport)
+		reports.Patch("/:reportID/decline", adminHandler.HandleDeclineReport)
 	}
 
 	// stripe

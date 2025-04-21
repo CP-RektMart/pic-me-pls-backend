@@ -34,3 +34,11 @@ type AssignAdminRequest struct {
 	UserID uint  `params:"userID" validate:"required"`
 	Admin  *bool `json:"admin" validate:"required"`
 }
+
+type AcceptReportRequest struct {
+	ReportID uint `params:"reportID" validate:"required"`
+}
+
+type DeclineReportRequest struct {
+	ReportID uint `params:"reportID" validate:"required"`
+}
