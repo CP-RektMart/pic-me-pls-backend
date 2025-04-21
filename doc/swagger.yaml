@@ -1622,7 +1622,7 @@ paths:
       parameters:
       - description: '{Photographer Id}'
         in: path
-        name: id
+        name: photographerID
         required: true
         schema:
           type: integer
