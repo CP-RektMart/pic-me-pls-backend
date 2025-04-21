@@ -18,8 +18,6 @@ type Report struct {
 type ReportStatus string
 
 const (
-	ReportStatusReported    ReportStatus = "REPORTED"
-	ReportStatusReviewed    ReportStatus = "REVIEWED"
-	ReportStatusApproved    ReportStatus = "ACCEPTED"
-	ReportStatusDestructive ReportStatus = "DECLINED"
+	ReportStatusAccepted    ReportStatus = "ACCEPTED"
+	ReportStatusDeclined ReportStatus = "DECLINED"
 )
