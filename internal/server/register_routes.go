@@ -177,6 +177,10 @@ func (s *Server) RegisterRoutes(
 		// packages
 		packages := admin.Group("/packages")
 		packages.Delete("/:packageID", adminHandler.HandleDeletePackageByID)
+
+		//reports
+		reports := admin.Group("/reports")
+		reports.Get("/", reportHandler.HandleAdminGetAllReports)
 	}
 
 	// stripe
