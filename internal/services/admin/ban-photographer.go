@@ -14,7 +14,7 @@ import (
 // @Tags         admin
 // @Router       /api/v1/admin/photographer/{id}/ban [PATCH]
 // @Security	 ApiKeyAuth
-// @Param        id          path     int  true   "Photographer ID"
+// @Param        id          path     uint  true   "Photographer ID"
 // @Success			204
 // @Failure			400	{object}	dto.HttpError
 // @Failure			401	{object}	dto.HttpError
