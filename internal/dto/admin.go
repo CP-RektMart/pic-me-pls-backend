@@ -22,6 +22,10 @@ type BanPhotographerRequest struct {
 	ID uint `json:"id" validate:"required"`
 }
 
+type UnbanPhotographerRequest struct {
+	ID uint `json:"id" validate:"required"`
+}
+
 type AdminDeletePackageByID struct {
 	PackageID uint `params:"packageID" validate:"required"`
 }
