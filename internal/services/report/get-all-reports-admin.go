@@ -15,6 +15,7 @@ import (
 // @Security			ApiKeyAuth
 // @Param        		page      query    int    false  "Page number"
 // @Param        		pageSize query    int    false  "Page size"
+// @Param        		title    query    string false  "Filter by report's title (case-insensitive)"
 // @Success     200 	{object}  dto.PaginationResponse[dto.ReportResponse]
 // @Failure     400   	{object}  dto.HttpError
 // @Failure     401   	{object}  dto.HttpError
