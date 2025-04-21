@@ -173,6 +173,7 @@ func (s *Server) RegisterRoutes(
 		// photographer
 		photographer := admin.Group("/photographer")
 		photographer.Patch("/:id/ban", adminHandler.HandleBanPhotographer)
+		photographer.Patch("/:id/unban", adminHandler.HandleUnbanPhotographer)
 
 		// packages
 		packages := admin.Group("/packages")

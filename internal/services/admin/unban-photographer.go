@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary      ban photographer
-// @Description  ban photographer by id
+// @Summary      unban photographer
+// @Description  unban photographer by id
 // @Tags         admin
-// @Router       /api/v1/admin/photographer/{id}/ban [PATCH]
+// @Router       /api/v1/admin/photographer/{id}/unban [PATCH]
 // @Security	 ApiKeyAuth
 // @Param        id          path     uint  true   "Photographer ID"
 // @Success			204
@@ -20,8 +20,8 @@ import (
 // @Failure			401	{object}	dto.HttpError
 // @Failure			404	{object}	dto.HttpError
 // @Failure			500	{object}	dto.HttpError
-func (h *Handler) HandleBanPhotographer(c *fiber.Ctx) error {
-	var req dto.BanPhotographerRequest
+func (h *Handler) HandleUnbanPhotographer(c *fiber.Ctx) error {
+	var req dto.UnbanPhotographerRequest
 	if err := c.ParamsParser(&req); err != nil {
 		return apperror.BadRequest("invalid path params", err)
 	}
@@ -30,14 +30,14 @@ func (h *Handler) HandleBanPhotographer(c *fiber.Ctx) error {
 		return apperror.BadRequest("invalid path params", err)
 	}
 
-	if err := h.BanPhotographer(req.ID); err != nil {
-		return errors.Wrap(err, "failed to ban photographer")
+	if err := h.UnbanPhotographer(req.ID); err != nil {
+		return errors.Wrap(err, "failed to unban photographer")
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-func (h *Handler) BanPhotographer(ID uint) error {
+func (h *Handler) UnbanPhotographer(ID uint) error {
 	if err := h.store.DB.Transaction(func(tx *gorm.DB) error {
 		var photographer model.Photographer
 		if err := tx.First(&photographer, ID).Error; err != nil {
@@ -47,19 +47,19 @@ func (h *Handler) BanPhotographer(ID uint) error {
 			return errors.Wrap(err, "failed to fetch photographer")
 		}
 
-		if photographer.IsBanned {
-			return apperror.BadRequest("photographer already banned", nil)
+		if !photographer.IsBanned {
+			return apperror.BadRequest("photographer is not currently banned", nil)
 		}
 
-		photographer.IsBanned = true
+		photographer.IsBanned = false
 
 		if err := tx.Save(&photographer).Error; err != nil {
-			return errors.Wrap(err, "failed to ban photographer")
+			return errors.Wrap(err, "failed to unban photographer")
 		}
 
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "failed to ban photographer")
+		return errors.Wrap(err, "failed to unban photographer")
 	}
 
 	return nil
