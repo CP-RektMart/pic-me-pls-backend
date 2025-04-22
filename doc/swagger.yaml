@@ -263,16 +263,6 @@ components:
         result:
           $ref: '#/components/schemas/dto.PackageResponse'
       type: object
-    dto.HttpResponse-dto_PaginationResponse-ListPhotographerResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.PaginationResponse-ListPhotographerResponse'
-      type: object
-    dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedPhotographerResponse:
-      properties:
-        result:
-          $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse'
-      type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
         result:
@@ -1081,7 +1071,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-dto_ListUnverifiedPhotographerResponse'
+                $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse'
           description: OK
         "400":
           content:
@@ -1272,7 +1262,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.HttpResponse-dto_PaginationResponse-ListPhotographerResponse'
+                $ref: '#/components/schemas/dto.PaginationResponse-ListPhotographerResponse'
           description: OK
         "400":
           content:

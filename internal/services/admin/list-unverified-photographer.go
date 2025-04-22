@@ -17,7 +17,7 @@ import (
 // @Param			page		query		int	false	"Page number for pagination (default: 1)"
 // @Param			pageSize	query		int	false	"Number of records per page (default: 5, max: 20)"
 // @Param			name	query		string	false	"Filter by photographer's name (case-insensitive)"
-// @Success			200	{object}	dto.HttpResponse[dto.PaginationResponse[dto.ListUnverifiedPhotographerResponse]]
+// @Success			200	{object}	dto.PaginationResponse[dto.ListUnverifiedPhotographerResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
@@ -47,7 +47,7 @@ func (h *Handler) HandleListUnverifiedPhotographer(c *fiber.Ctx) error {
 	photosResp := dto.ToListUnverifiedPhotographersResponse(photographers)
 	paginationResp := dto.NewPaginationResponse(photosResp, page, pageSize, totalPage)
 
-	return c.Status(fiber.StatusOK).JSON(dto.Success(paginationResp))
+	return c.Status(fiber.StatusOK).JSON(paginationResp)
 }
 
 func (h *Handler) listUnverifiedPhotographer(name *string, offset, limit int) ([]model.Photographer, error) {

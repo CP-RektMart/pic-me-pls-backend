@@ -17,7 +17,7 @@ import (
 // @Param			page		query		int	false	"Page number for pagination (default: 1)"
 // @Param			pageSize	query		int	false	"Number of records per page (default: 5, max: 20)"
 // @Param			name		query		string	false	"Filter by photographer's name (case-insensitive)"
-// @Success			200	{object}	dto.HttpResponse[dto.PaginationResponse[ListPhotographerResponse]]
+// @Success			200	{object}	dto.PaginationResponse[ListPhotographerResponse]
 // @Failure			400	{object}	dto.HttpError
 // @Failure			401	{object}	dto.HttpError
 // @Failure			403	{object}	dto.HttpError
