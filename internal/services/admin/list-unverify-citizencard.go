@@ -53,13 +53,13 @@ func (h *Handler) HandleListUnverifiedCitizenCard(c *fiber.Ctx) error {
 func (h *Handler) listUnverifiedCitizenCards(name *string, offset, limit int) ([]model.CitizenCard, error) {
 	var citizenCards []model.CitizenCard
 
-	db := h.store.DB.Preload("Photographer.User").Where("\"Photographer\".is_verified = ?", false)
+	db := h.store.DB.Joins("Photographer.User").Where("\"Photographer\".is_verified = ?", false)
 
 	if name != nil {
 		db = db.Where("\"User\".name ILIKE ?", "%"+*name+"%")
 	}
 
-	if err := db.Offset(offset).Limit(limit).Find(&citizenCards).Error; err != nil {
+	if err := db.Debug().Offset(offset).Limit(limit).Find(&citizenCards).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apperror.NotFound("photographers not found", err)
 		}
@@ -72,13 +72,13 @@ func (h *Handler) listUnverifiedCitizenCards(name *string, offset, limit int) ([
 func (h *Handler) countUnverifiedCitizenCards(name *string) (int, error) {
 	var c int64
 
-	db := h.store.DB.Preload("Photographer.User").Where("\"Photographer\".is_verified = ?", false)
+	db := h.store.DB.Joins("Photographer.User").Where("\"Photographer\".is_verified = ?", false)
 
 	if name != nil {
 		db = db.Where("\"User\".name ILIKE ?", "%"+*name+"%")
 	}
 
-	if err := db.Model(&model.Photographer{}).Count(&c).Error; err != nil {
+	if err := db.Model(&model.CitizenCard{}).Count(&c).Error; err != nil {
 		return 0, err
 	}
 

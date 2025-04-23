@@ -13,4 +13,6 @@ type CitizenCard struct {
 	Picture        string    `gorm:"size:255;not null"`
 	PhotographerID uint      `gorm:"uniqueIndex;not null"`
 	ExpireDate     time.Time `gorm:"not null"`
+
+	Photographer Photographer `gorm:"foreignKey:PhotographerID"`
 }
