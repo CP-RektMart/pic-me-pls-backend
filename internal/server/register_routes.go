@@ -118,6 +118,9 @@ func (s *Server) RegisterRoutes(
 	{
 		photographer := v1.Group("/photographer", authMiddleware.AuthPhotographer)
 
+		me := photographer.Group("/me")
+		me.Get("/", photographersHandler.HandleGetMe)
+
 		// citizen card
 		citizencard := photographer.Group("/citizen-card")
 		citizencard.Get("/", citizencardHandler.HandleGetCitizenCard)
@@ -168,7 +171,7 @@ func (s *Server) RegisterRoutes(
 
 		// citizendCard
 		citizenCard := admin.Group("citizenCards")
-		citizenCard.Get("/unverify", adminHandler.HandleListUnverifiedPhotographer)
+		citizenCard.Get("/unverify", adminHandler.HandleListUnverifiedCitizenCard)
 
 		// photographer
 		photographer := admin.Group("/photographer")
