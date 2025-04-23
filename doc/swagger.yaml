@@ -263,6 +263,11 @@ components:
         result:
           $ref: '#/components/schemas/dto.PackageResponse'
       type: object
+    dto.HttpResponse-dto_PhotographerMeResponse:
+      properties:
+        result:
+          $ref: '#/components/schemas/dto.PhotographerMeResponse'
+      type: object
     dto.HttpResponse-dto_PhotographerResponse:
       properties:
         result:
@@ -339,7 +344,7 @@ components:
         quotationId:
           type: integer
       type: object
-    dto.ListUnverifiedPhotographerResponse:
+    dto.ListUnverifiedCitizenCardResponse:
       properties:
         activeStatus:
           type: boolean
@@ -475,11 +480,11 @@ components:
         totalPage:
           type: integer
       type: object
-    dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse:
+    dto.PaginationResponse-dto_ListUnverifiedCitizenCardResponse:
       properties:
         data:
           items:
-            $ref: '#/components/schemas/dto.ListUnverifiedPhotographerResponse'
+            $ref: '#/components/schemas/dto.ListUnverifiedCitizenCardResponse'
           type: array
           uniqueItems: false
         page:
@@ -558,6 +563,25 @@ components:
           type: integer
         totalPage:
           type: integer
+      type: object
+    dto.PhotographerMeResponse:
+      properties:
+        activeStatus:
+          type: boolean
+        email:
+          type: string
+        id:
+          type: integer
+        isBaned:
+          type: boolean
+        isVerified:
+          type: boolean
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
       type: object
     dto.PhotographerResponse:
       properties:
@@ -1071,7 +1095,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedPhotographerResponse'
+                $ref: '#/components/schemas/dto.PaginationResponse-dto_ListUnverifiedCitizenCardResponse'
           description: OK
         "400":
           content:
@@ -2691,6 +2715,50 @@ paths:
       summary: Verify Citizen Card
       tags:
       - citizencard
+  /api/v1/photographer/me:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpResponse-dto_PhotographerMeResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dto.HttpError'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get me (photographer)
+      tags:
+      - photographers
   /api/v1/photographer/media:
     post:
       description: Create media by photographer
