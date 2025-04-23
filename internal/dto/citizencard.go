@@ -25,7 +25,7 @@ func ToCitizenCardResponse(c *model.CitizenCard) CitizenCardResponse {
 	}
 }
 
-type ListUnverifiedPhotographerResponse struct {
+type ListUnverifiedCitizenCardResponse struct {
 	ID                uint                `json:"id"`
 	Name              string              `json:"name"`
 	Email             string              `json:"email"`
@@ -33,24 +33,26 @@ type ListUnverifiedPhotographerResponse struct {
 	ProfilePictureURL string              `json:"profilePictureUrl"`
 	IsVerified        bool                `json:"isVerified"`
 	ActiveStatus      bool                `json:"activeStatus"`
+	IsBanned          bool                `json:"isBanned"`
 	CitizenCard       CitizenCardResponse `json:"citizenCard"`
 }
 
-func ToListUnverifiedPhotographerResponse(p model.Photographer) ListUnverifiedPhotographerResponse {
-	return ListUnverifiedPhotographerResponse{
-		ID:                p.UserID,
-		Name:              p.User.Name,
-		Email:             p.User.Email,
-		PhoneNumber:       p.User.PhoneNumber,
-		ProfilePictureURL: p.User.ProfilePictureURL,
-		IsVerified:        p.IsVerified,
-		ActiveStatus:      p.ActiveStatus,
-		CitizenCard:       ToCitizenCardResponse(&p.CitizenCard),
+func ToListUnverifiedCitizenCardResponse(c model.CitizenCard) ListUnverifiedCitizenCardResponse {
+	return ListUnverifiedCitizenCardResponse{
+		ID:                c.Photographer.UserID,
+		Name:              c.Photographer.User.Name,
+		Email:             c.Photographer.User.Email,
+		PhoneNumber:       c.Photographer.User.PhoneNumber,
+		ProfilePictureURL: c.Photographer.User.ProfilePictureURL,
+		IsVerified:        c.Photographer.IsVerified,
+		ActiveStatus:      c.Photographer.ActiveStatus,
+		IsBanned:          c.Photographer.IsBanned,
+		CitizenCard:       ToCitizenCardResponse(&c),
 	}
 }
 
-func ToListUnverifiedPhotographersResponse(ps []model.Photographer) []ListUnverifiedPhotographerResponse {
-	return lo.Map(ps, func(p model.Photographer, _ int) ListUnverifiedPhotographerResponse {
-		return ToListUnverifiedPhotographerResponse(p)
+func ToListUnverifiedCitizenCardResponses(citizenCards []model.CitizenCard) []ListUnverifiedCitizenCardResponse {
+	return lo.Map(citizenCards, func(c model.CitizenCard, _ int) ListUnverifiedCitizenCardResponse {
+		return ToListUnverifiedCitizenCardResponse(c)
 	})
 }

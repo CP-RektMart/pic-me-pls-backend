@@ -29,6 +29,7 @@ type PhotographerResponse struct {
 	ProfilePictureURL string                 `json:"profilePictureUrl"`
 	IsVerified        bool                   `json:"isVerified"`
 	ActiveStatus      bool                   `json:"activeStatus"`
+	IsBanned          bool                   `json:"isBanned"`
 	Packages          []SmallPackageResponse `json:"packages"`
 }
 
@@ -50,6 +51,7 @@ func ToPhotographerResponse(photographer model.Photographer) PhotographerRespons
 		ProfilePictureURL: photographer.User.ProfilePictureURL,
 		IsVerified:        photographer.IsVerified,
 		ActiveStatus:      photographer.ActiveStatus,
+		IsBanned:          photographer.IsBanned,
 		Packages:          ToSmallPackageResponses(photographer.Packages),
 	}
 }
@@ -92,6 +94,7 @@ type DetailPhotographerResponse struct {
 	ProfilePictureURL string                `json:"profilePictureUrl"`
 	IsVerified        bool                  `json:"isVerified"`
 	ActiveStatus      bool                  `json:"activeStatus"`
+	IsBanned          bool                  `json:"isBanned"`
 	Packages          []ListPackageResponse `json:"packages"`
 }
 
@@ -104,6 +107,7 @@ func ToDetailPhotographerResponse(p model.Photographer) DetailPhotographerRespon
 		ProfilePictureURL: p.User.ProfilePictureURL,
 		IsVerified:        p.IsVerified,
 		ActiveStatus:      p.ActiveStatus,
+		IsBanned:          p.IsBanned,
 		Packages:          ToListPackagesResponse(p.Packages),
 	}
 }

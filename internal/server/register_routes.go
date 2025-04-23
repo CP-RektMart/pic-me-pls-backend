@@ -170,8 +170,8 @@ func (s *Server) RegisterRoutes(
 		users.Patch("/:userID/role", adminHandler.HandleAssignAdmin)
 
 		// citizendCard
-		citizencards := admin.Group("/citizenCards")
-		citizencards.Get("/unverify", adminHandler.HandleListUnverifiedPhotographer)
+		citizenCards := admin.Group("/citizenCards")
+		citizenCards.Get("/unverify", adminHandler.HandleListUnverifiedCitizenCard)
 
 		// photographer
 		photographer := admin.Group("/photographer")
