@@ -354,6 +354,8 @@ components:
           type: string
         id:
           type: integer
+        isBanned:
+          type: boolean
         isVerified:
           type: boolean
         name:
@@ -591,6 +593,8 @@ components:
           type: string
         id:
           type: integer
+        isBanned:
+          type: boolean
         isVerified:
           type: boolean
         name:
