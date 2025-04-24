@@ -146,6 +146,11 @@ func (s *Server) RegisterRoutes(
 		quotations.Patch("/:id", quotationHandler.HandleUpdateQuotation)
 		quotations.Post(":id/preview", quotationHandler.HandleCreatePreviewPhoto)
 	}
+	
+	admins := v1.Group("/admin")
+	// citizendCard
+	citizenCards := admins.Group("/citizenCards")
+	citizenCards.Get("/unverify", adminHandler.HandleListUnverifiedCitizenCard)
 
 	// admin
 	{
@@ -169,9 +174,6 @@ func (s *Server) RegisterRoutes(
 		users.Get("/:id", adminHandler.HandleGetUserByID)
 		users.Patch("/:userID/role", adminHandler.HandleAssignAdmin)
 
-		// citizendCard
-		citizenCards := admin.Group("/citizenCards")
-		citizenCards.Get("/unverify", adminHandler.HandleListUnverifiedCitizenCard)
 
 		// photographer
 		photographer := admin.Group("/photographer")

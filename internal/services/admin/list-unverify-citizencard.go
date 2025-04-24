@@ -13,7 +13,6 @@ import (
 // @Summary			list unverified citizencard
 // @Tags			admin
 // @Router			/api/v1/admin/citizenCards/unverify [GET]
-// @Security		ApiKeyAuth
 // @Param			page		query		int	false	"Page number for pagination (default: 1)"
 // @Param			pageSize	query		int	false	"Number of records per page (default: 5, max: 20)"
 // @Param			name	query		string	false	"Filter by photographer's name (case-insensitive)"
@@ -26,7 +25,7 @@ import (
 func (h *Handler) HandleListUnverifiedCitizenCard(c *fiber.Ctx) error {
 	var req dto.ListUnverifiedPhotographerRequest
 	if err := c.QueryParser(&req); err != nil {
-		return apperror.BadRequest("invalid request", err)
+	return apperror.BadRequest("invalid request", err)
 	}
 	if err := h.validate.Struct(req); err != nil {
 		return apperror.BadRequest("invalid request", err)
