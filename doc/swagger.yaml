@@ -1131,8 +1131,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/dto.HttpError'
           description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
       summary: list unverified citizencard
       tags:
       - admin
